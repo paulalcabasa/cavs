@@ -1,0 +1,33 @@
+Sir ok na po...
+
+pa monitor na lang ulit..
+
+may ibang mysql server po ba kayu na nakainstall?
+
+Muka kasing yun ang nagcacause ng error sir.
+
+Thanks,
+Paul
+
+NSMDIH131-CORE - 67 229
+NSMDIH88-CORE - 90 224
+
+SELECT *
+FROM persons
+WHERE EMPLOYEE_NO IN ('NSMDIH179-CORE');
+
+SELECT *
+FROM MEAL_ALLOWANCE 
+WHERE PERSON_ID = 229;
+
+update meal_allowance
+set max_allowance_daily = 130
+where id = 479;
+
+
+NSMDIH179-CORE
+
+
+select *
+from meal_allowance
+where person_id = 234

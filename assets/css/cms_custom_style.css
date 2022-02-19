@@ -1,0 +1,207 @@
+.login-error-msg {
+	color:#ed7979;
+}
+
+.person-image-new {
+	width: 220px;
+	height: 220px;
+	border: 1px solid #DDD;
+	position: relative;
+	margin: 0px auto;
+	background: #DDD none repeat scroll 0% 0%;
+	text-align: center;
+  	border-radius:10px;
+}
+
+.person-image-new button {
+	position: absolute;
+	bottom: 5px;
+	right: 5px;
+	width: 94%;
+	opacity: 0.5;
+	color:white;
+}
+
+.person-image-new button:hover {
+	opacity:1.0;
+}
+
+.form-error-msg {
+	color:#ed7979;
+}
+
+.lpadp5em {
+	padding-left:.5em;
+}
+
+.lpad1em {
+	padding-left:1em;
+}
+
+.rpadp5em {
+	padding-right:.5em;
+}
+
+.rpad1em {
+	padding-right:2em;
+}
+
+.lmarp5em {
+	margin-left: .5em;
+}
+
+.lmar1em {
+	margin-left: 1em;
+}
+
+.rmarp5em {
+	margin-right: .5em;
+}
+
+.rmar1em {
+	margin-right: 1em;
+}
+
+.no-sort::after { display: none!important; }
+
+.no-sort { pointer-events: none!important; cursor: default!important; }
+
+td.details-control {
+    background: url('../images/details_open.png') no-repeat center center;
+    cursor: pointer;
+}
+tr.details td.details-control {
+    background: url('../images/details_close.png') no-repeat center center;
+}
+
+.ma-tbl-row-error {
+	background-color:#d11e11;
+	color:#fff;
+}
+
+.orders-hr {
+	margin-top: 0px;
+	margin-bottom: 0px;
+	border: 0;
+	border-top: 1px solid #8592da;
+}
+
+.orders-h5 {
+	font-size: 16px;
+}
+
+.orders-summary-table thead tr th, .orders-summary-table tbody tr td, .orders-summary-table tfoot tr td{
+	padding:3px;
+}
+
+.orders-summary-table tbody tr td:not(:first-child) {
+	text-align:right;
+}
+
+.food-container {
+	min-height:260px;
+	max-height:260px;
+	overflow-y:auto;
+	overflow-x:hidden;
+}
+
+.food-name {
+	font-size:12pt;
+	font-weight:bold;
+	text-align:justify;
+}
+
+.food-container .box-body {
+	padding:0;
+}
+
+.btn-add-to-order {
+	margin-top:1em;
+	float:right;
+	margin-right:.3em;
+}
+
+.food-img-wrapper {
+	width:100%;
+	height:70%;
+}
+
+.food-img-wrapper img{
+	width:100%;
+	height:155px;
+}
+
+.food-description {
+	padding:.5em;
+}
+
+.food-name {
+	font-size:11pt;
+	font-weight:normal;
+}
+
+.food-name-wrapper {
+	min-height:40px;
+	max-height:40px;
+}
+
+.order-employee-no{
+	height: 25px;
+	padding: 4px 5px;
+	font-size: 12px;
+}
+
+.textarea-noresize {
+	resize:none;
+}
+
+#charge_types_wrapper table tbody tr td {
+	padding:3px;
+}
+
+#charge_types_wrapper input[type=text] {
+	height:25px;
+	font-size:12px;
+}
+
+.food-image-new {
+	width: 150px;
+	height: 150px;
+	border: 1px solid #DDD;
+	position: relative;
+
+	background: #DDD none repeat scroll 0% 0%;
+	
+  	border-radius:10px;
+}
+
+.food-image-new button {
+	position: absolute;
+	bottom: 5px;
+	right: 5px;
+	width: 94%;
+	opacity: 0.5;
+	color:white;
+}
+
+.food-image-new button:hover {
+	opacity:1.0;
+}
+
+/*#tbl_suppliers_list .dropdown-menu {
+    position: relative;
+    float: none;
+    width: 160px;
+}*/
+
+.select2-container--default .select2-selection--single {
+	border-radius:0;
+}
+
+.select2-container .select2-selection--single {
+	height:34px;
+}
+
+.select2-container .select2-selection--single .select2-selection__rendered {
+	padding-left:0;
+}

@@ -1,0 +1,1 @@
+C:\wamp\bin\php\php5.6.25\php.exe -f C:\wamp\www\nsmdih_cms\index.php cron clean_temp_transaction_tables
