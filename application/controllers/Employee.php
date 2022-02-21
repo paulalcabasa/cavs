@@ -5,7 +5,7 @@ class Employee extends MY_Controller {
 		parent::__construct();
         $this->load->helper('form');
         $this->load->helper('encryption');
-        $this->load->model('person_model');
+        $this->load->model('Person_Model', 'person_model');
         $this->load->helper('date_formatter');
 	}
 

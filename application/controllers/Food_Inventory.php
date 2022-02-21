@@ -4,8 +4,8 @@ class Food_Inventory extends MY_Controller {
 
     public function __construct(){
         parent::__construct();
-        $this->load->model('food_model');
-        $this->load->model('inventory_item_model');
+        $this->load->model('Food_Model', 'food_model');
+        $this->load->model('Inventory_Item_Model', 'inventory_item_model');
         $this->load->helper('encryption');
         $this->load->helper('string');
         $this->load->helper('date_formatter');
@@ -633,6 +633,7 @@ class Food_Inventory extends MY_Controller {
     public function ajax_get_foods_menu(){
         $category = $this->input->post('category');
         $foods_list = $this->food_model->get_foods_list($category);
+     
         $meal_img_dir = $this->config->item('meal_img_dir');
         if(!empty($foods_list)){
             echo '<div class="row">';

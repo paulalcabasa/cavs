@@ -19,7 +19,7 @@
         </div>
        
         <div class="box-body">
-            <form class="form-horizontal" name="frm_data" id="frm_data" action="<?php echo base_url();?>inventory_items/update_inventory_item" method="POST">
+            <form class="form-horizontal" name="frm_data" id="frm_data" action="<?php echo base_url();?>Inventory_Items/update_inventory_item" method="POST">
                 <div clas="row">
                     <div class="col-md-6">
                         <div class="form-group">

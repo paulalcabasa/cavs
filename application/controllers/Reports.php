@@ -4,10 +4,10 @@ class Reports extends MY_Controller {
 
     public function __construct(){
         parent::__construct();
-        $this->load->model('reports_model');
-        $this->load->model('food_model');
-        $this->load->model('transaction_model');
-        $this->load->model('system_model');
+        $this->load->model('Reports_Model', 'reports_model');
+        $this->load->model('Food_Model', 'food_model');
+        $this->load->model('Transaction_Model', 'transaction_model');
+        $this->load->model('System_Model', 'system_model');
         $this->load->helper('encryption');
     }
 
@@ -32,7 +32,7 @@ class Reports extends MY_Controller {
                                 <th>Customer Name</th>
                                 <th>Food Name</th>
                                 <th>Unit Price</th>
-                                <th>Quantity</th>
+                            <th>Quantity</th>
                                 <th>Amount</th>
                                 <th>Transaction Date</th>
                             </tr>

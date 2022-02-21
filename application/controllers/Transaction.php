@@ -4,9 +4,9 @@ class Transaction extends MY_Controller {
 
     public function __construct(){
         parent::__construct();
-        $this->load->model('food_model');
-        $this->load->model('transaction_model');
-        $this->load->model('person_model');
+        $this->load->model('Food_Model', 'food_model');
+        $this->load->model('Transaction_Model', 'transaction_model');
+        $this->load->model('Person_Model', 'person_model');
         $this->load->helper('date_formatter');
         $this->load->helper('encryption');
     }

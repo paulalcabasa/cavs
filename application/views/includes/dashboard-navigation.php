@@ -171,7 +171,7 @@
         <li><a href="<?php echo base_url();?>inventory_expense/all_inventory_expenses"><i class="fa fa-book"></i> <span>Expense Items</span></a></li>
         
         <li class="header">INVENTORY</li>
-        <li><a href="<?php echo base_url();?>inventory_items"><i class="fa fa-book"></i> <span>Items</span></a></li>
+        <li><a href="<?php echo base_url();?>Inventory_Items"><i class="fa fa-book"></i> <span>Items</span></a></li>
         <li><a href="<?php echo base_url();?>supplier"><i class="fa fa-book"></i> <span>Suppliers</span></a></li>
         <li><a href="<?php echo base_url();?>unit_of_measure"><i class="fa fa-book"></i> <span>Unit of Measure</span></a></li>
         <li><a href="<?php echo base_url();?>reports/view_inventory_items_onhand" target="_blank"><i class="fa fa-book"></i> <span>Inventory Items Onhand</span></a></li>
@@ -213,7 +213,7 @@
         <li><a href="<?php echo base_url();?>inventory_expense/all_inventory_expenses"><i class="fa fa-book"></i> <span>Expense Items</span></a></li>
        
         <li class="header">INVENTORY</li>
-        <li><a href="<?php echo base_url();?>inventory_items"><i class="fa fa-book"></i> <span>Items</span></a></li>
+        <li><a href="<?php echo base_url();?>Inventory_Items"><i class="fa fa-book"></i> <span>Items</span></a></li>
         
         <li><a href="<?php echo base_url();?>supplier"><i class="fa fa-book"></i> <span>Suppliers</span></a></li>
         <li><a href="<?php echo base_url();?>unit_of_measure"><i class="fa fa-book"></i> <span>Unit of Measure</span></a></li>

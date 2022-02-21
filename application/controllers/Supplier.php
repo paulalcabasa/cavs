@@ -4,7 +4,7 @@ class Supplier extends MY_Controller {
 
     public function __construct(){
         parent::__construct();
-        $this->load->model('supplier_model');
+        $this->load->model('Supplier_Model', 'supplier_model');
 	$this->load->helper('encryption');
     }
 

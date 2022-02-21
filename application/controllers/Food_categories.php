@@ -4,7 +4,7 @@ class Food_Categories extends MY_Controller {
 
     public function __construct(){
         parent::__construct();
-        $this->load->model('food_categories_model');
+        $this->load->model('Food_Categories_Model', 'food_categories_model');
         $this->load->helper('encryption');
     }
 

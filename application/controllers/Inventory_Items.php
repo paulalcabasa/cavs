@@ -4,7 +4,7 @@ class Inventory_Items extends MY_Controller {
 
     public function __construct(){
         parent::__construct();
-        $this->load->model('inventory_item_model');
+        $this->load->model('Inventory_Item_Model', 'inventory_item_model');
 	$this->load->helper('encryption');
     }
 

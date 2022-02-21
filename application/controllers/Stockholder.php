@@ -5,7 +5,7 @@ class Stockholder extends MY_Controller {
 		parent::__construct();
         $this->load->helper('form');
         $this->load->helper('encryption');
-        $this->load->model('stockholder_model');
+        $this->load->model('Stockholder_Model', 'stockholder_model');
         $this->load->model('system_model');
 	}
 

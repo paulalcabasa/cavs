@@ -38,14 +38,14 @@
             <div class="box"> <!-- Default box -->
                 <div class="box-header with-border">
                     <h3 class="box-title">New Item Stock</h3>
-                     <a href="<?php echo base_url();?>inventory_items" class="btn btn-primary btn-sm" >Back to Items</a>
+                     <a href="<?php echo base_url();?>Inventory_Items" class="btn btn-primary btn-sm" >Back to Items</a>
                     <div class="box-tools pull-right"> 
 
                         <button type="button" class="btn btn-primary btn-sm" id="btn_save_item_stock">Save</button>
                     </div>
                 </div>
                 <div class="box-body">
-                    <form  name="frm_data" id="frm_data" action="<?php echo base_url();?>inventory_items/save_new_item_stock" method="POST">
+                    <form  name="frm_data" id="frm_data" action="<?php echo base_url();?>Inventory_Items/save_new_item_stock" method="POST">
                         <input type='hidden' name="inventory_item_id" value="<?php echo $inventory_item_id;?>"/>
                         <div class="form-group">
                             <label class="control-label">Quantity</label>

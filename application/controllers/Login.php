@@ -41,7 +41,7 @@ class Login extends CI_Controller {
 	}
 
 	public function validate_credentials(){
-		$this->load->model('user_model');
+		$this->load->model('User_Model', 'user_model');
 
 		$this->load->library('form_validation');
 		$config = array(

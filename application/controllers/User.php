@@ -5,7 +5,7 @@ class User extends MY_Controller {
 		parent::__construct();
 		$this->load->helper('form');
         $this->load->helper('encryption');
-        $this->load->model('user_model');
+        $this->load->model('User_Model', 'user_model');
 	}
 
     public function index(){

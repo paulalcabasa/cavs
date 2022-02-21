@@ -43,7 +43,7 @@ $(document).ready(function(){
       var dt = $('#tbl_inventory_items').DataTable({
         "processing": true,
         "serverSide": true,
-        "ajax": "inventory_items/dt_get_inventory_items",
+        "ajax": "Inventory_Items/dt_get_inventory_items",
         "columns": [
             { "data": "inventory_item_no" },
             { "data": "item_name" },

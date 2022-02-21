@@ -4,7 +4,7 @@ class Unit_of_Measure extends MY_Controller {
 
     public function __construct(){
         parent::__construct();
-        $this->load->model('unit_of_measure_model');
+        $this->load->model('Unit_of_Measure_Model', 'unit_of_measure_model');
 	$this->load->helper('encryption');
     }
 
