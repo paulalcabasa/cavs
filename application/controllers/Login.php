@@ -106,6 +106,6 @@ class Login extends CI_Controller {
 		foreach($user_data as $key => $value){
 			$this->session->unset_userdata($key);
 		}
-		header('login');
+		redirect('login');
 	}
 }

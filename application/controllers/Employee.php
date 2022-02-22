@@ -425,7 +425,7 @@ class Employee extends MY_Controller {
         $create_user = $this->session->userdata('user_id');
         $this->load->model('User_model', 'user_model');
         $this->load->model('System_model', 'system_model');
-        $this->load->model('Stockholder_Model', 'stockholder_model');
+        $this->load->model('Stockholder_model', 'stockholder_model');
        //$stockholder_meal_allowance_details = $this->stockholder_model->get_stockholder_allowance_defaults();
       //  $meal_allowance_details = $this->system_model->get_system_config(1);
         $this->load->library('excel');

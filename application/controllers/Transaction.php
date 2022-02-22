@@ -436,7 +436,7 @@ class Transaction extends MY_Controller {
         $cancel_user = $this->session->userdata('user_id');
         $person_id = $this->input->post('person_id');
         $customer_type_id = $this->input->post('customer_type_id');
-        $this->load->model('Stockholder_Model', 'stockholder_model');
+        $this->load->model('Stockholder_model', 'stockholder_model');
         // cancel the transaction
         $cancel_transaction_params = array(
             $reason,

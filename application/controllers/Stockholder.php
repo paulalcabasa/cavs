@@ -5,7 +5,7 @@ class Stockholder extends MY_Controller {
 		parent::__construct();
         $this->load->helper('form');
         $this->load->helper('encryption');
-        $this->load->model('Stockholder_Model', 'stockholder_model');
+        $this->load->model('Stockholder_model', 'stockholder_model');
         $this->load->model('System_model', 'system_model');
 	}
 
@@ -165,7 +165,7 @@ class Stockholder extends MY_Controller {
             $this->load->model('User_model', 'user_model');
             $this->load->model('Person_model', 'person_model');
             $this->load->model('System_model', 'system_model');
-            $this->load->model('Stockholder_Model', 'stockholder_model');
+            $this->load->model('Stockholder_model', 'stockholder_model');
             $stockholder_meal_allowance_details = $this->stockholder_model->get_stockholder_allowance_defaults();
             $meal_allowance = $stockholder_meal_allowance_details[2]->config_value;
             $max_daily_allowance = $stockholder_meal_allowance_details[0]->config_value;

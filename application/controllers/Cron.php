@@ -3,7 +3,7 @@ class Cron extends CI_Controller {
  
     public function __construct() {
         parent::__construct();
-        $this->load->model('Stockholder_Model' ,'stockholder_model');
+        $this->load->model('Stockholder_model' ,'stockholder_model');
         $this->load->model('Person_model', 'person_model');
         $this->load->model('System_model', 'system_model');
         // this controller can only be called from the command line
