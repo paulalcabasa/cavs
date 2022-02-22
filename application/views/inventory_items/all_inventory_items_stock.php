@@ -162,7 +162,7 @@ $(document).ready(function(){
       var dt = $('#tbl_item_stock').DataTable({
         "processing": true,
         "serverSide": true,
-        "ajax": "<?php echo base_url();?>inventory_items/dt_get_inventory_item_stock/<?php echo $inventory_item_id;?>",
+        "ajax": "<?php echo base_url();?>Inventory_Items/dt_get_inventory_item_stock/<?php echo $inventory_item_id;?>",
         "columns": [
             { "data": "stock_no" },
             { "data": "initial_quantity" },

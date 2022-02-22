@@ -161,7 +161,7 @@
 	            <h3 class="box-title">Closeing Details</h3>
 	        </div>
 	        <div class="box-body">
-	            <form class="form" method="POST" id="frm_close" action="<?php echo base_url();?>food_inventory/process_food_closing">
+	            <form class="form" method="POST" id="frm_close" action="<?php echo base_url();?>Food_Inventory/process_food_closing">
 	                <input type="hidden" id="food_id" name="food_id" value="<?php echo $food_details[0]->id;?>"/>
 	                <div class="form-group">
 	                    <label class="control-label">Kindly Specify your reason for the closing of the item</label>

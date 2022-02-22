@@ -20,7 +20,7 @@
             </div>
         </div>
         <div class="box-body">
-            <form class="form-horizontal" name="frm_data" id="frm_data" action="<?php echo base_url();?>unit_of_measure/update_uom" method="POST">
+            <form class="form-horizontal" name="frm_data" id="frm_data" action="<?php echo base_url();?>Unit_of_Measure/update_uom" method="POST">
                 <div clas="row">
                     <div class="col-md-6">
                         <div class="form-group">

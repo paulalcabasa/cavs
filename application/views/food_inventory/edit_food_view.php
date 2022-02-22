@@ -189,7 +189,7 @@ function add_ingredient_row(list_of_uom){
         data:{
             food_id : $("#food_id").val()
         },
-        url:"<?php echo base_url();?>food_inventory/ajax_add_food_item",
+        url:"<?php echo base_url();?>Food_Inventory/ajax_add_food_item",
         success:function(response){
             location.reload();
         }
@@ -255,7 +255,7 @@ function saveFoodPrice(){
             total_dine_in_price  : total_dine_in_price,
             quantity             : quantity
         },
-        url:"<?php echo base_url()?>food_inventory/ajax_update_food_price_details",
+        url:"<?php echo base_url()?>Food_Inventory/ajax_update_food_price_details",
         success:function(response){
             
         }
@@ -307,7 +307,7 @@ $(document).ready(function(){
                 mark_up_percentage : mark_up_percentage,
                 food_id : food_id
             },
-            url:"<?php echo base_url()?>food_inventory/ajax_delete_food_item",
+            url:"<?php echo base_url()?>Food_Inventory/ajax_delete_food_item",
             success:function(response){
               
             }
@@ -332,7 +332,7 @@ $(document).ready(function(){
                 cost_per_serving    : cost_per_serving,
                 total_cost          : total_cost
             },
-            url:"<?php echo base_url()?>food_inventory/ajax_update_food_cost_details",
+            url:"<?php echo base_url()?>Food_Inventory/ajax_update_food_cost_details",
             success:function(response){
                
             }
@@ -377,7 +377,7 @@ $(document).ready(function(){
                         category : $("#sel_category").val(),
                         barcode_value : $("#txt_barcode").val()
                     },
-                    url:"<?php echo base_url();?>food_inventory/ajax_update_food_details",
+                    url:"<?php echo base_url();?>Food_Inventory/ajax_update_food_details",
                     success:function(response){
                         location.reload();
                     }
@@ -393,7 +393,7 @@ $(document).ready(function(){
     $("#txt_food_image").on("change",function(){
         var formData = new FormData($("#frm_food_details")[0]);
         $.ajax({
-            url: "<?php echo base_url();?>food_inventory/ajax_update_food_pic",
+            url: "<?php echo base_url();?>Food_Inventory/ajax_update_food_pic",
             type: 'POST',
             data: formData,
             cache: false,
@@ -444,7 +444,7 @@ $(document).ready(function(){
                 cost_per_serving : cost_per_serving,
                 mark_up_percentage : mark_up_percentage
             },
-            url:"<?php echo base_url()?>food_inventory/ajax_update_food_item",
+            url:"<?php echo base_url()?>Food_Inventory/ajax_update_food_item",
             success:function(response){
                 $("#food_info_body").html('Data saved successfully.');
                 $("#food_info_modal").modal('show');

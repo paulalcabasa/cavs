@@ -161,7 +161,7 @@
 	            <h3 class="box-title">Cancellation Details</h3>
 	        </div>
 	        <div class="box-body">
-	            <form class="form" method="POST" id="frm_cancel" action="<?php echo base_url();?>food_inventory/process_food_cancellation">
+	            <form class="form" method="POST" id="frm_cancel" action="<?php echo base_url();?>Food_Inventory/process_food_cancellation">
 	                <input type="hidden" id="food_id" name="food_id" value="<?php echo $food_details[0]->id;?>"/>
 	                <div class="form-group">
 	                    <label class="control-label">Kindly Specify your reason for the cancellation of the item</label>

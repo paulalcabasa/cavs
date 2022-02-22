@@ -279,7 +279,7 @@ function load_foods_per_category(category){
 		data : {
 			category : category
 		},
-		url:"<?php echo base_url();?>food_inventory/ajax_get_foods_menu",
+		url:"<?php echo base_url();?>Food_Inventory/ajax_get_foods_menu",
 		success:function(response){
 
 			$("#main_foods_container").html(response);

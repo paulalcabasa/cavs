@@ -68,7 +68,7 @@ function initialize_table(start_date,end_date,status_ids){
     tbl = $('#tbl_expense_data').DataTable({
         "processing": true,
         "serverSide": true,
-        "ajax": "<?php echo base_url();?>inventory_expense/dt_all_inventory_expenses/"+status_ids+"/"+start_date+"/"+end_date
+        "ajax": "<?php echo base_url();?>Inventory_Expense/dt_all_inventory_expenses/"+status_ids+"/"+start_date+"/"+end_date
     		
     });
      return tbl;
@@ -88,7 +88,7 @@ $(document).ready(function(){
 		transaction_state_id = $(this).data("state_id");
 		$.ajax({
 			type:"POST",
-			url:"<?php echo base_url();?>food_inventory/update_food_state",
+			url:"<?php echo base_url();?>Food_Inventory/update_food_state",
 			data:{
 				food_id : food_id,
 				transaction_state_id : transaction_state_id
