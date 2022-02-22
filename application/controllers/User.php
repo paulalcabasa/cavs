@@ -153,7 +153,7 @@ class User extends MY_Controller {
         else {
             $this->load->model('User_model', 'user_model');
             $this->load->model('Person_model', 'person_model');
-            $this->load->model('System_Model', 'system_model');
+            $this->load->model('System_model', 'system_model');
             $create_user = $this->session->userdata('user_id');
             $user_id = $this->user_model->add_user($this->input->post('username'),$this->input->post('password'));
             $person_type_id = $this->input->post('sel_user_type'); // default ID of stockholder type in persons table

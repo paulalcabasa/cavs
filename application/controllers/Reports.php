@@ -7,7 +7,7 @@ class Reports extends MY_Controller {
         $this->load->model('Reports_Model', 'reports_model');
         $this->load->model('Food_model', 'food_model');
         $this->load->model('Transaction_model', 'transaction_model');
-        $this->load->model('System_Model', 'system_model');
+        $this->load->model('System_model', 'system_model');
         $this->load->helper('encryption');
     }
 
@@ -1341,7 +1341,7 @@ class Reports extends MY_Controller {
     }
 
     public function sales_report_by_payment_type(){
-        $this->load->model('System_Model', 'system_model');
+        $this->load->model('System_model', 'system_model');
         $modes_of_payment = $this->system_model->get_payment_modes();
         $content['modes_of_payment'] = $modes_of_payment;
         $content['main_content'] = 'reports/sales_report_by_payment_type';

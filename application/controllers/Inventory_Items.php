@@ -100,7 +100,7 @@ class Inventory_Items extends MY_Controller {
 
     public function edit_item(){
         $this->load->helper('encryption');
-        $this->load->model('System_Model', 'system_model');
+        $this->load->model('System_model', 'system_model');
         $inventory_item_id = decode_string($this->uri->segment(3));
         $inventory_item_details = $this->inventory_item_model->get_inventory_item_details($inventory_item_id);
         $status_list = $this->system_model->get_status();

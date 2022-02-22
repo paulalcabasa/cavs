@@ -42,7 +42,7 @@ class Employee extends MY_Controller {
             } 
         }
         
-        $this->load->model('System_Model', 'system_model');
+        $this->load->model('System_model', 'system_model');
         $content['main_content'] = 'employees/add_employee_view';
         $departments = $this->system_model->get_departments();
         $content['departments'] = $departments;
@@ -137,7 +137,7 @@ class Employee extends MY_Controller {
         else {
             $this->load->model('User_model', 'user_model');
          
-            $this->load->model('System_Model', 'system_model');
+            $this->load->model('System_model', 'system_model');
             $meal_allowance_details = $this->system_model->get_system_config(1);
          
             $create_user = $this->session->userdata('user_id');
@@ -215,7 +215,7 @@ class Employee extends MY_Controller {
     }
 
     public function edit(){
-        $this->load->model('System_Model', 'system_model');
+        $this->load->model('System_model', 'system_model');
         $departments = $this->system_model->get_departments();
         $list_of_state = $this->system_model->get_person_state();
         $employee_id = decode_string($this->uri->segment(3));
@@ -270,7 +270,7 @@ class Employee extends MY_Controller {
     }
 
     public function meal_allowance(){
-        $this->load->model('System_Model', 'system_model');
+        $this->load->model('System_model', 'system_model');
         $departments_list = $this->system_model->get_departments();
         $content['departments'] = $departments_list;
         $content['main_content'] = 'employees/meal_allowance_view';
@@ -424,7 +424,7 @@ class Employee extends MY_Controller {
     public function load_employees(){
         $create_user = $this->session->userdata('user_id');
         $this->load->model('User_model', 'user_model');
-        $this->load->model('System_Model', 'system_model');
+        $this->load->model('System_model', 'system_model');
         $this->load->model('Stockholder_Model', 'stockholder_model');
        //$stockholder_meal_allowance_details = $this->stockholder_model->get_stockholder_allowance_defaults();
       //  $meal_allowance_details = $this->system_model->get_system_config(1);
@@ -596,7 +596,7 @@ class Employee extends MY_Controller {
 
     public function credit_management(){
         $this->load->model('Person_model', 'person_model');
-        $this->load->model('System_Model', 'system_model');
+        $this->load->model('System_model', 'system_model');
         $departments_list = $this->system_model->get_departments();
         $content['departments'] = $departments_list;
         $content['user_type_id'] = $this->session->userdata('user_type_id');
@@ -609,7 +609,7 @@ class Employee extends MY_Controller {
 
     public function credit_management_sruho(){
         $this->load->model('Person_model', 'person_model');
-        $this->load->model('System_Model', 'system_model');
+        $this->load->model('System_model', 'system_model');
         $content['user_type_id'] = $this->session->userdata('user_type_id');
         $credits_ledger_list = $this->person_model->get_persons_with_credit(19);
         $content['main_content'] = 'canteen_employees/credit_management_sruho';
