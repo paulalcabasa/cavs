@@ -5,7 +5,7 @@ class Employee extends MY_Controller {
 		parent::__construct();
         $this->load->helper('form');
         $this->load->helper('encryption');
-        $this->load->model('Person_Model', 'person_model');
+        $this->load->model('Person_model', 'person_model');
         $this->load->helper('date_formatter');
 	}
 
@@ -42,7 +42,7 @@ class Employee extends MY_Controller {
             } 
         }
         
-        $this->load->model('system_model');
+        $this->load->model('System_Model', 'system_model');
         $content['main_content'] = 'employees/add_employee_view';
         $departments = $this->system_model->get_departments();
         $content['departments'] = $departments;
@@ -135,9 +135,9 @@ class Employee extends MY_Controller {
             $this->new_employee(); // load new employee view and display errors
         }
         else {
-            $this->load->model('user_model');
+            $this->load->model('User_model', 'user_model');
          
-            $this->load->model('system_model');
+            $this->load->model('System_Model', 'system_model');
             $meal_allowance_details = $this->system_model->get_system_config(1);
          
             $create_user = $this->session->userdata('user_id');
@@ -215,7 +215,7 @@ class Employee extends MY_Controller {
     }
 
     public function edit(){
-        $this->load->model('system_model');
+        $this->load->model('System_Model', 'system_model');
         $departments = $this->system_model->get_departments();
         $list_of_state = $this->system_model->get_person_state();
         $employee_id = decode_string($this->uri->segment(3));
@@ -270,7 +270,7 @@ class Employee extends MY_Controller {
     }
 
     public function meal_allowance(){
-        $this->load->model('system_model');
+        $this->load->model('System_Model', 'system_model');
         $departments_list = $this->system_model->get_departments();
         $content['departments'] = $departments_list;
         $content['main_content'] = 'employees/meal_allowance_view';
@@ -423,9 +423,9 @@ class Employee extends MY_Controller {
 
     public function load_employees(){
         $create_user = $this->session->userdata('user_id');
-        $this->load->model('user_model');
-        $this->load->model('system_model');
-        $this->load->model('stockholder_model');
+        $this->load->model('User_model', 'user_model');
+        $this->load->model('System_Model', 'system_model');
+        $this->load->model('Stockholder_Model', 'stockholder_model');
        //$stockholder_meal_allowance_details = $this->stockholder_model->get_stockholder_allowance_defaults();
       //  $meal_allowance_details = $this->system_model->get_system_config(1);
         $this->load->library('excel');
@@ -595,8 +595,8 @@ class Employee extends MY_Controller {
     }
 
     public function credit_management(){
-        $this->load->model('person_model');
-        $this->load->model('system_model');
+        $this->load->model('Person_model', 'person_model');
+        $this->load->model('System_Model', 'system_model');
         $departments_list = $this->system_model->get_departments();
         $content['departments'] = $departments_list;
         $content['user_type_id'] = $this->session->userdata('user_type_id');
@@ -608,8 +608,8 @@ class Employee extends MY_Controller {
     }
 
     public function credit_management_sruho(){
-        $this->load->model('person_model');
-        $this->load->model('system_model');
+        $this->load->model('Person_model', 'person_model');
+        $this->load->model('System_Model', 'system_model');
         $content['user_type_id'] = $this->session->userdata('user_type_id');
         $credits_ledger_list = $this->person_model->get_persons_with_credit(19);
         $content['main_content'] = 'canteen_employees/credit_management_sruho';
@@ -805,7 +805,7 @@ class Employee extends MY_Controller {
         $excel = PHPExcel_IOFactory::load("./files/credit_management_template.xlsx");
         $row = 4;
         $ctr = 1;
-        $this->load->model('person_model');
+        $this->load->model('Person_model', 'person_model');
         $selected_employees = $this->input->post('selected_employees');
         $employee_type = $this->input->post('employee_type');
         if($employee_type == "mdi"){
@@ -861,7 +861,7 @@ class Employee extends MY_Controller {
     public function ajax_print_employee_credits(){
 
         $this->load->library('pdf');
-        $this->load->model('person_model');
+        $this->load->model('Person_model', 'person_model');
         
         $selected_employees = $this->input->post('selected_employees');
         $from_date = $this->input->post('from_date');

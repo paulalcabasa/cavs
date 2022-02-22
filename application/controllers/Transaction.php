@@ -4,9 +4,9 @@ class Transaction extends MY_Controller {
 
     public function __construct(){
         parent::__construct();
-        $this->load->model('Food_Model', 'food_model');
-        $this->load->model('Transaction_Model', 'transaction_model');
-        $this->load->model('Person_Model', 'person_model');
+        $this->load->model('Food_model', 'food_model');
+        $this->load->model('Transaction_model', 'transaction_model');
+        $this->load->model('Person_model', 'person_model');
         $this->load->helper('date_formatter');
         $this->load->helper('encryption');
     }
@@ -436,7 +436,7 @@ class Transaction extends MY_Controller {
         $cancel_user = $this->session->userdata('user_id');
         $person_id = $this->input->post('person_id');
         $customer_type_id = $this->input->post('customer_type_id');
-        $this->load->model('stockholder_model');
+        $this->load->model('Stockholder_Model', 'stockholder_model');
         // cancel the transaction
         $cancel_transaction_params = array(
             $reason,

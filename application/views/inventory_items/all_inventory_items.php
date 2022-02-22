@@ -14,7 +14,7 @@
             <h3 class="box-title">List of Inventory Items</h3>
 
             <div class="box-tools pull-right">
-                <a href="inventory_items/new_item" class="btn btn-primary btn-sm">New Item</a>
+                <a href="Inventory_Items/new_item" class="btn btn-primary btn-sm">New Item</a>
               
             </div>
         </div>

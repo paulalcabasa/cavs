@@ -95,7 +95,7 @@ class Supplier extends MY_Controller {
 
     public function edit_supplier(){
        // $this->load->helper('encryption');
-        $this->load->model('system_model');
+        $this->load->model('System_Model', 'system_model');
         $supplier_id = decode_string($this->uri->segment(3));
         $supplier_details = $this->supplier_model->get_supplier_details($supplier_id);
         $status_list = $this->system_model->get_status();

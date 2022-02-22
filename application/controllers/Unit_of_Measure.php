@@ -100,7 +100,7 @@ class Unit_of_Measure extends MY_Controller {
 
     public function edit_uom(){
       //  $this->load->helper('encryption');
-        $this->load->model('system_model');
+        $this->load->model('System_Model', 'system_model');
         $uom_id = decode_string($this->uri->segment(3));
         $uom_details = $this->unit_of_measure_model->get_unit_of_measure_details($uom_id);
         $status_list = $this->system_model->get_status();

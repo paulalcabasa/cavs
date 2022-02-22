@@ -94,13 +94,13 @@ class Inventory_Items extends MY_Controller {
             $this->session->set_flashdata('success_flag', TRUE);
             $this->session->set_flashdata('message', $item_name . ' has been successfully added.');
             $this->session->set_flashdata('subject', 'Success');
-            redirect('inventory_items/new_item');
+            redirect('Inventory_Items/new_item');
         }
     }
 
     public function edit_item(){
         $this->load->helper('encryption');
-        $this->load->model('system_model');
+        $this->load->model('System_Model', 'system_model');
         $inventory_item_id = decode_string($this->uri->segment(3));
         $inventory_item_details = $this->inventory_item_model->get_inventory_item_details($inventory_item_id);
         $status_list = $this->system_model->get_status();
@@ -211,8 +211,8 @@ class Inventory_Items extends MY_Controller {
 
     public function load_new_item_stock_page($inventory_item_id_enc){
         $this->load->helper('encryption');
-        $this->load->model('unit_of_measure_model');
-        $this->load->model('supplier_model');
+        $this->load->model('Unit_of_Measure_Model', 'unit_of_measure_model');
+        $this->load->model('Supplier_Model', 'supplier_model');
         $inventory_item_id = decode_string($inventory_item_id_enc);
         $inventory_item_details = $this->inventory_item_model->get_inventory_item_details($inventory_item_id);
         $uom_list = $this->unit_of_measure_model->get_uom_list();
@@ -298,8 +298,8 @@ class Inventory_Items extends MY_Controller {
 
     public function edit_item_stock(){
         $this->load->helper('encryption');
-        $this->load->model('unit_of_measure_model');
-        $this->load->model('supplier_model');
+        $this->load->model('Unit_of_Measure_Model', 'unit_of_measure_model');
+        $this->load->model('Supplier_Model', 'supplier_model');
         $stock_id = decode_string($this->uri->segment(3));
         $stock_details = $this->inventory_item_model->get_inventory_item_stock_details($stock_id);
         $uom_list = $this->unit_of_measure_model->get_uom_list();

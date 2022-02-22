@@ -6,7 +6,7 @@ class Stockholder extends MY_Controller {
         $this->load->helper('form');
         $this->load->helper('encryption');
         $this->load->model('Stockholder_Model', 'stockholder_model');
-        $this->load->model('system_model');
+        $this->load->model('System_Model', 'system_model');
 	}
 
     public function index(){
@@ -15,7 +15,7 @@ class Stockholder extends MY_Controller {
     }
 
     public function validate_barcode_no($barcode_no){
-        $this->load->model('person_model');
+        $this->load->model('Person_model', 'person_model');
         return $this->person_model->check_barcode_no_existence($barcode_no);
     }
 
@@ -162,10 +162,10 @@ class Stockholder extends MY_Controller {
             $this->new_stockholder(); // load new employee view and display errors
         }
         else {
-            $this->load->model('user_model');
-            $this->load->model('person_model');
-            $this->load->model('system_model');
-            $this->load->model('stockholder_model');
+            $this->load->model('User_model', 'user_model');
+            $this->load->model('Person_model', 'person_model');
+            $this->load->model('System_Model', 'system_model');
+            $this->load->model('Stockholder_Model', 'stockholder_model');
             $stockholder_meal_allowance_details = $this->stockholder_model->get_stockholder_allowance_defaults();
             $meal_allowance = $stockholder_meal_allowance_details[2]->config_value;
             $max_daily_allowance = $stockholder_meal_allowance_details[0]->config_value;
@@ -196,7 +196,7 @@ class Stockholder extends MY_Controller {
     }
 
     public function edit(){   
-        $this->load->model('person_model');
+        $this->load->model('Person_model', 'person_model');
         $list_of_state = $this->system_model->get_person_state();
         $content['list_of_state'] = $list_of_state;
         $person_id = decode_string($this->uri->segment(3));
@@ -229,7 +229,7 @@ class Stockholder extends MY_Controller {
             }
         }
 
-        $this->load->model('person_model');
+        $this->load->model('Person_model', 'person_model');
         $update_user = $this->session->userdata('user_id');
         $params = array(
             $this->input->post('first_name'),

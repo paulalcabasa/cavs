@@ -5,8 +5,8 @@ class Reports extends MY_Controller {
     public function __construct(){
         parent::__construct();
         $this->load->model('Reports_Model', 'reports_model');
-        $this->load->model('Food_Model', 'food_model');
-        $this->load->model('Transaction_Model', 'transaction_model');
+        $this->load->model('Food_model', 'food_model');
+        $this->load->model('Transaction_model', 'transaction_model');
         $this->load->model('System_Model', 'system_model');
         $this->load->helper('encryption');
     }
@@ -425,7 +425,7 @@ class Reports extends MY_Controller {
     }
 
     public function credits_ledger_report(){
-        $this->load->model('person_model');
+        $this->load->model('Person_model', 'person_model');
         $credits_ledger_list = $this->person_model->get_persons_with_credit();
         $content['main_content'] = 'reports/credits_ledger_report';
         $content['credits_ledger_list'] = $credits_ledger_list;
@@ -1129,8 +1129,8 @@ class Reports extends MY_Controller {
     }
 
     public function supplier_item_price(){
-        $this->load->model('unit_of_measure_model');
-        $this->load->model('inventory_item_model');
+        $this->load->model('Unit_of_Measure_Model', 'unit_of_measure_model');
+        $this->load->model('Inventory_Item_Model', 'inventory_item_model');
         $uom_list = $this->unit_of_measure_model->get_uom_list();
         $list_of_items = $this->inventory_item_model->get_inventory_items_list(); 
         $content['list_of_items'] = $list_of_items;
@@ -1173,8 +1173,8 @@ class Reports extends MY_Controller {
     }
 
     public function supplier_item_price_pdf(){
-        $this->load->model('unit_of_measure_model');
-        $this->load->model('inventory_item_model');
+        $this->load->model('Unit_of_Measure_Model', 'unit_of_measure_model');
+        $this->load->model('Inventory_Item_Model', 'inventory_item_model');
         $item_id = $this->input->post("item_name");
         $unit_of_measure_id = $this->input->post("unit_of_measure");
         $item_details = $this->inventory_item_model->get_inventory_item_details($item_id);
@@ -1341,7 +1341,7 @@ class Reports extends MY_Controller {
     }
 
     public function sales_report_by_payment_type(){
-        $this->load->model('system_model');
+        $this->load->model('System_Model', 'system_model');
         $modes_of_payment = $this->system_model->get_payment_modes();
         $content['modes_of_payment'] = $modes_of_payment;
         $content['main_content'] = 'reports/sales_report_by_payment_type';

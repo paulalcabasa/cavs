@@ -4,7 +4,7 @@ class Inventory_Expense extends MY_Controller {
 
     public function __construct(){
         parent::__construct();
-        $this->load->model('Food_Model', 'food_model');
+        $this->load->model('Food_model', 'food_model');
         $this->load->model('Inventory_Item_Model', 'inventory_item_model');
         $this->load->helper('encryption');
         $this->load->helper('string');
@@ -152,7 +152,7 @@ class Inventory_Expense extends MY_Controller {
     public function process_expense_cancellation(){
         $food_id = $this->input->post('food_id');
         $reason = $this->input->post('reason');
-        $this->load->model('inventory_item_model');
+        $this->load->model('Inventory_Item_Model', 'inventory_item_model');
         $food_ingredients = $this->food_model->get_food_ingredients($food_id);
         $transaction_status_id = 2;
 
