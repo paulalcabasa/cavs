@@ -14,7 +14,7 @@
             <h3 class="box-title">List of Unit of Measures</h3>
 
             <div class="box-tools pull-right">
-                <a href="unit_of_measure/new_uom" class="btn btn-primary btn-sm">New Unit of Measure</a>
+                <a href="Unit_of_Measure/new_uom" class="btn btn-primary btn-sm">New Unit of Measure</a>
               
             </div>
         </div>
@@ -42,7 +42,7 @@ $(document).ready(function(){
       var dt = $('#tbl_uom_list').DataTable({
         "processing": true,
         "serverSide": true,
-        "ajax": "unit_of_measure/dt_get_unit_of_measures",
+        "ajax": "Unit_of_Measure/dt_get_unit_of_measures",
         "columns": [
             { "data": "uom_no" },
             { "data": "abbreviation" },

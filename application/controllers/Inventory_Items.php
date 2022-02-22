@@ -211,7 +211,7 @@ class Inventory_Items extends MY_Controller {
 
     public function load_new_item_stock_page($inventory_item_id_enc){
         $this->load->helper('encryption');
-        $this->load->model('Unit_of_Measure_Model', 'unit_of_measure_model');
+        $this->load->model('Unit_of_Measure_model', 'unit_of_measure_model');
         $this->load->model('Supplier_Model', 'supplier_model');
         $inventory_item_id = decode_string($inventory_item_id_enc);
         $inventory_item_details = $this->inventory_item_model->get_inventory_item_details($inventory_item_id);
@@ -298,7 +298,7 @@ class Inventory_Items extends MY_Controller {
 
     public function edit_item_stock(){
         $this->load->helper('encryption');
-        $this->load->model('Unit_of_Measure_Model', 'unit_of_measure_model');
+        $this->load->model('Unit_of_Measure_model', 'unit_of_measure_model');
         $this->load->model('Supplier_Model', 'supplier_model');
         $stock_id = decode_string($this->uri->segment(3));
         $stock_details = $this->inventory_item_model->get_inventory_item_stock_details($stock_id);
