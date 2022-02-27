@@ -4,7 +4,7 @@ class Reports extends MY_Controller {
 
     public function __construct(){
         parent::__construct();
-        $this->load->model('Reports_Model', 'reports_model');
+        $this->load->model('Reports_model', 'reports_model');
         $this->load->model('Food_model', 'food_model');
         $this->load->model('Transaction_model', 'transaction_model');
         $this->load->model('System_model', 'system_model');
