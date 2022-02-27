@@ -610,7 +610,7 @@ class Food_Inventory extends MY_Controller {
                   );
         $this->food_model->cancel_food($params);
 
-        redirect('food_inventory/all_food_sales');
+        redirect('Food_Inventory/all_food_sales');
 
     }
 
@@ -626,7 +626,7 @@ class Food_Inventory extends MY_Controller {
                     $food_id
                   );
         $this->food_model->close_food($params);
-        redirect('food_inventory/all_food_sales');
+        redirect('Food_Inventory/all_food_sales');
     }
 
 

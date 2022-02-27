@@ -4,7 +4,7 @@ class Food_Categories extends MY_Controller {
 
     public function __construct(){
         parent::__construct();
-        $this->load->model('Food_Categories_Model', 'food_categories_model');
+        $this->load->model('Food_Categories_model', 'Food_Categories_model');
         $this->load->helper('encryption');
     }
 
@@ -49,7 +49,7 @@ class Food_Categories extends MY_Controller {
     }
 
     public function new_food_category(){
-        $last_sequence = $this->food_categories_model->get_last_sequence_no();
+        $last_sequence = $this->Food_Categories_model->get_last_sequence_no();
         $content['main_content'] = 'food_categories/new_food_category';
         $content['last_sequence_no'] = $last_sequence;
         $this->load->view('includes/template',$content);
@@ -86,7 +86,7 @@ class Food_Categories extends MY_Controller {
                 $sequence_no
             );
 
-            $this->food_categories_model->insert_food_category($food_category_params);
+            $this->Food_Categories_model->insert_food_category($food_category_params);
             $this->session->set_flashdata('success_flag', TRUE);
             $this->session->set_flashdata('message', $category_name . ' has been successfully added.');
             $this->session->set_flashdata('subject', 'Success');
@@ -98,7 +98,7 @@ class Food_Categories extends MY_Controller {
        // $this->load->helper('encryption');
         
         $food_category_id = decode_string($this->uri->segment(3));
-        $food_category_details = $this->food_categories_model->get_food_category_details($food_category_id);
+        $food_category_details = $this->Food_Categories_model->get_food_category_details($food_category_id);
 
         $content['main_content'] = 'food_categories/edit_food_category';
         $content['food_category_details'] = $food_category_details;
@@ -123,7 +123,7 @@ class Food_Categories extends MY_Controller {
             $status,
             $food_category_id
         );
-        $this->food_categories_model->update_food_category($food_category_params);
+        $this->Food_Categories_model->update_food_category($food_category_params);
         $this->session->set_flashdata('success_flag', TRUE);
         $this->session->set_flashdata('message', $category_name . ' has been successfully updated.');
         $this->session->set_flashdata('subject', 'Success');
