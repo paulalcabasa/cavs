@@ -68,7 +68,7 @@ class Employee extends MY_Controller {
             $path = $_FILES['person_image']['name'];
             $person_image = $this->input->post('employee_no').".".pathinfo($path, PATHINFO_EXTENSION); 
             $config['upload_path']          = './assets/images/person_images/';
-            $config['allowed_types']        = 'gif|jpg|png';
+            $config['allowed_types']        = 'jpg';
             $config['max_size']             = 100;
             $config['max_width']            = 1024;
             $config['max_height']           = 768;
@@ -80,6 +80,8 @@ class Employee extends MY_Controller {
             else {
                 $this->resize_image($config['upload_path'],$person_image);
             }
+
+       
         }
        
         $this->load->library('form_validation');
@@ -234,7 +236,7 @@ class Employee extends MY_Controller {
             $path = $_FILES['person_image']['name'];
             $person_image = $this->input->post('employee_no').".".pathinfo($path, PATHINFO_EXTENSION); 
             $config['upload_path']          = './assets/images/person_images/';
-            $config['allowed_types']        = 'gif|jpg|png';
+            $config['allowed_types']        = 'jpg';
             $config['max_size']             = 3000;
            // $config['max_width']            = 1024;
           //  $config['max_height']           = 768;
@@ -265,6 +267,7 @@ class Employee extends MY_Controller {
         $this->person_model->update_person_details($params);
         $this->load->helper('encryption');
         // redirect to form and show successful operation
+       
         $this->session->set_flashdata('success_flag', TRUE);
         redirect('employee/edit/' . encode_string($this->input->post('employee_id')));
     }

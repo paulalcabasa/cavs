@@ -28,7 +28,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 //$config['base_url'] = 'http://localhost/nsmdih_cms/';
 //$config['base_url'] = 'http://192.168.0.2/nsmdih_cms/';
-$config['base_url'] = 'http://'.$_SERVER['HTTP_HOST'].'/cavs/';
+$config['base_url'] = 'http://'.$_SERVER['HTTP_HOST'].'/CAVS/';
 /*/
 |--------------------------------------------------------------------------
 | Index File
@@ -528,3 +528,5 @@ $config['proxy_ips'] = '';
 
 $config['meal_img_dir'] = $config['base_url'] . "assets/images/foods/";
 $config['person_img_dir'] = $config['base_url'] . "assets/images/person_images/";
+
+$config["allowed_types"] ="*";
