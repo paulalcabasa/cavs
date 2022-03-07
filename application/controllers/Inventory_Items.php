@@ -22,6 +22,7 @@ class Inventory_Items extends MY_Controller {
         // Table's primary key
         $primaryKey = 'inventory_item_id';
         $columns = array(
+            array( 'db' => 'category', 'dt' => 'category' ),
             array( 'db' => 'inventory_item_no', 'dt' => 'inventory_item_no' ),
             array( 'db' => 'item_name',  'dt' => 'item_name' ),
             array( 'db' => 'remaining_quantity',  'dt' => 'remaining_quantity' ),
@@ -85,9 +86,11 @@ class Inventory_Items extends MY_Controller {
         }
         else {
             $item_name = $this->input->post('item_name');
+            $category = $this->input->post('category');
             $create_user = $this->session->userdata('user_id');
             $item_params = array(
                 $item_name,
+                $category,
                 $create_user
             );
             $this->inventory_item_model->insert_inventory_items($item_params);
@@ -116,9 +119,11 @@ class Inventory_Items extends MY_Controller {
         $item_name = $this->input->post('item_name');
         $inventory_item_id = $this->input->post('inventory_item_id');
         $status_id = $this->input->post('status');
+        $category = $this->input->post('category');
         $create_user = $this->session->userdata('user_id');
         $inventory_item_params = array(
             $item_name,
+            $category,
             $status_id,
             $create_user,
             $inventory_item_id

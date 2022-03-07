@@ -9,10 +9,11 @@ class Inventory_Item_Model extends CI_Model {
 	public function insert_inventory_items($params){
 		$sql = "INSERT INTO inventory_items (
 					item_name,
+					category,
 					create_user,
 					date_created
 				)
-				VALUES(?,?,NOW())";
+				VALUES(?,?,?,NOW())";
 		$this->db->query($sql,$params);
 	}
 
@@ -27,7 +28,8 @@ class Inventory_Item_Model extends CI_Model {
 				       uom.description unit_of_measure,
 				       inv_stock.unit_cost,
 				       sp.supplier_name,
-				       st.id status_id
+				       st.id status_id,
+					   inv.category
 				FROM inventory_items inv LEFT JOIN status st
 					ON inv.status_id = st.id
 				     LEFT JOIN inventory_items_stock inv_stock 
@@ -46,6 +48,7 @@ class Inventory_Item_Model extends CI_Model {
 	public function update_inventory_item($params){
 		$sql = "UPDATE inventory_items 
 				SET item_name = ?,
+					category = ?,
 				    status_id = ?,
 				    update_user = ?,
 				    date_updated = NOW()

@@ -22,6 +22,7 @@
             <table id="tbl_inventory_items" class="display table dt-responsive nowrap"  cellspacing="0" width="100%">
                 <thead>
                     <tr>
+                        <th>Category</th>
                         <th>Inventory No</th>
                         <th>Item Name</th>
                         <th>Remaining Quantity</th>
@@ -45,6 +46,7 @@ $(document).ready(function(){
         "serverSide": true,
         "ajax": "Inventory_Items/dt_get_inventory_items",
         "columns": [
+            { "data": "category" },
             { "data": "inventory_item_no" },
             { "data": "item_name" },
             { "data": "remaining_quantity" },

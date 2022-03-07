@@ -37,6 +37,17 @@
                             </div>
                         </div>
                         <div class="form-group">
+                            <label class="control-label col-md-3">Category</label>
+                            <div class="col-md-9">
+                                <select class="form-control" id="sel_category" name="category">
+                                    <option value="ingredients" <?php echo $inventory_item_details[0]->category == 'ingredients' ? 'selected' : '' ?>>Ingredients</option>
+                                    <option value="kitchen" <?php echo $inventory_item_details[0]->category == 'kitchen' ? 'selected' : '' ?>>Kitchen</option>
+                                    <option value="consumables" <?php echo $inventory_item_details[0]->category == 'consumables' ? 'selected' : '' ?>>Consumables</option>
+                                </select>
+                                <span class="form-error-msg"><?php echo form_error('category'); ?></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
                             <label class="control-label col-md-3">Status</label>
                             <div class="col-md-9">
                            
