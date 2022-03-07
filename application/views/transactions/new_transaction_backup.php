@@ -1,9 +1,13 @@
 <div class="content-wrapper"> <!-- Content Wrapper. Contains page content -->
+<!--     <section class="content-header"> 
+        <h1>New Transaction
+            <small>This page records transactions of employees and charged to their meal allowances</small>
+        </h1>
+    </section> -->
     <section class="content"> <!-- Main content -->
-    	<div id="log"></div>
-		<div class="row">
-			<!-- LEFT COLUMN -->
-	    	<div class="col-md-6">
+    <div id="log"></div>
+    	<div class="row">
+	    	<div class="col-md-8">
 	    		<div class="nav-tabs-custom" style="min-height:550px;">
 				    <ul class="nav nav-tabs" id="food_categories">
 				    <?php 
@@ -11,230 +15,236 @@
 				    	foreach($food_categories as $category){
 				    		$is_active = $ctr == 1 ? "active" : "";
 				    ?>
-						<li class="<?php echo $is_active?>">
-							<a 
-								href="#main_foods_container" 
-								data-category_id="<?php echo $category->id;?>" 
-								data-toggle="tab" 
-								class="btn_load_foods"><?php echo $category->category;?></a>
-						</li>
+						<li class="<?php echo $is_active?>"><a href="#main_foods_container" data-category_id="<?php echo $category->id;?>" data-toggle="tab" class="btn_load_foods"><?php echo $category->category;?></a></li>
 				    <?php
 				    		$ctr++;
 				    	}
 				    ?>				 
 				    </ul>
 				    <div class="tab-content">
-				      <div class="tab-pane active" id="main_foods_container"></div>
+				      <div class="tab-pane active" id="main_foods_container">
+				      </div>
 				    </div> <!-- /.tab-content -->
 				</div>
 		    </div>
-			<!-- RIGHT COLUMN -->
-		  	<div class="col-md-6">
-				<div class="box">
-					<div class="box-body">
-						<div class="row">
-							<div class="col-sm-6">
-								<h5 class="orders-h5">Orders</h5>
-								<hr class="orders-hr"/>
-								<br/>
-								<div class="form-group">
-									<!-- <input type="hidden" id="temp_transaction_id" value="<?php echo $temp_transaction_no;?>" name="temp_transaction_id"/> -->
-									<input type="text" class='form-control' placeholder="Scan item barcode here..." id="txt_orders_barcode"/>
-									<span class="text-danger" id="orders_barcode_msg"></span>
-								</div>
-								<table class="table orders-summary-table" id="tbl_orders_summary">
-									<thead>
-										<tr>
-											<th style="width:40%;">Description</th>
-											<th style="width:20%;">Price</th>
-											<th style="width:15%;">Quantity</th>
-											<th style="width:20%;">Subtotal</th>
-											<th style="width:5%;"></th>
-										</tr>
-									</thead>
-									<tbody></tbody>
-									<tfoot>
-										<tr>		
-											<td colspan="3" align="right">Total</td>
-											<td align="right" id="grand_total">0.00</td>
-										</tr>
-									</tfoot>
-								</table>
-							</div>
-							<div class="col-sm-6">
-								<!-- CUSTOMER -->
-								<h5 class="orders-h5">Customer</h5>
-								<hr class="orders-hr"/>
-								<br/>
-								<div class="row">
-									<div class="col-sm-12">
-										<div class="form-group">
-											<select class="form-control input-sm" id="sel_customer_type">
-											<?php
-												foreach($customer_list as $customer){
-													$is_selected = ($customer->id == $default_customer) ? "selected" : "";
-											?>
-												<option value='<?php echo $customer->id;?>' <?php echo $is_selected;?> data-discount_percent="<?php echo $customer->discount_percent;?>"><?php echo $customer->person_type_name;?></option>
-											<?php
-												}
-											?>
-											</select>
-										</div>
-									</div>
-								</div>
-								<div class="row" id="employee_details">
-									<div class="col-sm-6">
-										<div class="img-wrapper">
-											<img class="img-rounded img-responsive" style="width:150px;height:150px;" id="person_img" src="<?php echo base_url();?>/assets/images/person_images/default.jpg" />
-										</div>
-									</div>
-									<div class="col-sm-6">
-										<input type="hidden" id="txt_person_id"/>
-										<input type="hidden" id="txt_meal_allowance_id"/>
-										<input type="hidden" id="txt_barcode_no_used"/>
-										<span class="text-bold" id="lbl_person_id">Barcode no</span><br/>
-										<span><input type="text" id="txt_barcode_no" placeholder="Select Employee" class="form-control input-sm"  /></span>
-										<span class="text-bold">Employee No</span><br/>
-										<span><span id="lbl_employee_no"><i class='text-muted'>(Select customer)</i></span></span><br/>
-										<span class="text-bold">Name</span><br/>
-										<span id="lbl_employee_name"><i class='text-muted'>(Select customer)</i></span><br/>
-										<span class="text-bold">Meal Allowance</span><br/>
-										<span>PHP <span id="lbl_meal_allowance">0.00</span></span><br/>
-										<span class="text-bold">Validity</span><br/>
-										<span><span id="lbl_meal_allowance_validity"></span></span><br/>
-										<span class="text-bold" id="lbl_sd">Credit<br/></span>
-										<span id="lbl_sd_amount_container">PHP <span id="lbl_sd_amount">0.00</span><br/></span>
-										<div id="stockholder_data">
-										<span class="text-bold">Weekly Claims Count</span><br/>
-										<span><span id="lbl_weekly_claims_count">0</span></span><br/>
-										<span class="text-bold">Daily Claims Allowance</span><br/>
-										<span>PHP <span id="lbl_daily_claims_allowance">0.00</span></span><br/>
-										</div>
-									</div>
-								</div>
-								<div class="row" id="guest_details">
-									<div class="col-md-12">
-										<div class="form-group">
-											<label class="control-label" id="guest_attribute1">Customer Name</label>
-											<input type="text" class="form-control input-sm" id="txt_customer_name" />
-										</div>
-										<div class="form-group">
-											<label class="control-label" id="guest_attribute2">Customer ID No</label>
-											<input type="text" class="form-control input-sm" id="txt_customer_id_no" />
-										</div>
-									</div>
-								</div>
-								<div class="row" id="patient_details">
-									<div class="col-md-12">
-										<div class="form-group">
-											<label class="control-label">Patient Name</label>
-											<input type="text" class="form-control input-sm" id="txt_patient_name" />
-										</div>
-										<div class="form-group">
-											<label class="control-label">Admission No</label>
-											<input type="text" class="form-control input-sm" id="txt_patient_ref_no" />
-										</div>
-										<div class="form-group">
-											<label class="control-label">Room No</label>
-											<input type="text" class="form-control input-sm" id="txt_room_no" />
-										</div>
-										<div class="form-group">
-											<label class="control-label">Room Type</label>
-											<input type="text" class="form-control input-sm" id="txt_room_type" />
-										</div>
-									</div>
-								</div>
-								<div class="row" id="doctor_details">
-									<div class="col-md-12">
-										<div class="form-group">
-											<label class="control-label">Name of Doctor</label>
-											<input type="text" class="form-control input-sm" id="txt_attribute1" />
-										</div>
-										<div class="form-group">
-											<label class="control-label">Room No</label>
-											<input type="text" class="form-control input-sm" id="txt_attribute2" />
-										</div>
-										<div class="form-group">
-											<label class="control-label">Name of Patient</label>
-											<input type="text" class="form-control input-sm" id="txt_attribute3" />
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
 
-						<div class="col-md-12">
-							<h5 class="orders-h5">Billing Details</h5>
-							<hr class="orders-hr"/>
-							<div class="form-group">
-								<label class="control-label">Mode of Payment</label>
-								<div class="checkbox" id="payment_modes_wrapper"></div>
-							</div>
-							<div class="row">
-								<div class="col-md-6">
-									<div class="form-group">
-										<label class="control-label">Total Payments</label>
-										<input type="text" class="form-control input-sm money" readonly="readonly" id="txt_payments_total"/>
-									</div>
+		  	<div class="col-md-4">
+			  <div class="nav-tabs-custom" style="min-height:550px;">
+	            <ul class="nav nav-tabs">
+	              <li class="active"><a href="#tab_1" data-toggle="tab">Orders</a></li>
+	              <li><a href="#tab_2" data-toggle="tab">Customer</a></li>
+	              <li><a href="#tab_3" data-toggle="tab" id="lnk_billing">Billing</a></li>
+	            </ul>
+	            <div class="tab-content">
+	              <div class="tab-pane active" id="tab_1">
+	              	<div class="row">
+			        	<div class="col-sm-12">
+			        	<!-- 	<h5 class="orders-h5">Order Summary</h5>
+			        		<hr class="orders-hr"/> -->
+			        		<div class="form-group">
+			        			<!-- <input type="hidden" id="temp_transaction_id" value="<?php echo $temp_transaction_no;?>" name="temp_transaction_id"/> -->
+			        			<input type="text" class='form-control' placeholder="Scan item barcode here..." id="txt_orders_barcode"/>
+			        			<span class="text-danger" id="orders_barcode_msg"></span>
+			        		</div>
+			        		<table class="table orders-summary-table" id="tbl_orders_summary">
+			        			<thead>
+			        				<tr>
+			        					<th style="width:40%;">Description</th>
+			        					<th style="width:20%;">Price</th>
+			        					<th style="width:15%;">Quantity</th>
+			        					<th style="width:20%;">Subtotal</th>
+			        					<th style="width:5%;"></th>
+			        				</tr>
+			        			</thead>
+			        			<tbody></tbody>
+			        			<tfoot>
+			        				<tr>		
+			        					<td colspan="3" align="right">Total</td>
+			        					<td align="right" id="grand_total">0.00</td>
+			        				</tr>
+			        			</tfoot>
+			        		</table>
+			        	</div>
+					    </div>
+	              </div>
+	              <!-- /.tab-pane -->
+	              <div class="tab-pane" id="tab_2">
+	             	<div class="row">
+		        		<div class="col-sm-12">
+			        		<div class="form-group">
+			        			<label class="control-label ">Customer Type</label>
+			        			<select class="form-control input-sm" id="sel_customer_type">
+			        			<?php
+			        				foreach($customer_list as $customer){
+			        					$is_selected = ($customer->id == $default_customer) ? "selected" : "";
+			        			?>
+			        				<option value='<?php echo $customer->id;?>' <?php echo $is_selected;?> data-discount_percent="<?php echo $customer->discount_percent;?>"><?php echo $customer->person_type_name;?></option>
+			        			<?php
+			        				}
+			        			?>
+			        			</select>
+			        		</div>
+		        		</div>
+	        		</div>
+		        	<div class="row" id="employee_details">
+			        	<div class="col-sm-6">
+			        		<div class="img-wrapper">
+			        			<img class="img-rounded img-responsive" style="width:150px;height:150px;" id="person_img" src="<?php echo base_url();?>/assets/images/person_images/default.jpg" />
+			        		</div>
+			        	</div>
+			        	<div class="col-sm-6">
+			        		<input type="hidden" id="txt_person_id"/>
+			        		<input type="hidden" id="txt_meal_allowance_id"/>
+			        		<input type="hidden" id="txt_barcode_no_used"/>
+			        		<span class="text-bold" id="lbl_person_id">Barcode no</span><br/>
+			        		<span><input type="text" id="txt_barcode_no" placeholder="Select Employee" class="form-control input-sm"  /></span>
+			        		<span class="text-bold">Employee No</span><br/>
+			        		<span><span id="lbl_employee_no"><i class='text-muted'>(Select customer)</i></span></span><br/>
+			        		<span class="text-bold">Name</span><br/>
+			        		<span id="lbl_employee_name"><i class='text-muted'>(Select customer)</i></span><br/>
+			        		<span class="text-bold">Meal Allowance</span><br/>
+			        		<span>PHP <span id="lbl_meal_allowance">0.00</span></span><br/>
+			        		<span class="text-bold">Validity</span><br/>
+			        		<span><span id="lbl_meal_allowance_validity"></span></span><br/>
+			        		<span class="text-bold" id="lbl_sd">Credit<br/></span>
+			        		<span id="lbl_sd_amount_container">PHP <span id="lbl_sd_amount">0.00</span><br/></span>
+			        		<div id="stockholder_data">
+			        		<span class="text-bold">Weekly Claims Count</span><br/>
+			        		<span><span id="lbl_weekly_claims_count">0</span></span><br/>
+			        		<span class="text-bold">Daily Claims Allowance</span><br/>
+			        		<span>PHP <span id="lbl_daily_claims_allowance">0.00</span></span><br/>
+			        		</div>
+			        	</div>
+			        </div>
+			        <div class="row" id="guest_details">
+			        	<div class="col-md-12">
+			        		<div class="form-group">
+			        			<label class="control-label" id="guest_attribute1">Customer Name</label>
+			        			<input type="text" class="form-control input-sm" id="txt_customer_name" />
+			        		</div>
+			        		<div class="form-group">
+			        			<label class="control-label" id="guest_attribute2">Customer ID No</label>
+			        			<input type="text" class="form-control input-sm" id="txt_customer_id_no" />
+			        		</div>
+			        	</div>
+			        </div>
+			        <div class="row" id="patient_details">
+			        	<div class="col-md-12">
+			        		<div class="form-group">
+			        			<label class="control-label">Patient Name</label>
+			        			<input type="text" class="form-control input-sm" id="txt_patient_name" />
+			        		</div>
+			        		<div class="form-group">
+			        			<label class="control-label">Admission No</label>
+			        			<input type="text" class="form-control input-sm" id="txt_patient_ref_no" />
+			        		</div>
+			        		<div class="form-group">
+			        			<label class="control-label">Room No</label>
+			        			<input type="text" class="form-control input-sm" id="txt_room_no" />
+			        		</div>
+			        		<div class="form-group">
+			        			<label class="control-label">Room Type</label>
+			        			<input type="text" class="form-control input-sm" id="txt_room_type" />
+			        		</div>
+			        	</div>
+			        </div>
+			        <div class="row" id="doctor_details">
+			        	<div class="col-md-12">
+			        		<div class="form-group">
+			        			<label class="control-label">Name of Doctor</label>
+			        			<input type="text" class="form-control input-sm" id="txt_attribute1" />
+			        		</div>
+			        		<div class="form-group">
+			        			<label class="control-label">Room No</label>
+			        			<input type="text" class="form-control input-sm" id="txt_attribute2" />
+			        		</div>
+			        		<div class="form-group">
+			        			<label class="control-label">Name of Patient</label>
+			        			<input type="text" class="form-control input-sm" id="txt_attribute3" />
+			        		</div>
+			        		
+			        	</div>
+			        </div>
+	              </div>
+	              <!-- /.tab-pane -->
+	              <div class="tab-pane" id="tab_3">
+	               <div class="row">	
+		        	<div class="col-md-12">
+		        		<!-- <h5 class="orders-h5">Billing Details</h5>
+		        		<hr class="orders-hr"/> -->
+		        		<div class="form-group">
+		        			<label class="control-label">Mode of Payment</label>
+		        			<div class="checkbox" id="payment_modes_wrapper"></div>
+		        		</div>
+		        		<div class="row">
+		        			<div class="col-md-6">
+								<div class="form-group">
+									<label class="control-label">Total Payments</label>
+									<input type="text" class="form-control input-sm money" readonly="readonly" id="txt_payments_total"/>
 								</div>
-								<div class="col-md-6">
-									<div class="form-group">
-										<label class="control-label">Total Orders</label>
-										<input type="text" class="form-control input-sm money" readonly="readonly" id="txt_orders_total"/>
-									</div>
+		        			</div>
+		        			<div class="col-md-6">
+		        				<div class="form-group">
+									<label class="control-label">Total Orders</label>
+									<input type="text" class="form-control input-sm money" readonly="readonly" id="txt_orders_total"/>
 								</div>
-								
-							</div>
-							<div class="row">
-								<div class="col-md-4">
-									<div class="form-group">
-										<label class="control-label">Discount</label>
-											<div class="input-group">
-												<input type="text" class="form-control input-sm money" readonly="readonly" id="txt_discount_percent"/>
-												<span class="input-group-addon" id="basic-addon1">%</span>
-											</div>
-									</div>
+		        			</div>
+		        			
+		        		</div>
+		        		<div class="row">
+		        			<div class="col-md-4">
+								<div class="form-group">
+									<label class="control-label">Discount</label>
+										<div class="input-group">
+											<input type="text" class="form-control input-sm money" readonly="readonly" id="txt_discount_percent"/>
+											<span class="input-group-addon" id="basic-addon1">%</span>
+										</div>
 								</div>
-								<div class="col-md-4">
-									<div class="form-group">
-										<label class="control-label">Grand Total</label>
-										<input type="text" class="form-control input-sm money" readonly="readonly" id="txt_grand_total"/>
-									</div>
+		        			</div>
+		        			<div class="col-md-4">
+		        				<div class="form-group">
+									<label class="control-label">Grand Total</label>
+									<input type="text" class="form-control input-sm money" readonly="readonly" id="txt_grand_total"/>
 								</div>
-								<div class="col-md-4">
-									<div class="form-group">
-										<label class="control-label">Balance</label>
-										<input type="text" class="form-control input-sm money" readonly="readonly" id="txt_balance"/>
-									</div>
+		        			</div>
+		        			<div class="col-md-4">
+		        				<div class="form-group">
+									<label class="control-label">Balance</label>
+									<input type="text" class="form-control input-sm money" readonly="readonly" id="txt_balance"/>
 								</div>
-							</div>
-							
-							<div class="row">
-								<div class="col-md-6">
-									<div class="form-group">
-										<label class="control-label">Amount Tendered</label>
-										<input type="text" class="form-control input-sm money" id="txt_amount_tendered"/>
-									</div>
-								</div>
-								<div class="col-md-6">
-									<div class="form-group">
-										<label class="control-label">Change</label>
-										<input type="text" readonly="readonly" class="form-control input-sm money" id="txt_change"/>
-									</div>
-								</div>
-							</div>
-							
-							
-							<div class="form-group">
-								<label class="control-label">Remarks</label>
-								<textarea class="form-control textarea-noresize" id="txt_remarks"></textarea>
-							</div>
-							<div class="form-group">
-								<button type="button" class="btn btn-success" id="btn_transact">Transact</button>
-							</div>
-						</div>
-					</div>
-				</div>  
+		        			</div>
+		        		</div>
+		        		
+		   				<div class="row">
+		   					<div class="col-md-6">
+		   						<div class="form-group">
+				        			<label class="control-label">Amount Tendered</label>
+				        			<input type="text" class="form-control input-sm money" id="txt_amount_tendered"/>
+				        		</div>
+		   					</div>
+		   					<div class="col-md-6">
+		   						<div class="form-group">
+				        			<label class="control-label">Change</label>
+				        			<input type="text" readonly="readonly" class="form-control input-sm money" id="txt_change"/>
+				        		</div>
+		   					</div>
+		   				</div>
+		        		
+		        		
+		        		<div class="form-group">
+		        			<label class="control-label">Remarks</label>
+		        			<textarea class="form-control textarea-noresize" id="txt_remarks"></textarea>
+		        		</div>
+						<div class="form-group">
+		        			<button type="button" class="btn btn-success" id="btn_transact">Transact</button>
+		        		</div>
+		        	</div>
+			        </div>
+	              </div>
+	              <!-- /.tab-pane -->
+	            </div>
+	            <!-- /.tab-content -->
+	          </div> <!--  end of tabs -->
 		    </div>
 	    </div>
     </section> <!-- /.content -->
