@@ -275,7 +275,6 @@ class Employee extends MY_Controller {
     public function meal_allowance(){
         $this->load->model('System_model', 'system_model');
         $departments_list = $this->system_model->get_departments();
-        $content['departments'] = $departments_list;
         $content['main_content'] = 'employees/meal_allowance_view';
         $content['message_subject'] = null;
         $content['message_body'] = '<p class="text-center text-muted">Click on the <strong>Upload file</strong> button to start reloading meal allowances.</p>';
@@ -763,12 +762,29 @@ class Employee extends MY_Controller {
         $employees_list = $this->person_model->get_employee_by_department($department_id);
         foreach($employees_list as $emp){
             echo "<tr>";
-                echo "<td><input type='checkbox' class='cb_employee' data-person_id='".$emp->person_id."'/></td>";
+                echo "<td><button type='button' class='btn btn-danger btn-sm btn-remove-person' data-person_id='".$emp->person_id."'>Remove</td>";
                 echo "<td>" . $emp->employee_no . "</td>";
                 echo "<td>" . $emp->person_name . "</td>";
                 echo "<td>" . $emp->remaining_amount . "</td>";
+                echo "<td>" . $emp->remaining_amount . "</td>";
             echo "</tr>";
         }
+    }
+
+    public function ajax_get_employees_by_department2(){
+        $department_id = $this->input->post('department_id');
+        $employees_list = $this->person_model->get_employee_by_department2($department_id);
+        echo json_encode($employees_list);
+        // foreach($employees_list as $emp){
+        //     echo "<tr>";
+        //         echo "<td><button type='button' class='btn btn-danger btn-sm btn-remove-person' data-person_id='".$emp->person_id."'>Remove</td>";
+        //         echo "<td>" . $emp->employee_no . "</td>";
+        //         echo "<td>" . $emp->person_name . "</td>";
+        //         echo "<td><input type='text' class='form-control' value='" . $emp->meal_allowance_rate . "' /></td>";
+        //         echo "<td></td>";
+        //         echo "<td></td>";
+        //     echo "</tr>";
+      //  }
     }
 
     public function ajax_get_employees_with_credit_by_department(){
@@ -1214,5 +1230,87 @@ class Employee extends MY_Controller {
         force_download('ma_allowance-'.date('YmdHis').'.xlsx', $excelFileContents);
 
 
+    }
+
+    public function ajax_get_departments() {
+        $this->load->model('System_model', 'system_model');
+        $departments_list = $this->system_model->get_departments();
+        echo json_encode($departments_list);
+    }
+
+    public function ajax_reload_meal_allowance(){              
+
+        $current_user = $this->session->userdata('user_id');
+        $employeesList = $this->input->post('employees');
+
+        // set to inactive the previous uploaded meal allowance by department
+        
+
+
+        foreach($employeesList as $employee) {
+            $start_date = $employee['start_date'];
+            $end_date = $employee['end_date'];
+            $meal_allowance_params = array(
+                $employee['person_id'],
+                1, // employee person type id
+                $employee['barcode_value'],
+                1, // only per day
+                $employee['meal_allowance_rate'], // rate
+                $employee['meal_allowance_rate'], // alloted amount
+                $employee['meal_allowance_rate'], // remaining amount
+                null, // max allowance daily, applicable for stockholder only
+                null, // weekly claims count, applicable for stockholder only
+                $start_date,
+                $end_date,
+                $current_user
+            );
+            $this->person_model->insert_employee_meal_allowance($meal_allowance_params);
+        }
+
+        //     //  Loop through each row of the worksheet in turn
+        //     for ($row = $base_row; $row <= $highestRow; $row++){  // start from 2 to avoid header
+        //         //  Read a row of data into an array
+        //         $row_data = $sheet->rangeToArray('B' . $row . ':' . $highestColumn . $row,
+        //                                         NULL,
+        //                                         TRUE,
+        //                                         FALSE);
+
+        //         // xls details
+        //         $employee_no = $row_data[0][0];
+        //         $employee_name = $row_data[0][1];
+        //         $no_of_days = $row_data[0][2];
+            
+
+        //         $employee_no = (string)$employee_no;
+        //         if (array_key_exists($employee_no, $employee_recordset)) { // check if employee exists
+        //             $employee_id = $employee_recordset[$employee_no]['id'];
+        //             $alloted_amount = $employee_recordset[$employee_no]['meal_allowance_rate'] * $no_of_days;
+        //             $meal_allowance_params = array(
+        //                 $employee_id,
+        //                 1, // employee person type id
+        //                 $employee_recordset[$employee_no]['barcode_no'],
+        //                 $no_of_days,
+        //                 $employee_recordset[$employee_no]['meal_allowance_rate'],
+        //                 $alloted_amount,
+        //                 $alloted_amount,
+        //                 null, // max allowance daily, applicable for stockholder only
+        //                 null, // weekly claims count, applicable for stockholder only
+        //                 $valid_from,
+        //                 $valid_until,
+        //                 $current_user
+        //             );
+        //             $this->person_model->insert_employee_meal_allowance($meal_allowance_params);
+                    
+                    
+                
+        
+        //     }
+
+        // }
+    
+      
+    
+        
+     
     }
 }

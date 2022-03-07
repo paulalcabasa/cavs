@@ -156,6 +156,9 @@
         <li><a href="<?php echo base_url();?>employee"><i class="ion-person-stalker"></i> <span>Employees</span></a></li>
         <li><a href="<?php echo base_url();?>stockholder"><i class="ion-person-stalker"></i> <span>Stockholders</span></a></li>
         <li><a href="<?php echo base_url();?>user"><i class="ion-person-stalker"></i> <span>Users</span></a></li>
+        <li class="header">MEAL ALLOWANCE</li>
+        <li><a href="<?php echo base_url();?>employee/meal_allowance"><i class="ion-person-stalker"></i> <span>Allowance</span></a></li>
+
        
         <li class="header">TRANSACTION</li>
         <li><a href="<?php echo base_url();?>transaction/new_transaction"><i class="fa fa-plus-circle"></i> <span>New</span></a></li>
