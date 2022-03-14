@@ -157,9 +157,9 @@
         <li><a href="<?php echo base_url();?>stockholder"><i class="ion-person-stalker"></i> <span>Stockholders</span></a></li>
         <li><a href="<?php echo base_url();?>user"><i class="ion-person-stalker"></i> <span>Users</span></a></li>
         <li class="header">MEAL ALLOWANCE</li>
-        <li><a href="<?php echo base_url();?>employee/meal_allowance"><i class="ion-person-stalker"></i> <span>Allowance</span></a></li>
-
-       
+        <li><a href="<?php echo base_url();?>employee/meal_allowance"><i class="ion-person-stalker"></i> <span> Allowance</span></a></li>
+        <li><a href="<?php echo base_url();?>employee/credit_management"><i class="ion-person-stalker"></i> <span> Credits</span></a></li>
+    
         <li class="header">TRANSACTION</li>
         <li><a href="<?php echo base_url();?>transaction/new_transaction"><i class="fa fa-plus-circle"></i> <span>New</span></a></li>
         <li><a href="<?php echo base_url();?>transaction/all_transactions"><i class="fa fa-book"></i> <span>All Transactions</span></a></li>
@@ -179,9 +179,8 @@
         <li><a href="<?php echo base_url();?>Unit_of_Measure"><i class="fa fa-book"></i> <span>Unit of Measure</span></a></li>
         <li><a href="<?php echo base_url();?>reports/view_inventory_items_onhand" target="_blank"><i class="fa fa-book"></i> <span>Inventory Items Onhand</span></a></li>
 
-        <li class="header">ACCOUNTING</li>
-        <li><a href="<?php echo base_url();?>employee/credit_management"><i class="ion-person-stalker"></i> <span>Credit Management</span></a></li>
-              
+        <!-- <li class="header">ACCOUNTING</li>
+                -->
        
         <li class="header">REPORTS</li>
         <li><a href="<?php echo base_url();?>reports/sales_report"><i class="fa fa-bar-chart"></i> <span>Sales Report</span></a></li>

@@ -377,6 +377,32 @@ class Person_model extends CI_Model {
 		return $query->result();
 	}
 
+	public function get_all_persons_with_credit(){
+		$sql = "SELECT p.id person_id,
+				       pt.person_type_name,
+				       p.employee_no,
+				       CONCAT(
+				           p.last_name,
+				           ',',
+				           p.first_name,
+				           ' ',
+				           (CASE 
+								WHEN p.middle_name IS NOT NULL 
+								THEN CONCAT(LEFT(p.middle_name,1),'.') 
+					   			ELSE ''
+					   		END)
+					) name,
+					p.salary_deduction credit_amount,
+					p.person_image,
+					p.salary_deduction paid_amount,
+					'' remarks
+				FROM persons p LEFT JOIN person_types pt
+					ON p.person_type_id = pt.id
+				WHERE p.salary_deduction > 0";
+		$query = $this->db->query($sql);
+		return $query->result();
+	}
+
 	public function get_persons_with_credit_by_dept($department_id){
 		$sql = "SELECT p.id person_id,
 				       pt.person_type_name,

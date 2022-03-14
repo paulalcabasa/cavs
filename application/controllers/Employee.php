@@ -601,10 +601,22 @@ class Employee extends MY_Controller {
         $this->load->model('System_model', 'system_model');
         $departments_list = $this->system_model->get_departments();
         $content['departments'] = $departments_list;
+        $content['user_type_id'] = $this->session->userdata('user_type_id');  
+        $content['main_content'] = 'employees/credit_management_view2';
+     
+        $this->load->view('includes/template',$content);       
+    }
+
+    public function credit_management_old(){
+        $this->load->model('Person_model', 'person_model');
+        $this->load->model('System_model', 'system_model');
+        $departments_list = $this->system_model->get_departments();
+        $content['departments'] = $departments_list;
         $content['user_type_id'] = $this->session->userdata('user_type_id');
         $person_type_id = 1; // mdi employees
     //    $credits_ledger_list = $this->person_model->get_persons_with_credit($person_type_id);
         $content['main_content'] = 'employees/credit_management_view';
+        $content['main_content'] = 'employees/credit_management_view2';
        // $content['credits_ledger_list'] = $credits_ledger_list;
         $this->load->view('includes/template',$content);       
     }
@@ -751,6 +763,38 @@ class Employee extends MY_Controller {
            
         } // if(!empty($_FILES['xls_debit']['name'])) { 
     } // import_customer_debits(){
+
+    public function ajax_update_credit(){
+        $employee_no = $this->input->post('employee_no');
+        $current_salary_deduction = $this->input->post('credit_amount');
+        $debit_amount = $this->input->post('paid_amount');
+        $current_salary_deduction = $this->input->post('credit_amount');
+        $current_user = $this->session->userdata('user_id');
+        $employee_id = $this->input->post('person_id');
+        $person_name =  $this->input->post('name');
+
+        $new_salary_deduction = $current_salary_deduction  - $debit_amount;
+        $person_debit_params = array(
+            $new_salary_deduction,
+            $current_user,
+            $employee_id
+        );
+
+        $this->person_model->update_salary_deduction($person_debit_params);
+    
+        $debitted_params = array( 
+            $employee_id,
+            $employee_no,
+            $employee_no, // barcode number
+            $person_name,
+            $current_salary_deduction,
+            $debit_amount,
+            $current_user
+        );
+
+        $this->person_model->insert_person_debitted_credits($debitted_params);
+        echo "Successfully updated credit amount for " . $person_name . ' .';
+    }
     
     public function debit_result(){
         $content['main_content'] = 'employees/debit_result_view';
@@ -771,20 +815,15 @@ class Employee extends MY_Controller {
         }
     }
 
+    public function ajax_get_employees_with_credit(){
+        $credits_ledger_list = $this->person_model->get_all_persons_with_credit();
+        echo json_encode($credits_ledger_list);
+    }
+
     public function ajax_get_employees_by_department2(){
         $department_id = $this->input->post('department_id');
         $employees_list = $this->person_model->get_employee_by_department2($department_id);
         echo json_encode($employees_list);
-        // foreach($employees_list as $emp){
-        //     echo "<tr>";
-        //         echo "<td><button type='button' class='btn btn-danger btn-sm btn-remove-person' data-person_id='".$emp->person_id."'>Remove</td>";
-        //         echo "<td>" . $emp->employee_no . "</td>";
-        //         echo "<td>" . $emp->person_name . "</td>";
-        //         echo "<td><input type='text' class='form-control' value='" . $emp->meal_allowance_rate . "' /></td>";
-        //         echo "<td></td>";
-        //         echo "<td></td>";
-        //     echo "</tr>";
-      //  }
     }
 
     public function ajax_get_employees_with_credit_by_department(){

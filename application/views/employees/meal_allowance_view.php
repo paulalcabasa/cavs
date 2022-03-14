@@ -40,7 +40,7 @@
                         </thead>
                         <tbody>
                             <tr v-for="(row, index) in filteredEmployees">
-                                <td><button type='button' @click="removeEmployee(index)" class='btn btn-danger btn-sm btn-remove-person'>Remove</td>
+                                <td><button type='button' @click="removeEmployee(index)" class='btn btn-danger btn-sm btn-remove-person'>Remove</button></td>
                                 <td>{{ row.employee_no }}</td>
                                 <td>{{ row.person_name }}</td>
                                 <td><input type='text' class='form-control' v-model='row.meal_allowance_rate' /></td>
@@ -63,9 +63,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Confirmation</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+      
       </div>
       <div class="modal-body">
         <p>Are you sure to submit the meal allowance details?</p>
