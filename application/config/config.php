@@ -530,3 +530,6 @@ $config['meal_img_dir'] = $config['base_url'] . "assets/images/foods/";
 $config['person_img_dir'] = $config['base_url'] . "assets/images/person_images/";
 
 $config["allowed_types"] ="*";
+
+
+$config['composer_autoload'] = 'vendor/autoload.php';

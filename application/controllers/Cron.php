@@ -105,9 +105,22 @@ class Cron extends CI_Controller {
 	
     public function test_cron(){
 	
-	$this->load->model('test_model');   
-	$this->test_model->test_insert(); 
+        $this->load->model('test_model');   
+        $this->test_model->test_insert(); 
 
     }
+
+    public function load_employees(){
+        try {
+            $xls_file = './files/employees/stockholder_masterfile.xlsx';
+            $inputFileType = PHPExcel_IOFactory::identify($xls_file);
+            $objReader = PHPExcel_IOFactory::createReader($inputFileType);
+            $objPHPExcel = $objReader->load($xls_file);
+        } catch(Exception $e) {
+            die('Error loading file "'.pathinfo($inputFileName,PATHINFO_BASENAME).'": '.$e->getMessage());
+        }
+
+    }
+
 
 }

@@ -80,8 +80,6 @@ class Employee extends MY_Controller {
             else {
                 $this->resize_image($config['upload_path'],$person_image);
             }
-
-       
         }
        
         $this->load->library('form_validation');
@@ -432,7 +430,7 @@ class Employee extends MY_Controller {
       //  $meal_allowance_details = $this->system_model->get_system_config(1);
         $this->load->library('excel');
         try {
-            $xls_file = './files/employees/stockholder_masterfile.xlsx';
+            $xls_file = './files/employees/cavs_employees.xlsx';
             $inputFileType = PHPExcel_IOFactory::identify($xls_file);
             $objReader = PHPExcel_IOFactory::createReader($inputFileType);
             $objPHPExcel = $objReader->load($xls_file);

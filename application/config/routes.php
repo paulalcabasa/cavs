@@ -52,3 +52,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 $route['default_controller'] = 'login';
 $route['404_override'] = 'errors/page_missing';
 $route['translate_uri_dashes'] = FALSE;
+$route['spreadsheet'] = 'PhpspreadsheetController';
+$route['employees/load'] = 'PhpspreadsheetController/import';
+$route['spreadsheet/export'] = 'PhpspreadsheetController/export';
+$route['user/create_admin'] = 'PhpspreadsheetController/create_admin';
