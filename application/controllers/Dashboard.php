@@ -14,8 +14,8 @@ class Dashboard extends MY_Controller {
 
     public function index(){
     	//redirect('food_inventory');
-  /*      $content['main_content'] = 'dashboard_view';
-        $this->load->view('includes/template',$content);*/
+        $content['main_content'] = 'dashboard_view';
+        $this->load->view('includes/template',$content);
        // redirect('login/logout');
        // $content['main_content'] = 'food_inventory/all_foods_view';
        //  $this->load->view('includes/template',$content);

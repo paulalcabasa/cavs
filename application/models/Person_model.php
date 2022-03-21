@@ -666,5 +666,38 @@ class Person_model extends CI_Model {
   		return $query->result();
 	}
 
+	public function get_cashiers(){
+		$sql = "SELECT p.id person_id,
+			       p.employee_no,
+			       p.first_name,
+			       p.middle_name,
+			       p.last_name,
+			       p.address,
+			       p.contact_no,
+			       p.person_image,
+			       p.person_type_id,
+			       p.user_id,
+			       pt.person_type_name,
+			       ps.status,
+			       u.username,
+			       u.passcode,
+			       u.last_login,
+			       p.department_id,
+			       p.barcode_value,
+			       p.person_state_id,
+			       dpt.department_name
+			FROM persons p LEFT JOIN person_types pt
+				ON p.person_type_id = pt.id
+			     LEFT JOIN person_state ps
+				ON ps.id = p.person_state_id
+			     LEFT JOIN users u
+				ON u.id = p.user_id
+				LEFT JOIN departments dpt
+				 ON dpt.id = p.department_id
+			WHERE pt.id IN (4)";
+		$query = $this->db->query($sql);
+		return $query->result();
+	}
+
 	
 }

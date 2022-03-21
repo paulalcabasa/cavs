@@ -6,6 +6,7 @@ class Reports extends MY_Controller {
         parent::__construct();
         $this->load->model('Reports_model', 'reports_model');
         $this->load->model('Food_model', 'food_model');
+        $this->load->model('Person_model', 'person_model');
         $this->load->model('Transaction_model', 'transaction_model');
         $this->load->model('System_model', 'system_model');
         $this->load->helper('encryption');
@@ -126,6 +127,8 @@ class Reports extends MY_Controller {
 
     public function sales_report(){
         $customer_list = $this->transaction_model->get_customers_category();
+        $cashiers_list = $this->person_model->get_cashiers();
+        $content['cashiers_list'] = $cashiers_list;
         $content['customer_list'] = $customer_list;
         $content['main_content'] = 'reports/sales_report';
         $this->load->view('includes/template',$content);
@@ -138,8 +141,10 @@ class Reports extends MY_Controller {
         $end_date = $this->input->post('end_date');
         $customer_type = $this->input->post('customer_type');
         $customer_detail = $this->input->post('customer_detail',true);
+        $transacted_by = $this->input->post('transacted_by',true);
+   
         $report_title = "Sales Report";
-        $report_content = $this->generate_sales_report($start_date,$end_date,$customer_type,$customer_detail);
+        $report_content = $this->generate_sales_report($start_date,$end_date,$customer_type,$customer_detail,$transacted_by);
         $pdf = new Pdf(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
    
         // set document information
@@ -186,7 +191,7 @@ class Reports extends MY_Controller {
         $pdf->Output('sales_report'.date('YmdHis').'.pdf', 'I');
     }
 
-    public function generate_sales_report($start_date,$end_date,$customer_type,$customer_detail){
+    public function generate_sales_report($start_date,$end_date,$customer_type,$customer_detail, $transacted_by){
         $data = '<table border="1" cellpadding="3" style="font-size:9px;">
                         <thead>
                             <tr>
@@ -202,8 +207,10 @@ class Reports extends MY_Controller {
             $start_date,
             $end_date,
             $customer_type,
-            $customer_detail
+            $customer_detail,
+            $transacted_by
         );
+    
         $report_data = $this->reports_model->generate_sales_report($params);
         $total_sales = 0;
         foreach($report_data as $row){
