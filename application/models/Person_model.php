@@ -220,14 +220,14 @@ class Person_model extends CI_Model {
 			
 			       (SELECT id
 					FROM meal_allowance
-					WHERE CURDATE() BETWEEN valid_from AND valid_until
+					WHERE NOW() BETWEEN valid_from AND valid_until
 					AND person_id = p.id
 					ORDER BY date_created DESC
 					LIMIT 1
 					) meal_allowance_id,
 			       (SELECT remaining_amount
 					FROM meal_allowance
-					WHERE CURDATE() BETWEEN valid_from AND valid_until
+					WHERE NOW() BETWEEN valid_from AND valid_until
 					AND person_id = p.id
 					ORDER BY date_created DESC
 					LIMIT 1
@@ -235,14 +235,14 @@ class Person_model extends CI_Model {
 					(SELECT CASE 
 					 			WHEN valid_from IS NOT NULL AND valid_until IS NOT NULL
 					 			THEN CONCAT(
-										DATE_FORMAT(valid_from,'%m/%d/%Y'),
+										DATE_FORMAT(valid_from,'%m/%d/%Y %h:%i %p'),
 										' to ',
-										DATE_FORMAT(valid_until,'%m/%d/%Y')
+										DATE_FORMAT(valid_until,'%m/%d/%Y %h:%i %p')
 									  )
 								ELSE NULL
 							END ma_validity_date
 					FROM meal_allowance
-					WHERE CURDATE() BETWEEN valid_from AND valid_until
+					WHERE NOW() BETWEEN valid_from AND valid_until
 					AND person_id = p.id
 					ORDER BY date_created DESC
 					LIMIT 1
