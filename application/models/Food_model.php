@@ -21,7 +21,10 @@ class Food_model extends CI_Model {
 		FROM foods fd LEFT JOIN food_categories fc
 			ON fd.food_category_id = fc.id
 		WHERE fd.transaction_state_id = 4
-              AND fd.food_category_id = ?";
+              AND fd.food_category_id = ?
+		ORDER BY fd.quantity desc,
+				 fd.food_name
+				 ";
 		$query = $this->db->query($sql,$category);
 		return $query->result();
 	}

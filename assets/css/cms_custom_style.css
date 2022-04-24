@@ -99,10 +99,17 @@ tr.details td.details-control {
 }
 
 .food-container {
-	min-height:260px;
 	max-height:260px;
 	overflow-y:auto;
 	overflow-x:hidden;
+}
+
+.food-container.has-stock:hover {
+	cursor: pointer;
+}
+
+.food-container.no-stock:hover {
+	cursor: no-drop;
 }
 
 .food-name {
@@ -128,7 +135,7 @@ tr.details td.details-control {
 
 .food-img-wrapper img{
 	width:100%;
-	height:155px;
+	height:100px;
 }
 
 .food-description {

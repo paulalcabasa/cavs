@@ -14,7 +14,7 @@ class Login extends CI_Controller {
 			/*redirect('dashboard');*/
 			$user_type = $this->session->userdata('user_type_id');
 			if($user_type == 6){ // dietitian
-				redirect('food_inventory/all_food_sales');
+				redirect('Food_Inventory/all_food_sales');
 			}
 			if($user_type == 4){ // cashier
 				redirect('transaction/new_transaction');
@@ -75,7 +75,7 @@ class Login extends CI_Controller {
 				$user_type = $this->session->userdata('user_type_id');
 			
 				if($user_type == 6){ // dietitian
-					redirect('food_inventory/all_food_sales');
+					redirect('Food_Inventory/all_food_sales');
 				}
 				if($user_type == 4){ // cashier
 					redirect('transaction/new_transaction');

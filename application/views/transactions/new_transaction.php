@@ -33,35 +33,7 @@
 				<div class="box">
 					<div class="box-body">
 						<div class="row">
-							<div class="col-sm-6">
-								<h5 class="orders-h5">Orders</h5>
-								<hr class="orders-hr"/>
-								<br/>
-								<div class="form-group">
-									<!-- <input type="hidden" id="temp_transaction_id" value="<?php echo $temp_transaction_no;?>" name="temp_transaction_id"/> -->
-									<input type="text" class='form-control' placeholder="Scan item barcode here..." id="txt_orders_barcode"/>
-									<span class="text-danger" id="orders_barcode_msg"></span>
-								</div>
-								<table class="table orders-summary-table" id="tbl_orders_summary">
-									<thead>
-										<tr>
-											<th style="width:40%;">Description</th>
-											<th style="width:20%;">Price</th>
-											<th style="width:15%;">Quantity</th>
-											<th style="width:20%;">Subtotal</th>
-											<th style="width:5%;"></th>
-										</tr>
-									</thead>
-									<tbody></tbody>
-									<tfoot>
-										<tr>		
-											<td colspan="3" align="right">Total</td>
-											<td align="right" id="grand_total">0.00</td>
-										</tr>
-									</tfoot>
-								</table>
-							</div>
-							<div class="col-sm-6">
+						<div class="col-sm-6">
 								<!-- CUSTOMER -->
 								<h5 class="orders-h5">Customer</h5>
 								<hr class="orders-hr"/>
@@ -161,6 +133,35 @@
 									</div>
 								</div>
 							</div>
+							<div class="col-sm-6">
+								<h5 class="orders-h5">Orders</h5>
+								<hr class="orders-hr"/>
+								<br/>
+								<div class="form-group">
+									<!-- <input type="hidden" id="temp_transaction_id" value="<?php echo $temp_transaction_no;?>" name="temp_transaction_id"/> -->
+									<input type="text" class='form-control' placeholder="Scan item barcode here..." id="txt_orders_barcode"/>
+									<span class="text-danger" id="orders_barcode_msg"></span>
+								</div>
+								<table class="table orders-summary-table" id="tbl_orders_summary">
+									<thead>
+										<tr>
+											<th style="width:40%;">Description</th>
+											<th style="width:20%;">Price</th>
+											<th style="width:15%;">Quantity</th>
+											<th style="width:20%;">Subtotal</th>
+											<th style="width:5%;"></th>
+										</tr>
+									</thead>
+									<tbody></tbody>
+									<tfoot>
+										<tr>		
+											<td colspan="3" align="right">Total</td>
+											<td align="right" id="grand_total">0.00</td>
+										</tr>
+									</tfoot>
+								</table>
+							</div>
+							
 						</div>
 
 						<div class="col-md-12">
@@ -284,6 +285,7 @@ function initialize_customer_details(customer_type){
 	// 14 = MDI
 	var discount_percent = $("#sel_customer_type option:selected").data('discount_percent');
 	$("#txt_discount_percent").val(discount_percent);
+	
 
 	if(customer_type == 1) {
 		
@@ -596,18 +598,21 @@ $(document).ready(function(){
 
 	$("#sel_customer_type").on("change",function(){
 		initialize_customer_details($(this).val());
+		computeTotal();
+		computePaymentsTotal();
 	});
 
 	$("body").on("click",".btn-add-to-order",function(){
+	
 		var food_name = $(this).data('food_name');
 		var price = $(this).data('price');
 		var qty = $(this).data('qty');
 		var food_id = $(this).data('food_id');
 		var orig_qty = $(this).data('orig_qty');
-		var currenty_food_qty_elem = $(this).parent().parent().children().find('span').children('span');
+		var currenty_food_qty_elem = $(this).children().find('span.food-qty');
 		var current_qty = currenty_food_qty_elem.text();
+		
 	
-		//if($("#temp_transaction_id").val() != ""){
 		if(current_qty > 0){
 			if(!isExist(food_id)){
 				addOrder(food_id,food_name,price,tbl_orders_summary,orig_qty);

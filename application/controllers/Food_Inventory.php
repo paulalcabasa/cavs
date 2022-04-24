@@ -643,8 +643,14 @@ class Food_Inventory extends MY_Controller {
                 $food_js_qty_id = "fd_qty_" . $food->food_id;
                 $item_price_qty_width = ($food->quantity > 0) ? "8" : "12";
 
-                echo '<div class="col-md-4 col-sm-6 col-xs-12">
-                        <div class="box box-danger food-container"  id="'.$food_js_id.'">
+                echo '<div class="col-md-3 col-sm-6 col-xs-12">
+                        <div class="box  food-container btn-add-to-order '.($food->quantity > 0 ? 'has-stock box-success' : 'no-stock box-danger').'" 
+                            data-food_name="'.$food->food_name.'"
+                            data-price="'.$food->unit_price.'"
+                            data-qty="'.$food->quantity.'" 
+                            data-orig_qty="'.$food->quantity.'" 
+                            data-food_id="'.$food->food_id.'"
+                            id="'.$food_js_id.'">
                             <div class="box-body">
                                 <div class="food-img-wrapper">
                                     <img src="'.$meal_img_dir . $food_image.'" class="img-responsive"/>
@@ -654,25 +660,13 @@ class Food_Inventory extends MY_Controller {
                                         <span class="food-name">'.strip_str_ellipsis($food->food_name,47).'</span><br/>   
                                     </div>
                                     <div class="row">
-                                        <div class="col-md-'.$item_price_qty_width.'">
+                                        <div class="col-md-12">
                                             <span class="food-price text-danger">Price : '.$food->unit_price.'</span><br/>
                                             <span class="food-available-quantity text-muted">Quantity : 
                                                 <span class="food-qty" data-orig_qty="'.$food->quantity.'" id="'.$food_js_qty_id.'">'.($food->quantity != 0 ? $food->quantity : "Out of stock!").'</span>
                                             </span>
                                         </div>
                                         ';
-                            if($food->quantity > 0) {
-                                echo '<div class="col-md-4">
-                                            <button type="button" 
-                                                    data-food_name="'.$food->food_name.'"
-                                                    data-price="'.$food->unit_price.'"
-                                                    data-qty="'.$food->quantity.'" 
-                                                    data-orig_qty="'.$food->quantity.'" 
-                                                    data-food_id="'.$food->food_id.'"
-                                                    class="btn btn-primary btn-sm btn-add-to-order">Add to order</button>
-                                            
-                                        </div>';
-                            }
                 echo            '   </div>
                                 </div>
                             </div>
