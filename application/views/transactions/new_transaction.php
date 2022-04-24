@@ -2,34 +2,7 @@
     <section class="content"> <!-- Main content -->
     	<div id="log"></div>
 		<div class="row">
-			<!-- LEFT COLUMN -->
-	    	<div class="col-md-6">
-	    		<div class="nav-tabs-custom" style="min-height:550px;">
-				    <ul class="nav nav-tabs" id="food_categories">
-				    <?php 
-				    	$ctr = 1;
-				    	foreach($food_categories as $category){
-				    		$is_active = $ctr == 1 ? "active" : "";
-				    ?>
-						<li class="<?php echo $is_active?>">
-							<a 
-								href="#main_foods_container" 
-								data-category_id="<?php echo $category->id;?>" 
-								data-toggle="tab" 
-								class="btn_load_foods"><?php echo $category->category;?></a>
-						</li>
-				    <?php
-				    		$ctr++;
-				    	}
-				    ?>				 
-				    </ul>
-				    <div class="tab-content">
-				      <div class="tab-pane active" id="main_foods_container"></div>
-				    </div> <!-- /.tab-content -->
-				</div>
-		    </div>
-			<!-- RIGHT COLUMN -->
-		  	<div class="col-md-6">
+			<div class="col-md-6">
 				<div class="box">
 					<div class="box-body">
 						<div class="row">
@@ -236,6 +209,31 @@
 						</div>
 					</div>
 				</div>  
+		    </div>
+	    	<div class="col-md-6">
+	    		<div class="nav-tabs-custom" style="min-height:550px;">
+				    <ul class="nav nav-tabs" id="food_categories">
+				    <?php 
+				    	$ctr = 1;
+				    	foreach($food_categories as $category){
+				    		$is_active = $ctr == 1 ? "active" : "";
+				    ?>
+						<li class="<?php echo $is_active?>">
+							<a 
+								href="#main_foods_container" 
+								data-category_id="<?php echo $category->id;?>" 
+								data-toggle="tab" 
+								class="btn_load_foods"><?php echo $category->category;?></a>
+						</li>
+				    <?php
+				    		$ctr++;
+				    	}
+				    ?>				 
+				    </ul>
+				    <div class="tab-content">
+				      <div class="tab-pane active" id="main_foods_container"></div>
+				    </div> <!-- /.tab-content -->
+				</div>
 		    </div>
 	    </div>
     </section> <!-- /.content -->

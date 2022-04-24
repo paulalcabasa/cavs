@@ -24,11 +24,19 @@
              </ul>
             <div class="tab-content">
               <div class="tab-pane active" >
-                    <div class="form-group">
-                        <input type="text" class="form-control" style="width:40%" v-model="search" placeholder="Search by employee name..."/>
-                    </div>
                     <table class="table display" width="100%" cellspacing="0" id="employees_list">
                         <thead>
+                            <tr>
+                                <th colspan="4">
+                                    <input  style="font-weight: 400;" type="text" class="form-control" v-model="search" placeholder="Search by employee name..."/>
+                                </th>
+                                <th>
+                                    <input  style="font-weight: 400;" type='datetime-local' class='form-control start_date' v-model="global_start_date"/>
+                                </th>
+                                <th>
+                                    <input  style="font-weight: 400;" type='datetime-local' class='form-control end_date' v-model="global_end_date" />
+                                </th>
+                            </tr>
                             <tr>
                                 <th></th>
                                 <th>Employee No</th>
@@ -85,7 +93,9 @@ Vue.createApp({
             employees: [],
             search : '',
             departments : [],
-            submitFlag : false
+            submitFlag : false,
+            global_start_date: '',
+            global_end_date: ''
         }
     },
     methods : {
@@ -147,6 +157,18 @@ Vue.createApp({
             return this.employees.filter(employee => {
             return employee.person_name.toLowerCase().includes(this.search.toLowerCase())
             })
+        }
+    },
+    watch: {
+        global_start_date: function(val, oldVal){
+            this.employees.map( (employee, index) => {
+                this.employees[index].start_date = val; 
+            });
+        },
+        global_end_date: function(val, oldVal){
+            this.employees.map( (employee, index) => {
+                this.employees[index].end_date = val; 
+            });
         }
     }
 }).mount('#app')

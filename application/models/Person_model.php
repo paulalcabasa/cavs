@@ -284,7 +284,7 @@ class Person_model extends CI_Model {
 		 			   valid_until,
 		 			   date_created
 				FROM meal_allowance
-				WHERE CURDATE() BETWEEN valid_from AND valid_until
+				WHERE NOW() BETWEEN valid_from AND valid_until
 					  AND person_id = ?
 				      AND id = ?";
 		$query = $this->db->query($sql,array($person_id,$meal_allowance_id));
