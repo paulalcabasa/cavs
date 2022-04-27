@@ -79,7 +79,7 @@
 			        			if($person_type_id == 1){
 			        		?>
 			        		<div class="form-group">
-			        			<label class="col-md-3 control-label">Departments</label>
+			        			<label class="col-md-3 control-label">Meal Allowance Category</label>
 			        			<div class="col-md-9">
 			        				<select class="form-control" name="department" id="department">
 									<?php 

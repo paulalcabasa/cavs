@@ -159,7 +159,7 @@
         <li class="header">MEAL ALLOWANCE</li>
         <li><a href="<?php echo base_url();?>employee/meal_allowance"><i class="ion-person-stalker"></i> <span> Allowance</span></a></li>
         <li><a href="<?php echo base_url();?>employee/credit_management"><i class="ion-person-stalker"></i> <span> Credits</span></a></li>
-    
+        <li><a href="<?php echo base_url();?>meal_allowance_category/list"><i class="ion-person-stalker"></i> <span> Meal Allowance Category</span></a></li>
         <li class="header">TRANSACTION</li>
         <li><a href="<?php echo base_url();?>transaction/new_transaction"><i class="fa fa-plus-circle"></i> <span>New</span></a></li>
         <li><a href="<?php echo base_url();?>transaction/all_transactions"><i class="fa fa-book"></i> <span>All Transactions</span></a></li>
@@ -244,10 +244,8 @@
         <?php if($this->session->userdata['user_type_id'] == 10) { ?>
 
         <li><a href="<?php echo base_url();?>employee"><i class="ion-person-stalker"></i> <span>Employees</span></a></li>
-        <li><a href="<?php echo base_url();?>reports/billing_summary"><i class="fa fa-bar-chart"></i> <span>Billing Summary Report</span></a></li>
-        <li><a href="<?php echo base_url();?>user"><i class="ion-person-stalker"></i> <span>Users</span></a></li>
-         <li><a href="<?php echo base_url();?>employee/credit_management"><i class="ion-person-stalker"></i> <span>Credit Management</span></a></li>
-       
+        <li><a href="<?php echo base_url();?>meal_allowance_category/list"><i class="ion-person-stalker"></i> <span> Meal Allowance Category</span></a></li>
+      
         <?php } ?>       
   
         <!-- cashier -->

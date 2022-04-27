@@ -56,3 +56,7 @@ $route['spreadsheet'] = 'PhpspreadsheetController';
 $route['employees/load'] = 'PhpspreadsheetController/import';
 $route['spreadsheet/export'] = 'PhpspreadsheetController/export';
 $route['user/create_admin'] = 'PhpspreadsheetController/create_admin';
+
+$route['meal_allowance_category/list'] = 'Meal_Allowance_Category/index';
+$route['meal_allowance_category/create'] = 'Meal_Allowance_Category/create';
+$route['meal_allowance_category/update'] = 'Meal_Allowance_Category/update';
