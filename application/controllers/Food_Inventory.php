@@ -681,6 +681,12 @@ class Food_Inventory extends MY_Controller {
         }
     } // public function ajax_get_foods_menu(){
 
+    public function ajax_get_foods_menu_data(){
+        $category = $this->input->post('category');
+        $foods_list = $this->food_model->get_foods_list($category);
+        echo json_encode($foods_list);
+    }
+
     public function print_food_barcode(){
         $food_ids = explode(',',$this->input->post('food_ids'));
         $food_details = $this->food_model->get_food_by_ids($food_ids);

@@ -20,10 +20,41 @@ class Transaction extends MY_Controller {
         $create_user = $this->session->userdata('user_id');
         $customer_list = $this->transaction_model->get_customers_category();
         $food_categories = $this->food_model->categories_for_order();
+        $payment_modes = $this->transaction_model->get_payment_modes();
+        $meal_img_dir = $this->config->item('meal_img_dir');
+
+        $grouped_payment_modes = $this->_group_by($payment_modes, 'person_type_id');
         //$temp_transaction_no = $this->transaction_model->insert_temp_transaction_header($create_user);
     	$content['main_content'] = "transactions/new_transaction";
         $content['food_categories'] = $food_categories;
         $content['customer_list'] = $customer_list;
+        $content['payment_modes'] = $grouped_payment_modes;
+        $content['meal_img_dir'] = $meal_img_dir;
+   
+        $content['default_customer'] = 1; // id of Employee type of person
+    //    $content['temp_transaction_no'] = $temp_transaction_no; // id of Employee type of person
+    	$this->load->view('includes/template',$content);
+    }
+
+    private function _group_by($array, $key) {
+        $return = array();
+        foreach($array as $val) {
+            $return[$val[$key]][] = $val;
+        }
+        return $return;
+    }
+
+    public function new_transaction_v1(){
+        $this->load->helper('string_helper');
+        $create_user = $this->session->userdata('user_id');
+        $customer_list = $this->transaction_model->get_customers_category();
+        $food_categories = $this->food_model->categories_for_order();
+
+        //$temp_transaction_no = $this->transaction_model->insert_temp_transaction_header($create_user);
+    	$content['main_content'] = "transactions/new_transaction_v1";
+        $content['food_categories'] = $food_categories;
+        $content['customer_list'] = $customer_list;
+ 
         $content['default_customer'] = 1; // id of Employee type of person
     //    $content['temp_transaction_no'] = $temp_transaction_no; // id of Employee type of person
     	$this->load->view('includes/template',$content);
@@ -119,8 +150,6 @@ class Transaction extends MY_Controller {
         $qty_error_ctr = 0;
         foreach($orders_list as $ordered_item){
             $food_id = $ordered_item[0];
-        /*    $selling_price = $ordered_item[1];
-            $original_price = $ordered_item[1];*/
             $quantity = $ordered_item[2]; // requested quantity
             $current_food_quantity_details = $this->food_model->get_current_food_quantity($food_id);
             $current_quantity = $current_food_quantity_details[0]->quantity;

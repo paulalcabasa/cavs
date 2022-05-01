@@ -1,210 +1,244 @@
-<div class="content-wrapper"> <!-- Content Wrapper. Contains page content -->
+<style>
+	.main-sidebar {
+		display: none;
+	}
+
+	.content-wrapper {
+		margin-left: 0 !important;
+		
+	}
+
+	.transaction-controls {
+		display: flex; 
+		justify-content:space-between;
+	}
+
+	.customer-types {
+		display: flex;
+		align-items: left;
+		flex-wrap: wrap;
+		justify-content: left;
+	}
+
+	.customer-types button {
+		margin-right: 5px;
+		margin-bottom: 5px;
+	}
+
+	.transaction-header {
+		padding: 0;
+		margin:0 ;
+		flex-grow: 2;
+		text-align: center;
+	}
+
+	.numpad-container {
+		display: grid;
+		grid-template-columns: auto auto auto;
+		padding: 10px;
+		column-gap: 5px;
+		row-gap: 5px;
+	}
+	.numpad-item {
+		border: 1px solid rgba(0, 0, 0, 0.8);
+		padding: 15px;
+		font-size: 20px;
+		text-align: center;
+		background-color: #3c8dbc;
+		border-color: #367fa9;
+		border-radius: 10px;
+		color: #fff;
+		font-weight: bold;
+		cursor: pointer;
+	}
+	.discount {
+		font-weight: bold;
+		font-size: 16px;
+	}
+	.total {
+		font-weight: bold;
+		font-size: 16px;
+	}
+</style>
+
+<div class="content-wrapper" id="app"> <!-- Content Wrapper. Contains page content -->
     <section class="content"> <!-- Main content -->
     	<div id="log"></div>
 		<div class="row">
 			<div class="col-md-6">
 				<div class="box">
+					<div class="box-header with-border transaction-controls">
+						<div>
+							<a href="<?php echo base_url();?>transaction/all_transactions" class="btn btn-primary">BACK TO HOME</a>	
+						</div>
+						<h3 class="transaction-header">ORDERS</h3>
+						<div>
+							<button type="button" class="btn btn-success" @click="saveOrder()">SAVE</button>
+						</div>
+					</div>
 					<div class="box-body">
 						<div class="row">
-						<div class="col-sm-6">
-								<!-- CUSTOMER -->
-								<h5 class="orders-h5">Customer</h5>
-								<hr class="orders-hr"/>
-								<br/>
-								<div class="row">
-									<div class="col-sm-12">
-										<div class="form-group">
-											<select class="form-control input-sm" id="sel_customer_type">
-											<?php
-												foreach($customer_list as $customer){
-													$is_selected = ($customer->id == $default_customer) ? "selected" : "";
-											?>
-												<option value='<?php echo $customer->id;?>' <?php echo $is_selected;?> data-discount_percent="<?php echo $customer->discount_percent;?>"><?php echo $customer->person_type_name;?></option>
-											<?php
-												}
-											?>
-											</select>
-										</div>
-									</div>
+							<div class="col-sm-5">
+								<div class="customer-types">
+									<button 
+										type="button" 
+										class="btn btn-sm"
+										:class="row.id == transaction.customer_type ? 'btn-info' : 'btn-primary'"
+									 	@click="updateCustomerType(row)" 
+										v-for="(row, index) in customer_types">
+										 {{ row.person_type_name}}
+									</button>
 								</div>
-								<div class="row" id="employee_details">
-									<div class="col-sm-6">
-										<div class="img-wrapper">
-											<img class="img-rounded img-responsive" style="width:150px;height:150px;" id="person_img" src="<?php echo base_url();?>/assets/images/person_images/default.jpg" />
-										</div>
-									</div>
-									<div class="col-sm-6">
+								<div class="row" id="employee_details" v-if="transaction.customer_type == 1">
+									<div class="col-sm-12">
 										<input type="hidden" id="txt_person_id"/>
 										<input type="hidden" id="txt_meal_allowance_id"/>
 										<input type="hidden" id="txt_barcode_no_used"/>
 										<span class="text-bold" id="lbl_person_id">Barcode no</span><br/>
 										<span><input type="text" id="txt_barcode_no" placeholder="Select Employee" class="form-control input-sm"  /></span>
+										<input type="hidden" id="txt_barcode_no_vue" v-model="employee_barcode_no" placeholder="Select Employee" class="form-control input-sm"  />
+										
 										<span class="text-bold">Employee No</span><br/>
-										<span><span id="lbl_employee_no"><i class='text-muted'>(Select customer)</i></span></span><br/>
+										<span>
+											<span>{{ !employee.employee_no ? '(Select customer)' : employee.employee_no }}</span>
+										</span><br/>
+										
 										<span class="text-bold">Name</span><br/>
-										<span id="lbl_employee_name"><i class='text-muted'>(Select customer)</i></span><br/>
+										<span>{{ !employee.employee_no ? '(Select customer)' : employee.full_name1}}</span><br/>
+
 										<span class="text-bold">Meal Allowance</span><br/>
-										<span>PHP <span id="lbl_meal_allowance">0.00</span></span><br/>
-										<span class="text-bold">Validity</span><br/>
-										<span><span id="lbl_meal_allowance_validity"></span></span><br/>
-										<span class="text-bold" id="lbl_sd">Credit<br/></span>
-										<span id="lbl_sd_amount_container">PHP <span id="lbl_sd_amount">0.00</span><br/></span>
-										<div id="stockholder_data">
-										<span class="text-bold">Weekly Claims Count</span><br/>
-										<span><span id="lbl_weekly_claims_count">0</span></span><br/>
-										<span class="text-bold">Daily Claims Allowance</span><br/>
-										<span>PHP <span id="lbl_daily_claims_allowance">0.00</span></span><br/>
-										</div>
+										<span>PHP <span>{{ !employee.remaining_amount ? '0.00' : employee.remaining_amount}}</span></span><br/>
 									</div>
 								</div>
-								<div class="row" id="guest_details">
+								<div class="row" id="guest_details" v-if="transaction.customer_type == 11">
 									<div class="col-md-12">
 										<div class="form-group">
 											<label class="control-label" id="guest_attribute1">Customer Name</label>
-											<input type="text" class="form-control input-sm" id="txt_customer_name" />
+											<input type="text" class="form-control input-sm" v-model="transaction.customer_name" />
 										</div>
 										<div class="form-group">
 											<label class="control-label" id="guest_attribute2">Customer ID No</label>
-											<input type="text" class="form-control input-sm" id="txt_customer_id_no" />
+											<input type="text" class="form-control input-sm" v-model="transaction.customer_id_no" />
 										</div>
 									</div>
 								</div>
-								<div class="row" id="patient_details">
+								<div class="row" id="patient_details" v-if="transaction.customer_type == 12">
 									<div class="col-md-12">
 										<div class="form-group">
 											<label class="control-label">Patient Name</label>
-											<input type="text" class="form-control input-sm" id="txt_patient_name" />
+											<input type="text" class="form-control input-sm"  v-model="transaction.customer_name" />
 										</div>
 										<div class="form-group">
 											<label class="control-label">Admission No</label>
-											<input type="text" class="form-control input-sm" id="txt_patient_ref_no" />
+											<input type="text" class="form-control input-sm" v-model="transaction.patient_ref_no" />
 										</div>
 										<div class="form-group">
 											<label class="control-label">Room No</label>
-											<input type="text" class="form-control input-sm" id="txt_room_no" />
+											<input type="text" class="form-control input-sm" v-model="transaction.room_no" />
 										</div>
 										<div class="form-group">
 											<label class="control-label">Room Type</label>
-											<input type="text" class="form-control input-sm" id="txt_room_type" />
+											<input type="text" class="form-control input-sm" v-model="transaction.room_type" />
 										</div>
 									</div>
 								</div>
-								<div class="row" id="doctor_details">
+								<div class="row" id="doctor_details" v-if="transaction.customer_type == 13">
 									<div class="col-md-12">
 										<div class="form-group">
 											<label class="control-label">Name of Doctor</label>
-											<input type="text" class="form-control input-sm" id="txt_attribute1" />
+											<input type="text" class="form-control input-sm" v-model="transaction.customer_name" />
 										</div>
 										<div class="form-group">
 											<label class="control-label">Room No</label>
-											<input type="text" class="form-control input-sm" id="txt_attribute2" />
+											<input type="text" class="form-control input-sm" v-model="transaction.attribute2" />
 										</div>
 										<div class="form-group">
 											<label class="control-label">Name of Patient</label>
-											<input type="text" class="form-control input-sm" id="txt_attribute3" />
+											<input type="text" class="form-control input-sm" v-model="transaction.attribute3" />
 										</div>
 									</div>
 								</div>
 							</div>
-							<div class="col-sm-6">
-								<h5 class="orders-h5">Orders</h5>
-								<hr class="orders-hr"/>
-								<br/>
-								<div class="form-group">
-									<!-- <input type="hidden" id="temp_transaction_id" value="<?php echo $temp_transaction_no;?>" name="temp_transaction_id"/> -->
-									<input type="text" class='form-control' placeholder="Scan item barcode here..." id="txt_orders_barcode"/>
-									<span class="text-danger" id="orders_barcode_msg"></span>
+							<div class="col-sm-7">
+								<div class="input-group">
+									<input type="text" class="form-control" placeholder="Scan item barcode here..." id="txt_orders_barcode" />
+									<input type="hidden" class='form-control' placeholder="Scan item barcode here..." id="txt_orders_barcode_vue" v-model="order_item_barcode"/>
+									<span class="input-group-btn">
+										<button class="btn btn-default" type="button" id="txt_orders_barcode_clear">Clear</button>
+									</span>
 								</div>
+								<span class="text-danger" id="orders_barcode_msg">{{ order_item_barcode_message }}</span>
 								<table class="table orders-summary-table" id="tbl_orders_summary">
 									<thead>
 										<tr>
-											<th style="width:40%;">Description</th>
+											<th style="width:30%;">Description</th>
 											<th style="width:20%;">Price</th>
-											<th style="width:15%;">Quantity</th>
+											<th style="width:35%;">Quantity</th>
 											<th style="width:20%;">Subtotal</th>
 											<th style="width:5%;"></th>
 										</tr>
 									</thead>
-									<tbody></tbody>
-									<tfoot>
-										<tr>		
+									<tbody>
+										<tr v-for="(row, index) in transaction.orders">
+											<td>{{ row.food_name }}</td>
+											<td>{{ row.price }}</td>
+											<td>
+												<div class="input-group">
+													<span class="input-group-btn">
+														<button class="btn btn-default" type="button" @click="reduceItemQuantity(row, index)">-</button>
+													</span>
+													<input type="text" v-model="row.quantity" class="form-control" />
+													<span class="input-group-btn">
+														<button class="btn btn-default" type="button" @click="addItemQuantity(row, index)">+</button>
+													</span>
+												</div>
+											</td>
+											<td>{{ row.quantity * row.price }}</td>
+											<td><a href="#" @click="removeItem(index)">x</a></td>
+										</tr>
+									</tbody>
+									<tfoot v-if="transaction.orders.length > 0">
+										
+										<tr class="text-danger discount" v-if="customer_type.discount_percent != '0'">
+											<td colspan="3" align="right">Discount</td>
+											<td align="right">{{ customer_type.discount_percent }}%</td>
+										</tr>
+
+										<tr class="text-danger discount" v-if="customer_type.discount_percent != '0'">
+											<td colspan="3" align="right">Less Discount</td>
+											<td align="right">{{ computeDiscountAmount(computeTotal(), customer_type.discount_percent) }}</td>
+										</tr>
+									
+										<tr class="total">		
 											<td colspan="3" align="right">Total</td>
-											<td align="right" id="grand_total">0.00</td>
+											<td align="right" id="grand_total">{{ computeGrandTotal() }}</td>
+										</tr>
+
+										<tr v-for="(row, index) in payment_modes[transaction.customer_type]">
+											<td colspan="3" align="right">{{ row.mode_of_payment  }}</td>
+											<td><input type='text' class='form-control input-sm money txt_charges' v-model="row.amount" /></td>
+										</tr>
+							
+										<tr >
+											<td colspan="3"  align="right">Amount Tendered</td>
+											<td>
+												<input type="text" class="form-control input-sm money" placeholder="" v-model="amount_tendered"/>
+											</td>
+										</tr>
+
+										<tr class="total">
+											<td align="right" colspan="3">Change</td>
+											<td align="right">
+												<span v-if="amount_tendered != ''">{{ parseFloat(amount_tendered) - (computeGrandTotal()) }}</span>
+												<span v-if="amount_tendered == ''">0.00</span>
+											</td>
 										</tr>
 									</tfoot>
 								</table>
-							</div>
-							
-						</div>
 
-						<div class="col-md-12">
-							<h5 class="orders-h5">Billing Details</h5>
-							<hr class="orders-hr"/>
-							<div class="form-group">
-								<label class="control-label">Mode of Payment</label>
-								<div class="checkbox" id="payment_modes_wrapper"></div>
-							</div>
-							<div class="row">
-								<div class="col-md-6">
-									<div class="form-group">
-										<label class="control-label">Total Payments</label>
-										<input type="text" class="form-control input-sm money" readonly="readonly" id="txt_payments_total"/>
-									</div>
+								<div class="numpad-container">
+									<div class="numpad-item" @mousedown="addToInput(row)" v-for="(row, index) in numpad_items">{{ row }}</div>
 								</div>
-								<div class="col-md-6">
-									<div class="form-group">
-										<label class="control-label">Total Orders</label>
-										<input type="text" class="form-control input-sm money" readonly="readonly" id="txt_orders_total"/>
-									</div>
-								</div>
-								
-							</div>
-							<div class="row">
-								<div class="col-md-4">
-									<div class="form-group">
-										<label class="control-label">Discount</label>
-											<div class="input-group">
-												<input type="text" class="form-control input-sm money" readonly="readonly" id="txt_discount_percent"/>
-												<span class="input-group-addon" id="basic-addon1">%</span>
-											</div>
-									</div>
-								</div>
-								<div class="col-md-4">
-									<div class="form-group">
-										<label class="control-label">Grand Total</label>
-										<input type="text" class="form-control input-sm money" readonly="readonly" id="txt_grand_total"/>
-									</div>
-								</div>
-								<div class="col-md-4">
-									<div class="form-group">
-										<label class="control-label">Balance</label>
-										<input type="text" class="form-control input-sm money" readonly="readonly" id="txt_balance"/>
-									</div>
-								</div>
-							</div>
-							
-							<div class="row">
-								<div class="col-md-6">
-									<div class="form-group">
-										<label class="control-label">Amount Tendered</label>
-										<input type="text" class="form-control input-sm money" id="txt_amount_tendered"/>
-									</div>
-								</div>
-								<div class="col-md-6">
-									<div class="form-group">
-										<label class="control-label">Change</label>
-										<input type="text" readonly="readonly" class="form-control input-sm money" id="txt_change"/>
-									</div>
-								</div>
-							</div>
-							
-							
-							<div class="form-group">
-								<label class="control-label">Remarks</label>
-								<textarea class="form-control textarea-noresize" id="txt_remarks"></textarea>
-							</div>
-							<div class="form-group">
-								<button type="button" class="btn btn-success" id="btn_transact">Transact</button>
 							</div>
 						</div>
 					</div>
@@ -213,25 +247,37 @@
 	    	<div class="col-md-6">
 	    		<div class="nav-tabs-custom" style="min-height:550px;">
 				    <ul class="nav nav-tabs" id="food_categories">
-				    <?php 
-				    	$ctr = 1;
-				    	foreach($food_categories as $category){
-				    		$is_active = $ctr == 1 ? "active" : "";
-				    ?>
-						<li class="<?php echo $is_active?>">
-							<a 
-								href="#main_foods_container" 
-								data-category_id="<?php echo $category->id;?>" 
-								data-toggle="tab" 
-								class="btn_load_foods"><?php echo $category->category;?></a>
+						<li v-for="(row, index) in food_categories" :class="(index == 0 ? 'active' : '')" @click="fetchFoodMenuByCategory(row)">
+							<a href="#main_foods_container" data-toggle="tab">{{ row.category }}</a>
 						</li>
-				    <?php
-				    		$ctr++;
-				    	}
-				    ?>				 
 				    </ul>
 				    <div class="tab-content">
-				      <div class="tab-pane active" id="main_foods_container"></div>
+						<div class="tab-pane active">
+							<!-- start  -->
+							<div class="col-md-3 col-sm-6 col-xs-12" v-for="(row, index) in food_menu_by_category">
+								<div class="box food-container" :class="row.quantity > 0 ? 'has-stock box-success' : 'no-stock box-danger'" @click="addToOrder(row)">
+									<div class="box-body">
+										<div class="food-img-wrapper">
+											<img :src="meal_img_dir + (row.food_image !== null ? row.food_image : 'default_food_image.png')" class="img-responsive"/>
+										</div>
+										<div class="food-description">
+											<div class="food-name-wrapper">
+												<span class="food-name">{{ row.food_name }}</span><br/>   
+											</div>
+											<div class="row">
+												<div class="col-md-12">
+													<span class="food-price text-danger">Price : {{ row.unit_price }}</span><br/>
+														<span class="food-available-quantity text-muted">Quantity : 
+														<span class="food-qty">{{ row.quantity > 0 ? row.quantity : 'Out of stock!'}}</span>
+													</span>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<!--  end -->
+						</div>
 				    </div> <!-- /.tab-content -->
 				</div>
 		    </div>
@@ -257,685 +303,349 @@
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 
-
+<script src="../assets/js/vue.js"></script>
+<script src="../assets/js/vue-barcode-scanner.js"></script>
 <script>
-var flag = 0;
+$("document").ready(function(){
+	$("#txt_orders_barcode").scannerDetection(function(){
+		$("#txt_orders_barcode_vue").val($("#txt_orders_barcode").val());
+		$('#txt_orders_barcode_vue')[0].dispatchEvent(new CustomEvent('input'));
+	}); 
 
-function load_foods_per_category(category){
-	$("#main_foods_container").html("<h1 align='center' style='font-size:40pt;'><i class='fa fa-spinner fa-pulse fa-2x fa-fw'></i>Loading...</h1>");
-	$.ajax({
-		type:"POST",
-		data : {
-			category : category
-		},
-		url:"<?php echo base_url('Food_Inventory/ajax_get_foods_menu');?>",
-		success:function(response){
-			
-			$("#main_foods_container").html(response);
-		}
-	});
-}
-function initialize_customer_details(customer_type){
-	// 1 = Employee
-	// 8 = Core Stockholder
-	// 11 = Guest
-	// 12 = Patient
-	// 14 = MDI
-	var discount_percent = $("#sel_customer_type option:selected").data('discount_percent');
-	$("#txt_discount_percent").val(discount_percent);
-	
-
-	if(customer_type == 1) {
-		
-		$("#employee_details,#lbl_sd,#lbl_sd_amount_container").show();
-		$("#guest_details,#patient_details,#stockholder_data,#doctor_details").hide();
-		$("#txt_barcode_no").val("");
-		$("#txt_barcode_no").blur();
-	}
-	else if(customer_type == 8) {
-		$("#employee_details,#stockholder_data").show();
-		$("#guest_details,#patient_details,#lbl_sd,#lbl_sd_amount_container").hide();
-		$("#txt_barcode_no").val("");
-		$("#txt_barcode_no").blur();
-	}
-	else if(customer_type == 11 || customer_type == 17 || customer_type == 18) {
-		$("#guest_attribute1").text('Customer Name');
-		$("#guest_attribute2").text('Customer ID No');
-		$("#guest_details").show();
-		$("#employee_details,#patient_details,#doctor_details").hide();
-	}
-	else if(customer_type == 12) {
-		$("#patient_details").show();
-		$("#employee_details,#guest_details,#doctor_details").hide();
-	}
-	else if (customer_type == 14 || customer_type == 20){
-		$("#employee_details,#patient_details,#doctor_details").hide();
-		$("#guest_attribute1").text('Event');
-		$("#guest_attribute2").text('Care Of');
-		$("#guest_details").show();
-	}
-	else if(customer_type == 13){
-		$("#employee_details,#patient_details,#guest_details").hide();
-		$("#doctor_details").show();
-	}
-
-	$.ajax({
-		type:"POST",
-		data:{
-			person_type_id : customer_type
-		},
-		url:"<?php echo base_url();?>"+"transaction/ajax_get_applicable_payment_modes",
-		success:function(response){
-
-			var payment_modes = "";
-			payment_modes += "<table class='table' id='tbl_payment_modes'>";
-			$(jQuery.parseJSON(response	)).each(function() {  
-				is_default = (this.is_default_payment_mode == 1) ? "checked" : "";
-				default_flag = (this.is_default_payment_mode == 1) ? "txt_default" : ""; // to know that the field is default
-				is_cash = (this.payment_mode_id == 2) ? "txt_cash" : ""; // to know that the field is cash tendered
- 				payment_modes += "<tr>";		
-				payment_modes += "<td><label><input type='checkbox' value='' "+is_default+" class='cb_payment_modes' />"+this.mode_of_payment+"</label></td>";
-				payment_modes += "<td><input type='text' class='form-control input-sm money txt_charges "+is_cash+"' id='"+default_flag+"' data-payment_mode_id='"+this.payment_mode_id+"'/></td>";
-				payment_modes += "</tr>";
-				//console.log(this.charge_id + " " + this.charge_type_id + " " + this.charge_type_name + " " + this.is_default_charge);
-			});
-			payment_modes += "</table>";
-			$("#payment_modes_wrapper").html(payment_modes);
-
-		}
-	});
-}
-
-function increaseQty(searched_food_id){
-	$("#tbl_orders_summary tbody tr").each(function(){
-		food_id = $(this).data('food_id');
-		var element = $(this);
-		if(food_id == searched_food_id){
-			var qty_element = element.find("td:nth-child(3)").find("input");
-			new_qty = parseInt(qty_element.val()) + 1;
-			qty_element.val(new_qty);
-			//updateFoodQuantity(food_id,1);
-			return;
-		}
-	});
-}
-
-function addOrder(food_id,food_name,price,table,orig_qty){
-	var new_order = "";
-	new_order += "<tr data-food_id='"+food_id+"'>";
-		new_order += "<td>"+food_name+"</td>";
-		new_order += "<td data-orig_price='"+price+"'><input type='text' readonly='readonly' size='9' class='txt_price' maxlength='10' value='"+price+"'/></td>";
-		new_order += "<td><input type='number' size='3' maxlength='4' max='"+orig_qty+"' data-food_id='"+food_id+"' class='txt_qty' step='1' style='width:100%;' value='1'  /></td>";
-		new_order += "<td>"+price+"</td>";
-		new_order += "<td><a href='#' class='btn-remove-order' data-food_id='"+food_id+"'><i class='fa fa-remove fa-1x text-danger'></i></a></td>";
-	new_order += "</tr>";
-	table.append(new_order);
-	//updateFoodQuantity(food_id,1);
-}
-
-function loadPersonDetails(barcode_no,customer_type){
-	$("#person_img").attr("src","<?php echo base_url();?>/assets/images/ajax-pic-load.gif");
-
-	$.ajax({
-		type:"POST",
-		url:"<?php echo base_url();?>"+"transaction/ajax_get_employee_details",
-		data:{
-			barcode_no   : barcode_no,
-			customer_type : customer_type
-		},
-		success:function(response){
-
-			if($.trim(response)!="invalid"){
-				
-				var data = JSON.parse(response);
-				$("#txt_person_id").val(data[0].person_id);
-				
-				if(data[0].remaining_amount != null){
-					$("#lbl_meal_allowance").text(data[0].remaining_amount);
-				}
-				else {
-					$("#lbl_meal_allowance").text("0.00");
-				}
-				$("#lbl_meal_allowance_validity").html(data[0].ma_validity_date);
-				$("#lbl_employee_name").html(data[0].full_name1);	
-				$("#txt_customer_name").val(data[0].full_name1);
-				$("#lbl_employee_no").html(data[0].employee_no);
-				$("#lbl_daily_claims_allowance").html(data[0].max_allowance_daily);	
-				$("#lbl_weekly_claims_count").html(data[0].ma_weekly_claims_count);	
-				$("#lbl_sd_amount").html(data[0].salary_deduction);	
-				$("#person_img").attr("src","<?php echo base_url();?>/assets/images/person_images/"+data[0].person_image);
-				$("#txt_barcode_no_used").val($("#txt_barcode_no").val());
-				$("#txt_meal_allowance_id").val(data[0].meal_allowance_id);
-			/*	if(customer_type == 8){
-					if(data[0].max_allowance_daily == 0){
-						$("#btn_transact").hide();
-					}
-				}*/
-			}
-			else {
-				$("#person_img").attr("src","<?php echo base_url();?>/assets/images/invalid.png");
-				$("#txt_person_id").val("");
-				$("#lbl_meal_allowance").text('0.00');
-				$("#lbl_employee_name").html('<span class="text-danger">Invalid</span>');
-				$("#txt_barcode_no_used,#txt_meal_allowance_id,#txt_person_id").val("");
-			}
-
-			$("#txt_barcode_no").val("");
-		}
-	});
-}
-
-function computeTotal(){
-	var grand_total = 0;
-	$("#tbl_orders_summary tbody tr").each(function(){
-		var parent_element = $(this);
-		price = parent_element.find("td:nth-child(2)").find("input").val();
-		qty = parent_element.find("td:nth-child(3)").find("input").val();
-		subtotal = parent_element.find("td:nth-child(4)");
-		subtotal_price = (parseFloat(qty) * parseFloat(price)).toFixed(2);
-		grand_total = (grand_total + parseFloat(subtotal_price));
+	$("#txt_orders_barcode_clear").click(function(){
+		$("#txt_orders_barcode_vue, #txt_orders_barcode").val('');
 	});
 
-	$("#grand_total").text(grand_total.toFixed(2));
-	$("#txt_orders_total").val(grand_total.toFixed(2));
+	$("#txt_barcode_no").scannerDetection(function(){
+		$("#txt_barcode_no_vue").val($("#txt_barcode_no").val());
+		$('#txt_barcode_no_vue')[0].dispatchEvent(new CustomEvent('input'));
+	}); 
 
-	setCharges(grand_total.toFixed(2));
-}
+	$("#txt_barcode_no").change(function(){
+		$("#txt_barcode_no_vue").val($("#txt_barcode_no").val());
+		$('#txt_barcode_no_vue')[0].dispatchEvent(new CustomEvent('input'));
+	}); 
+});
 
-function setCharges(grand_total){
-	$("#txt_default").val(grand_total);
-}
-
-function computeSubtotal(element){
-	var parent_element = element.parent().parent();
-	price = parent_element.find("td:nth-child(2)").find("input").val();
-	qty = element.val();
-	subtotal = parent_element.find("td:nth-child(4)");
-	subtotal_price = (parseFloat(qty) * parseFloat(price)).toFixed(2);
-	subtotal.text(subtotal_price);
-}
-function computePaymentsTotal(){
-	var total = 0;
-	$(".txt_charges").each(function(){
-		cb = $(this).parent().parent().find('td:nth-child(1)').children().find('input:first-child');
-		if(cb.is(':checked')){
-			if($(this).val()!=""){
-				total += parseFloat($(this).val());
-			}
-		}
-	});
-	$("#txt_payments_total").val(total.toFixed(2));
-	var discount_percent = parseFloat($("#txt_discount_percent").val()) / 100;
-	discount_total = parseFloat(total)  * parseFloat(discount_percent);
-	grand_total = total - discount_total;
-	$("#txt_grand_total").val(grand_total.toFixed(2));
-//	alert($("#txt_grand_total").val() + " " + $("#txt_payments_total").val());
-	balance = parseFloat($("#txt_orders_total").val()) - parseFloat($("#txt_payments_total").val());
-	$("#txt_balance").val(balance.toFixed(2));
-
-}
-function updateFoodQuantity(food_id,quantity){
-
-	$.ajax({
-		type:"POST",
-		data:{
-			temp_transaction_id : $("#temp_transaction_id").val(),
-			food_id : food_id,
-			quantity : quantity
-		},
-		url:"<?php echo base_url();?>transaction/ajax_update_food_quantity",
-		success:function(response){
-	
-		}
-	});
-}
-/*function createTransactionSession(){
-	$.ajax({
-		type:"POST",
-		url:"<?php echo base_url()?>transaction/ajax_create_transaction_session",
-		success:function(response){
-			$("#temp_transaction_id").val(response);
-		}
-	});
-}*/
-function isExist(searched_food_id){
-	var ctr = 0;
-	/*$.ajax({
-		type:"POST",
-		data:{
-			food_id : searched_food_id,
-			temp_transaction_id : $("#temp_transaction_id").val()
-		},
-		async:false,
-		url:"<?php echo base_url();?>transaction/ajax_check_item_exist",
-		success:function(response){
-			var data = JSON.parse(response);
-			ctr = data.ctr;	
-		}
-	});*/
-	$("#tbl_orders_summary tbody tr").each(function(){
-		if($(this).data('food_id') == searched_food_id){
-			ctr++;
-		}
-	});
-	return ctr;
-}
-
-function addOrderByBarcode(item_barcode){
-
-	$.ajax({
-		type:"POST",
-		data:{
-			item_barcode : item_barcode 
-		},
-		url:"ajax_get_food_details_by_barcode",
-		success:function(response){
-			if($.trim(response) != 'error'){
-				var data = JSON.parse(response);
-		 		var exist_ctr = isExist(data[0].food_id);
-		 		var current_qty = $("#fd_qty_" + data[0].food_id);
-		 		db_qty = data[0].quantity;
-		 		if(exist_ctr == 0){ // add initial order if not yet existing
-			 		if(db_qty > 0) {
-						addOrder(data[0].food_id,data[0].food_name,data[0].unit_price,$("#tbl_orders_summary tbody"));
-						current_qty.text(parseFloat(current_qty.text()) - 1);
-						$("#orders_barcode_msg").html('<strong>' + data[0].food_name + '</strong> has been added!');
-						computeTotal();
-					}
-					else {
-						$("#fd_qty_" + data[0].food_id).text("Out of Stock!");
-						$("#orders_barcode_msg").html('No more stock available for <strong>' + data[0].food_name + '</strong>!');
-					}
-				}
-				else { // if order already exist just increase quantity of order
-					if(db_qty > 0) {
-						increaseQty(data[0].food_id);
-						current_qty.text(parseFloat(current_qty.text()) - 1);
-						$("#orders_barcode_msg").html('<strong>' + data[0].food_name + '</strong> has been added.');
-						computeTotal();
-					}
-					else {
-						$("#fd_qty_" + data[0].food_id).text("Out of Stock!");
-						$("#orders_barcode_msg").html('No more stock available for <strong>' + data[0].food_name + '</strong>!');
-					}
-				}
-			}
-			else {
-				$("#orders_barcode_msg").html('<strong>'+$("#txt_orders_barcode").val()+'</strong> : Item does not exist or closed for transaction.');
-			}
-			$("#txt_orders_barcode").val("");
-
-		}
-	});
-}
-$(document).ready(function(){
-
-	//createTransactionSession();
-
-	/*
-		CODE FOR LOADING MENU ITEMS
-		ADDED NOVEMBER 27, 2016
-	*/
-
-	var default_category = $("#food_categories li[class='active']").children('a:first-child').data('category_id');
-	load_foods_per_category(default_category);
-
-	$("body").on('click','.btn_load_foods',function(){
-		load_foods_per_category($(this).data('category_id'));
-	});
-	/*
-		END OF CODE FOR LOADING MENU ITEMS
-	*/
-
-
-	initialize_customer_details($("#sel_customer_type").val());
-
-	var tbl_orders_summary = $("#tbl_orders_summary tbody");
-	var tbl_orders_summary_rows = $("#tbl_orders_summary tbody tr");
-	var is_reload_flag = false;
-
-	$("#sel_customer_type").on("change",function(){
-		initialize_customer_details($(this).val());
-		computeTotal();
-		computePaymentsTotal();
-	});
-
-	$("body").on("click",".btn-add-to-order",function(){
-	
-		var food_name = $(this).data('food_name');
-		var price = $(this).data('price');
-		var qty = $(this).data('qty');
-		var food_id = $(this).data('food_id');
-		var orig_qty = $(this).data('orig_qty');
-		var currenty_food_qty_elem = $(this).children().find('span.food-qty');
-		var current_qty = currenty_food_qty_elem.text();
-		
-	
-		if(current_qty > 0){
-			if(!isExist(food_id)){
-				addOrder(food_id,food_name,price,tbl_orders_summary,orig_qty);
-				computeTotal();
-				computePaymentsTotal();
-			}
-			else {
-				increaseQty(food_id);
-				computeTotal();
-				computePaymentsTotal();
-				$("#tbl_orders_summary tbody tr").each(function(){
-					searched_food_id = $(this).data('food_id');
-					element = $(this);
-					if(food_id == searched_food_id){
-						qty_element = $(this).find("td:nth-child(3)").find("input");
-						computeSubtotal(qty_element);
-					}
-				});
-			}
-			current_qty--;
-			currenty_food_qty_elem.text(current_qty);
-		}
-	//	}
-	});
-
-	$("body").on("click",".btn-remove-order",function(ev){
-		db_food_id = $(this).data('food_id');
-		food_id = 'fd_'+ $(this).data('food_id');
-		food_element = $("#" + food_id);
-		to_remove_qty = $(this).parent().parent().find('td:nth-child(3)').find("input").val();
-		food_element_qty = food_element.children().find('span[class=food-qty]');
-		new_qty = parseFloat(food_element_qty.text()) + parseFloat(to_remove_qty);
-		food_element_qty.text(new_qty.toFixed(2));
-	/*	$.ajax({
-			type:"POST",
-			data:{
-				temp_transaction_id : $("#temp_transaction_id").val(),
-				food_id : db_food_id,
-				quantity : to_remove_qty
+Vue.createApp({
+    data() {
+        return {
+			customer_types: <?php echo json_encode($customer_list, JSON_HEX_TAG); ?>,
+			payment_modes: <?php echo json_encode($payment_modes, JSON_HEX_TAG); ?>,
+			food_categories: <?php echo json_encode($food_categories, JSON_HEX_TAG); ?>,
+			meal_img_dir: <?php echo json_encode($meal_img_dir, JSON_HEX_TAG); ?>,
+			food_menu_by_category: [],
+			order_item_barcode : '',
+			order_item_barcode_message : '',
+			employee_barcode_no : '',
+			employee : {},
+			customer_type : {},
+			amount_tendered: '',
+			transaction: {
+				customer_type : <?php echo json_encode($default_customer, JSON_HEX_TAG); ?>,
+				orders: [],
+				customer_name : '', // only used if guest or doctor
+				customer_id_no : '',
+				patient_ref_no : '',
+				room_no : '',
+				room_type : '',
+				attribute2 : '',
+				attribute3 : ''
 			},
-			url:"<?php echo base_url();?>transaction/ajax_remove_temp_transaction_line",
-			success:function(response){
+			numpad_items: ['7','8','9','4','5','6','1','2','3','.','0', 'C']
+        }
+    },
+	watch: {
+		order_item_barcode(newBarcode, oldBarcode){
+			var _this = this;
+
+			if(newBarcode == '') {
+				return false;
 			}
-		});*/
-		$(this).parent().parent().remove();
-		computeTotal();
-		ev.preventDefault();
-	});
 
-	$("#txt_barcode_no").on("change",function(){
-		loadPersonDetails($(this).val(),$("#sel_customer_type").val());
-	});
+			$.ajax({
+				type:"POST",
+				data:{
+					item_barcode : newBarcode 
+				},
+				url:"ajax_get_food_details_by_barcode",
+				success:function(response){
+					if($.trim(response) == 'error'){
+						_this.order_item_barcode_message = newBarcode + ': Item does not exist or closed for transaction.';
+						_this.order_item_barcode = '';
+						$("#txt_orders_barcode, #txt_orders_barcode_vue").val('');
+						return false;
+					}
 
-	$("body").on("blur",".txt_price",function(ev){
-		var parent_element = $(this).parent().parent();
-		qty = parent_element.find("td:nth-child(3)").find("input").val();
-		price = $(this).val();
-		subtotal = parent_element.find("td:nth-child(4)");
-		subtotal_price = (parseFloat(qty) * parseFloat(price)).toFixed(2);
-		subtotal.text(subtotal_price);
-		computeTotal();
-	});
+					var data = JSON.parse(response)[0];
 
-	$("body").on("input",".txt_qty",function(ev){
-		//var parent_element = $(this).parent().parent();
-		/*price = parent_element.find("td:nth-child(2)").find("input").val();
-		qty = $(this).val();
-		subtotal = parent_element.find("td:nth-child(4)");
-		subtotal_price = (parseFloat(qty) * parseFloat(price)).toFixed(2);
-		subtotal.text(subtotal_price);*/
-		var food_id = $(this).data("food_id");
-		var fd_qty_elem = $("#fd_qty_" + food_id);
-		var orig_qty = fd_qty_elem.data("orig_qty");
-		new_qty_val = parseFloat(orig_qty) - parseFloat($(this).val());
-		fd_qty_elem.text(new_qty_val.toFixed(2));
-		computeSubtotal($(this));
-		computeTotal();
-	});
-	
-	$("#txt_amount_tendered").on("blur",function(){
-		customer_type = $("#sel_customer_type").val();
-		if(customer_type == 1 || customer_type == 8){
-			var cash = $(".txt_cash").val();
-			var amount_tendered = $(this).val();
-			var change = parseFloat(amount_tendered) - parseFloat(cash);
-			$("#txt_change").val(change.toFixed(2));
-		}
-		else if(customer_type == 17 || customer_type == 18 || customer_type == 11 || customer_type == 12 || customer_type == 19 || customer_type == 14){
-			var cash = $("#txt_grand_total").val();
-			var amount_tendered = $(this).val();
-			var change = parseFloat(amount_tendered) - parseFloat(cash);
-			$("#txt_change").val(change.toFixed(2));
-		}
-	});
+					if(data.quantity > 0) {
+						_this.addToOrder({
+							food_id : data.food_id,
+							food_name : data.food_name,
+							quantity : 1,
+							unit_price : parseFloat(data.unit_price)
+						});
 
-	//$('.money').mask('000,000,000,000,000.00', {reverse: true});
-
-	$("#btn_transact").click(function(){
-	
-		//
-		// type of customer
-		customer_type = $("#sel_customer_type").val();
-
-		// used if guest or patient
-		customer_name = $("#txt_customer_name").val();
-
-		// used if patient
-		patient_ref_no = $("#txt_patient_ref_no").val();
-		room_no = $("#txt_room_no").val();
-		room_type = $("#txt_room_type").val();
-		// used if employee or stockholder
-		person_id = $("#txt_person_id").val();
-		barcode_no = $("#txt_barcode_no_used").val();
-		meal_allowance_id = $("#txt_meal_allowance_id").val();
-		employee_no = $("#lbl_employee_no").text();
-		
-		// particular in every transaction
-		amount_tendered = $("#txt_amount_tendered").val();
-		remarks = $("#txt_remarks").val();
-		grand_total = parseFloat($("#txt_grand_total").val());
-		discount_percent = $("#txt_discount_percent").val();
-		customer_id_no = $("#txt_customer_id_no").val();
-
-		// additional attributes for transactin
-		attribute1 = $("#txt_attribute1").val();
-		if(customer_type == 13){
-			customer_name = attribute1; // copy attribute1 (name of doctor) to customer name
-		}
-		
-		attribute2 = $("#txt_attribute2").val();
-		attribute3 = $("#txt_attribute3").val();
-
-		// orders summary
-		orders_list = [];
-		orders_index = 0;
-		$("#tbl_orders_summary tbody tr").each(function(){
-			food_id = $(this).data('food_id');
-			price = $(this).find("td:nth-child(2)").find("input").val();
-			qty = $(this).find("td:nth-child(3)").find("input").val();
-			orders_list[orders_index] = [food_id,price,qty];
-			orders_index++;
-		});
-		
-		// payments
-		payments_list = [];
-		payments_index = 0;
-		$(".cb_payment_modes").each(function(){
-			cb_element = $(this);
-			if(cb_element.is(":checked")){
-				row = cb_element.parent().parent().parent();
-				row_input = row.find("td:nth-child(2)").find("input");
-				payment_mode_id = row_input.data('payment_mode_id');
-				amount = row_input.val();
-				payments_list[payments_index] = [payment_mode_id,amount];
-				payments_index++;
+						_this.order_item_barcode_message = ''
+					} else {
+						_this.order_item_barcode_message = 'Insufficient stock.'
+					}
+					
+					_this.order_item_barcode = '';
+					$("#txt_orders_barcode, #txt_orders_barcode_vue").val('');
+				}
+			});
+		},
+		employee_barcode_no(newBarcode, oldBarcode){
+			
+			if(newBarcode == ''){
+				return false;
 			}
-		});
 
 
-/*
-person_id != "" && barcode_no != "" && meal_allowance_id != ""){*/
-		if(orders_index > 0){ // check if orders exist
-			if(customer_type == 8 || customer_type == 1){ // if customer is employee or stockholder, require person_id
-				if(person_id != "" && employee_no != "" && barcode_no !=""){
-					if(payments_index > 0){ // if there are selected mode of payments
-						if($("#txt_payments_total").val() == $("#txt_orders_total").val()){ // if payments and orders are equal
-							$.ajax({
-								type:"POST",
-								url:"<?php echo base_url();?>"+"transaction/ajax_add_new_transaction",
-								data:{
-									customer_type 	  :customer_type,
-									customer_name 	  :customer_name,
-									patient_ref_no 	  :patient_ref_no,
-									room_no 		  :room_no,
-									room_type         :room_type,
-									person_id 		  :person_id,
-									barcode_no 	      :barcode_no,
-									employee_no       :employee_no,
-									meal_allowance_id :meal_allowance_id,
-									amount_tendered   :amount_tendered,
-									remarks 		  :remarks,
-									grand_total 	  :grand_total,
-									discount_percent  : discount_percent,
-									customer_id_no    : customer_id_no,
-									orders_list 	  :orders_list,
-									payments_list 	   :payments_list,
-									attribute1 : attribute1,
-									attribute2 : attribute2,
-									attribute3 : attribute3
-								//	temp_transaction_id : $("#temp_transaction_id").val()
-								},
-								success:function(response){
-								
-									var data = JSON.parse(response);
-									if(data.transaction_status){ // if there were errors 
-										is_reload_flag = false;
-									}
-									else {
-										is_reload_flag = true;
-									}
-																
-									$("#txn_body").html(data.message);
-									$("#txn_modal").modal("show");
-								}
-							});
-						}
-						else {
-							is_reload_flag = false;
-							$("#txn_body").html("Error : The total of payments should be equal to the total of the orders.");
-							$("#txn_modal").modal("show");
-						}
+			var customerType = this.transaction.customer_type;
+			var _this = this;
+			$.ajax({
+				type:"POST",
+				url:"<?php echo base_url();?>"+"transaction/ajax_get_employee_details",
+				data:{
+					barcode_no   : newBarcode,
+					customer_type : customerType
+				},
+				success:function(response){
+
+					if($.trim(response) === "invalid"){
+						return false;
+					}
+
+					var data = JSON.parse(response);
+					_this.employee = data[0];
+					_this.employee_barcode_no = '';
+					$("#txt_barcode_no, #txt_barcode_no_vue").val("");
+					_this.computePayments();
+				}
+			});
+		}
+	},
+    methods : {
+		fetchFoodMenuByCategory(category){
+			var _this = this;
+			$.ajax({
+				type:"POST",
+				data : {
+					category : category.id
+				},
+				url:"<?php echo base_url('Food_Inventory/ajax_get_foods_menu_data');?>",
+				success:function(response){
+					_this.food_menu_by_category = JSON.parse(response);
+				}
+			});
+		},
+		addToOrder(item){
+			let itemIndex = this.getItemIndex(item);
+	
+			if(itemIndex == -1){
+				this.transaction.orders.push({
+					food_id : item.food_id,
+					food_name : item.food_name,
+					quantity : 1,
+					price : item.unit_price
+				});
+			} else {
+				this.transaction.orders[itemIndex].quantity = this.transaction.orders[itemIndex].quantity + 1;
+			}
+
+			this.computePayments();
+		},
+		getItemIndex(item) {
+			for(let i = 0; i < this.transaction.orders.length; i++){
+				let order = this.transaction.orders[i];
+				if(order.food_id === item.food_id) {
+					return i;
+				} 
+			}
+
+			return -1;
+		},
+		computeTotal(){
+			let total = 0;
+			for(let i = 0; i < this.transaction.orders.length; i++){
+				let order = this.transaction.orders[i];
+				total += order.price * order.quantity;
+			}
+			return total;
+		},
+		removeItem(index){
+			this.transaction.orders.splice(index, 1);
+		},
+		updateCustomerType(customerType){
+			this.transaction.customer_type = customerType.id;
+			this.customer_type = this.getCustomerTypeData(customerType.id);
+		},
+		getCustomerTypeData(customerTypeId){
+			for(let i = 0; i < this.customer_types.length; i++){
+				if(this.customer_types[i].id == customerTypeId){
+					return this.customer_types[i];
+				}
+			}
+
+			return false;
+		},
+		computeDiscountAmount(total, discountPercent){
+			return parseFloat(total) * parseFloat(discountPercent/100);
+		},
+		computeGrandTotal(){
+			let total = this.computeTotal();
+			let discountPercent = this.customer_type.discount_percent;
+			let discountAmount = parseFloat(total) * parseFloat((discountPercent/100));
+
+			return total - discountAmount;
+		},
+		reduceItemQuantity(item, index){
+			if(this.transaction.orders[index].quantity > 0){
+				this.transaction.orders[index].quantity = parseFloat(this.transaction.orders[index].quantity) - 1;
+				this.computePayments();
+			}
+		},
+		addItemQuantity(item, index){
+			if(this.transaction.orders[index].quantity > 0){
+				this.transaction.orders[index].quantity = parseFloat(this.transaction.orders[index].quantity) + 1;
+				this.computePayments();
+			}
+		},
+		addToInput(number){
+			event.preventDefault();
+			if(number == 'C') {
+				document.activeElement.value = '';
+			} else {
+				document.activeElement.value = document.activeElement.value + number;
+			}
+
+			document.activeElement.dispatchEvent(new CustomEvent('input'));																						
+		},
+		computePayments(){
+			var grandTotal = this.computeGrandTotal();
+		
+			// if employee
+			if(this.transaction.customer_type == 1) {
+				if(!this.employee.employee_no){
+					alert('Please scan employee barcode no.');
+					return false;
+				}	
+
+				var mealAllowance = this.employee.remaining_amount;
+
+				var excessToAllowance = 0;
+				var chargeToAllowance = 0;
+				
+				if(mealAllowance < grandTotal) {
+					excessToAllowance = grandTotal - mealAllowance;
+					chargeToAllowance = mealAllowance;
+				} else {
+					chargeToAllowance = grandTotal;
+				}
+
+				// meal allowance
+				if(chargeToAllowance > 0){
+					this.payment_modes[this.transaction.customer_type][0].amount = chargeToAllowance;
+				}
+				
+				// cash
+				if(excessToAllowance > 0){
+					this.payment_modes[this.transaction.customer_type][1].amount = excessToAllowance;
+				}
+
+				
+
+			} else {
+				this.payment_modes[this.transaction.customer_type][0].amount = grandTotal;
+			}
+		},
+		saveOrder(){
+
+			if(this.transaction.customer_type == 1) {
+				if(!this.employee.employee_no){
+					alert('Please scan employee barcode no.');
+					return false;
+				}	
+			}
+
+			var grandTotal = this.computeGrandTotal();
+		
+			var ordersList = [];
+			for(let i = 0; i < this.transaction.orders.length; i++){
+				let order = this.transaction.orders[i];
+				ordersList.push([
+					order.food_id,
+					order.price,
+					order.quantity
+				]);
+			}
+
+			var paymentsList = [];
+			for(let i = 0; i < this.payment_modes[this.transaction.customer_type].length; i++){
+				let payment = this.payment_modes[this.transaction.customer_type][i];
+				if(payment.amount){
+					paymentsList.push([
+						payment.payment_mode_id,
+						payment.amount
+					]);
+				}
+			}
+			
+			var transactionData = {
+				customer_type 	  : this.transaction.customer_type,
+				customer_name 	  : this.transaction.customer_name,
+				patient_ref_no 	  : this.transaction.patient_ref_no,
+				room_no 		  : this.transaction.room_no,
+				room_type         : this.transaction.room_type,
+				person_id 		  : this.employee.person_id,
+				barcode_no 	      : this.employee.barcode_value,
+				employee_no       : this.employee.employee_no,
+				meal_allowance_id : this.employee.meal_allowance_id,
+				amount_tendered   : this.amount_tendered,
+				remarks 		  : '', // not used in this implementation
+				grand_total 	  : grandTotal,
+				discount_percent  : this.customer_type.discount_percent,
+				customer_id_no    : this.transaction.customer_id_no,
+				orders_list 	  : ordersList,
+				payments_list 	  : paymentsList,
+				attribute1 		  : this.transaction.customer_name,
+				attribute2 		  : this.transaction.attribute2,
+				attribute3 		  : this.transaction.attribute3
+			};
+
+		
+			$.ajax({
+				type:"POST",
+				url:"<?php echo base_url();?>"+"transaction/ajax_add_new_transaction",
+				data: transactionData,
+				success:function(response){
+				
+					var data = JSON.parse(response);
+					if(data.transaction_status){ // if there were errors 
+						is_reload_flag = false;
 					}
 					else {
-						is_reload_flag = false;
-							$("#txn_body").html("Select payment modes for the transaction");
-							$("#txn_modal").modal("show");
+						is_reload_flag = true;
 					}
-				}
-				else {
-					is_reload_flag = false;
-					$("#txn_body").html("Error : Scan or type customer barcode");
+												
+					$("#txn_body").html(data.message);
 					$("#txn_modal").modal("show");
 				}
-			}
-			else { // if customer is MDI, patient, guest do not require person_id
-				if(payments_index > 0){ // if there are selected mode of payments
-					if($("#txt_payments_total").val() == $("#txt_orders_total").val()){ // if payments and orders are equal
-						
-						$.ajax({
-							type:"POST",
-							url:"<?php echo base_url();?>"+"transaction/ajax_add_new_transaction",
-							data:{
-								customer_type 	  :customer_type,
-								customer_name 	  :customer_name,
-								patient_ref_no 	  :patient_ref_no,
-								room_no 		  :room_no,
-								room_type         :room_type,
-								person_id 		  :person_id,
-								barcode_no 	      :barcode_no,
-								meal_allowance_id :meal_allowance_id,
-								amount_tendered   :amount_tendered,
-								remarks 		  :remarks,
-								grand_total 	  :grand_total,
-								discount_percent  : discount_percent,
-								customer_id_no    : customer_id_no,
-								orders_list 	  :orders_list,
-								payments_list 	   :payments_list,
-								attribute1 : attribute1,
-								attribute2 : attribute2,
-								attribute3 : attribute3,
-								temp_transaction_id : $("#temp_transaction_id").val()
-							},
-							success:function(response){
-							
-								var data = JSON.parse(response);
-								if(data.transaction_status){ // if there were errors 
-									is_reload_flag = false;
-								}
-								else {
-									is_reload_flag = true;
-								}
-								$("#txn_body").html(data.message);
-								$("#txn_modal").modal("show");
-							}
-						});
-					}
-					else {
-						is_reload_flag = false;
-						$("#txn_body").html("Error : The total of payments should be equal to the total of the orders.");
-						$("#txn_modal").modal("show");
-					}
-				}
-				else {
-					is_reload_flag = false;
-						$("#txn_body").html("Select payment modes for the transaction");
-						$("#txn_modal").modal("show");
-				}
-			}
+			});
+	
+			
 		}
-		else {
-			is_reload_flag = false;
-			$("#txn_body").html("Select orders for the transaction");
-			$("#txn_modal").modal("show");
-		}
-	});
+    },
+    mounted : function () {
+		this.fetchFoodMenuByCategory(this.food_categories[0]);
+		
+		this.customer_type = this.getCustomerTypeData(this.transaction.customer_type);
 
-	$("#lnk_billing").click(function(ev){
-		computeTotal();
-		computePaymentsTotal();
-	});
-
-	$("#txn_modal").on("hidden.bs.modal",function(){
-		if(is_reload_flag){
-			location.reload();
-		}
-	});
-
-	$("#txt_patient_name").on("blur",function(){
-		$("#txt_customer_name").val($("#txt_patient_name").val());
-	});
-
- 	$("#txt_barcode_no").scannerDetection(function(){
- 		loadPersonDetails($(this).val(),$("#sel_customer_type").val());
- 	}); 
-
- 	$("#txt_orders_barcode").scannerDetection(function(){
- 		addOrderByBarcode($(this).val());
- 	}); 
-
- /*	$("#txt_orders_barcode").blur(function(){
- 		addOrderByBarcode($(this).val());
- 	}); 
-*/
- 	$("body").on("blur",".txt_charges",function(){
- 		computePaymentsTotal();
- 	});
-
-	$("body").on("change",".cb_payment_modes",function(){
-		computePaymentsTotal();
-	}); 	
-
-	$("body").addClass('sidebar-collapse');
-
-	$(".sidebar-toggle").remove();
+    }
+}).mount('#app')
 
 
-});
 </script>

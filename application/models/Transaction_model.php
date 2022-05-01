@@ -11,6 +11,7 @@ class Transaction_model extends CI_Model {
 				       discount_percent
 				FROM person_types
 				WHERE id IN(8,11,12,14,1,17,18,19,13,20)
+				and active_flag = 'y'
 				ORDER BY person_type_name ASC";
 		$query = $this->db->query($sql);
 		return $query->result();
@@ -25,7 +26,20 @@ class Transaction_model extends CI_Model {
 					ON a.payment_mode_id =  b.id
 				WHERE a.person_type_id = ?";
 		$query = $this->db->query($sql,$person_type_id);
-		return $query->result();
+		return $query->result_array();
+	}
+
+	public function get_payment_modes(){
+		$sql = "SELECT a.id,
+					   a.payment_mode_id,
+					   b.mode_of_payment,
+					   a.is_default_payment_mode,
+					   a.person_type_id,
+					   null amount
+				FROM person_applicable_payment_modes a LEFT JOIN payment_modes b
+					ON a.payment_mode_id =  b.id";
+		$query = $this->db->query($sql);
+		return $query->result_array();
 	}
 
 	public function add_transaction_header($params){

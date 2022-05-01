@@ -22,6 +22,7 @@ class Food_model extends CI_Model {
 			ON fd.food_category_id = fc.id
 		WHERE fd.transaction_state_id = 4
               AND fd.food_category_id = ?
+			  AND fd.quantity > 0
 		ORDER BY fd.quantity desc,
 				 fd.food_name
 				 ";

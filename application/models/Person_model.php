@@ -202,7 +202,8 @@ class Person_model extends CI_Model {
 	}
 
 	public function get_person_details_by_category($search_category,$search_value,$person_type){
-		$sql = "SELECT p.id person_id,
+		$sql = "SELECT p.id person_id,	
+				   p.barcode_value,
 			       p.employee_no,
 			       p.first_name,
 			       p.middle_name,
