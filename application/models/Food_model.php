@@ -34,6 +34,7 @@ class Food_model extends CI_Model {
 		$sql = "SELECT id,
 					   category
 				FROM food_categories fc
+				WHERE active = 'y'
 				ORDER BY category ASC";
 		$query = $this->db->query($sql);
 		return $query->result();
@@ -369,6 +370,7 @@ class Food_model extends CI_Model {
                        category
                 FROM food_categories
                 WHERE saleable = 1
+				AND active = 'y'
                 ORDER BY sequence";
         $query = $this->db->query($sql);
         return $query->result();
