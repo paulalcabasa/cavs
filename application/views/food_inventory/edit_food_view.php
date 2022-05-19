@@ -113,11 +113,11 @@
                    
                     ?>
                         <tr>
-                            <td><input type='text' class='form-control' value="<?php echo $item->ingredient_name;?>"/></td>
-                            <td><input type='text' class='form-control txt_amount' value="<?php echo $item->amount;?>"/></td>
+                            <td><input type='text' class='form-control' value="<?php echo $item->item_name;?>"/></td>
+                            <td><input type='text' class='form-control txt_amount' value="<?php echo $item->quantity;?>"/></td>
                             <td><input type='text' class='form-control txt_unit_of_measure' data-provide='typeahead' autocomplete='off' value="<?php echo $item->unit_of_measure;?>"/></td>
                             <td><input type='text' class='form-control txt_unit_cost' value="<?php echo $item->unit_cost;?>"/></td>
-                            <td><input type='text' readonly='readonly' class='form-control txt_total_item_cost'  value="<?php echo $item->amount * $item->unit_cost;?>"/></td>
+                            <td><input type='text' readonly='readonly' class='form-control txt_total_item_cost'  value="<?php echo $item->quantity * $item->unit_cost;?>"/></td>
                             <td><a href='#' class='btn_update_item' data-item_id="<?php echo $item->id;?>"><i class='fa fa-save fa-1x'></i></a></td>
                             <td><a href='#' class='btn_remove_item' data-item_id="<?php echo $item->id;?>"><i class='fa fa-remove fa-1x'></i></a></td>
                         </tr>
