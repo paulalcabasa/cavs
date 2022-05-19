@@ -298,6 +298,7 @@ class Food_Inventory extends MY_Controller {
                                         Action <span class="caret"></span>
                                       </button>
                                       <ul class="dropdown-menu dropdown-menu-right">
+                                      <li><a href="edit_food/'.encode_string($d).'">Edit</a></li>
                                         <li><a href="'.base_url().'reports/cost_vs_sales_report/'.$enc_food_id.'" target="_blank">View Details</a></li>';
                                         /*if($user_type_id == 6 || $user_type_id == 3){
                                             if(in_array($row['category'],array('Breakfast','Lunch','Dinner','Rice'))) { */// Stock adjustment is only avaialble in these categories  
