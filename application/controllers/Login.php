@@ -14,7 +14,7 @@ class Login extends CI_Controller {
 			/*redirect('dashboard');*/
 			$user_type = $this->session->userdata('user_type_id');
 			if($user_type == 6){ // dietitian
-				redirect('food_inventory/all_food_sales');
+				redirect('Food_Inventory/all_food_sales');
 			}
 			if($user_type == 4){ // cashier
 				redirect('transaction/new_transaction');
@@ -41,7 +41,7 @@ class Login extends CI_Controller {
 	}
 
 	public function validate_credentials(){
-		$this->load->model('user_model');
+		$this->load->model('User_model', 'user_model');
 
 		$this->load->library('form_validation');
 		$config = array(
@@ -53,14 +53,14 @@ class Login extends CI_Controller {
                         'required' => '* Please enter your username',
                 ),
 	        ),
-	        // array(
-            //     'field' => 'password',
-            //     'label' => 'Password',
-            //     'rules' => 'trim|required',
-            //     'errors' => array(
-            //             'required' => '* Please enter your password',
-            //     )
-	        // )
+	        array(
+                'field' => 'password',
+                'label' => 'Password',
+                'rules' => 'trim|required',
+                'errors' => array(
+                        'required' => '* Please enter your password',
+                )
+	        )
 		);
 		$this->form_validation->set_rules($config);
 		if($this->form_validation->run() == FALSE){
@@ -68,14 +68,15 @@ class Login extends CI_Controller {
 		}
 		else {
 			$is_user = $this->user_model->validate_user($this->input->post('username'),$this->input->post('password'));
-			
-			
+
 		
 			if($is_user){
 				$user_type = $this->session->userdata('user_type_id');
-			
+				
+				var_dump($user_type);
+
 				if($user_type == 6){ // dietitian
-					redirect('food_inventory/all_food_sales');
+					redirect('Food_Inventory/all_food_sales');
 				}
 				if($user_type == 4){ // cashier
 					redirect('transaction/new_transaction');
@@ -106,6 +107,6 @@ class Login extends CI_Controller {
 		foreach($user_data as $key => $value){
 			$this->session->unset_userdata($key);
 		}
-		header('login');
+		redirect('login');
 	}
 }

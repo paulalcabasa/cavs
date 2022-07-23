@@ -6,8 +6,8 @@ class Portal extends MY_Controller {
 
     public function __construct(){
         parent::__construct();
-        $this->load->model('transaction_model');
-        $this->load->model('person_model');
+        $this->load->model('Transaction_model', 'transaction_model');
+        $this->load->model('Person_model', 'person_model');
         $this->person_id = $this->session->userdata('person_id');
         $this->load->helper('encryption');
     }

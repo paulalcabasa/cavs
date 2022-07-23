@@ -52,6 +52,23 @@
                                 <input type="text" class="form-control" id="txt_customer_detail" name="customer_detail" placeholder="Enter customer details"/>
                             </div>
                         </div>
+
+                        <div class="form-group">  
+                            <label class="col-md-3 control-label">Transacted by</label>
+                            <div class="col-md-9">
+                                <select class="form-control" id='sel_transacted_by' name="transacted_by">
+                                <option value="all">Select</option>
+                                <?php
+                                    foreach($cashiers_list as $cashier){
+                             
+                                ?>
+                                    <option value='<?php echo $cashier->person_id;?>'><?php echo $cashier->last_name . ', ' . $cashier->first_name;?></option>
+                                <?php
+                                    }
+                                ?>
+                                </select>
+                            </div>
+                        </div>
                         <div class="form-group">
                            
                             <button type="button" id="btn_generate" class="btn btn-primary pull-right">Generate</button>

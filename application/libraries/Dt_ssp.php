@@ -364,7 +364,7 @@ class DT_ssp
 	{
 		try {
 			$db = @new PDO(
-				"mysql:host={$sql_details['host']};dbname={$sql_details['db']}",
+				"mysql:host={$sql_details['host']};dbname={$sql_details['db']};port=3307",
 				$sql_details['user'],
 				$sql_details['pass'],
 				array( PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION )

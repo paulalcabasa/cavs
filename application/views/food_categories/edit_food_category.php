@@ -19,7 +19,7 @@
             </div>
         </div>
         <div class="box-body">
-            <form class="form-horizontal" name="frm_food_category_details" id="frm_food_category_details" action="<?php echo base_url();?>food_categories/update_food_category" method="POST">
+            <form class="form-horizontal" name="frm_food_category_details" id="frm_food_category_details" action="<?php echo base_url();?>Food_categories/update_food_category" method="POST">
                 <div clas="row">
                     <div class="col-md-6">
                         <div class="form-group">

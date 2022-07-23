@@ -56,13 +56,16 @@ class Reports_model extends CI_Model {
 	}
 
 	public function generate_sales_report($params){
+	
 		$customer_type = $params[2];
 		$customer_detail = $params[3];
+		$transacted_by = $params[4];
 		$query_params[0] = $params[0];
 		$query_params[1] = $params[1];
 		$start_date = $query_params[0];
 		$end_date = $query_params[1];
 
+	
 		$this->db->select("transaction_no,
 					       customer_type,
 					       customer_name,
@@ -72,6 +75,9 @@ class Reports_model extends CI_Model {
 		$this->db->where('	transaction_status', 1);
 		$this->db->where('DATE(date_created) >=', $start_date);
 		$this->db->where('DATE(date_created) <=', $end_date);
+		if($transacted_by != '') {
+			$this->db->where('create_user', $transacted_by);
+		}
 		if($customer_type != "all"){
 			$this->db->where('person_type_id', $customer_type);
 			if($customer_detail != ""){

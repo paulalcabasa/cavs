@@ -5,7 +5,7 @@ class Employee extends MY_Controller {
 		parent::__construct();
         $this->load->helper('form');
         $this->load->helper('encryption');
-        $this->load->model('person_model');
+        $this->load->model('Person_model', 'person_model');
         $this->load->helper('date_formatter');
 	}
 
@@ -42,7 +42,7 @@ class Employee extends MY_Controller {
             } 
         }
         
-        $this->load->model('system_model');
+        $this->load->model('System_model', 'system_model');
         $content['main_content'] = 'employees/add_employee_view';
         $departments = $this->system_model->get_departments();
         $content['departments'] = $departments;
@@ -68,7 +68,7 @@ class Employee extends MY_Controller {
             $path = $_FILES['person_image']['name'];
             $person_image = $this->input->post('employee_no').".".pathinfo($path, PATHINFO_EXTENSION); 
             $config['upload_path']          = './assets/images/person_images/';
-            $config['allowed_types']        = 'gif|jpg|png';
+            $config['allowed_types']        = 'jpg';
             $config['max_size']             = 100;
             $config['max_width']            = 1024;
             $config['max_height']           = 768;
@@ -135,9 +135,9 @@ class Employee extends MY_Controller {
             $this->new_employee(); // load new employee view and display errors
         }
         else {
-            $this->load->model('user_model');
+            $this->load->model('User_model', 'user_model');
          
-            $this->load->model('system_model');
+            $this->load->model('System_model', 'system_model');
             $meal_allowance_details = $this->system_model->get_system_config(1);
          
             $create_user = $this->session->userdata('user_id');
@@ -215,7 +215,7 @@ class Employee extends MY_Controller {
     }
 
     public function edit(){
-        $this->load->model('system_model');
+        $this->load->model('System_model', 'system_model');
         $departments = $this->system_model->get_departments();
         $list_of_state = $this->system_model->get_person_state();
         $employee_id = decode_string($this->uri->segment(3));
@@ -234,7 +234,7 @@ class Employee extends MY_Controller {
             $path = $_FILES['person_image']['name'];
             $person_image = $this->input->post('employee_no').".".pathinfo($path, PATHINFO_EXTENSION); 
             $config['upload_path']          = './assets/images/person_images/';
-            $config['allowed_types']        = 'gif|jpg|png';
+            $config['allowed_types']        = 'jpg';
             $config['max_size']             = 3000;
            // $config['max_width']            = 1024;
           //  $config['max_height']           = 768;
@@ -265,14 +265,14 @@ class Employee extends MY_Controller {
         $this->person_model->update_person_details($params);
         $this->load->helper('encryption');
         // redirect to form and show successful operation
+       
         $this->session->set_flashdata('success_flag', TRUE);
         redirect('employee/edit/' . encode_string($this->input->post('employee_id')));
     }
 
     public function meal_allowance(){
-        $this->load->model('system_model');
+        $this->load->model('System_model', 'system_model');
         $departments_list = $this->system_model->get_departments();
-        $content['departments'] = $departments_list;
         $content['main_content'] = 'employees/meal_allowance_view';
         $content['message_subject'] = null;
         $content['message_body'] = '<p class="text-center text-muted">Click on the <strong>Upload file</strong> button to start reloading meal allowances.</p>';
@@ -423,14 +423,14 @@ class Employee extends MY_Controller {
 
     public function load_employees(){
         $create_user = $this->session->userdata('user_id');
-        $this->load->model('user_model');
-        $this->load->model('system_model');
-        $this->load->model('stockholder_model');
+        $this->load->model('User_model', 'user_model');
+        $this->load->model('System_model', 'system_model');
+        $this->load->model('Stockholder_model', 'stockholder_model');
        //$stockholder_meal_allowance_details = $this->stockholder_model->get_stockholder_allowance_defaults();
       //  $meal_allowance_details = $this->system_model->get_system_config(1);
         $this->load->library('excel');
         try {
-            $xls_file = './files/employees/stockholder_masterfile.xlsx';
+            $xls_file = './files/employees/cavs_employees.xlsx';
             $inputFileType = PHPExcel_IOFactory::identify($xls_file);
             $objReader = PHPExcel_IOFactory::createReader($inputFileType);
             $objPHPExcel = $objReader->load($xls_file);
@@ -595,21 +595,33 @@ class Employee extends MY_Controller {
     }
 
     public function credit_management(){
-        $this->load->model('person_model');
-        $this->load->model('system_model');
+        $this->load->model('Person_model', 'person_model');
+        $this->load->model('System_model', 'system_model');
+        $departments_list = $this->system_model->get_departments();
+        $content['departments'] = $departments_list;
+        $content['user_type_id'] = $this->session->userdata('user_type_id');  
+        $content['main_content'] = 'employees/credit_management_view2';
+     
+        $this->load->view('includes/template',$content);       
+    }
+
+    public function credit_management_old(){
+        $this->load->model('Person_model', 'person_model');
+        $this->load->model('System_model', 'system_model');
         $departments_list = $this->system_model->get_departments();
         $content['departments'] = $departments_list;
         $content['user_type_id'] = $this->session->userdata('user_type_id');
         $person_type_id = 1; // mdi employees
     //    $credits_ledger_list = $this->person_model->get_persons_with_credit($person_type_id);
         $content['main_content'] = 'employees/credit_management_view';
+        $content['main_content'] = 'employees/credit_management_view2';
        // $content['credits_ledger_list'] = $credits_ledger_list;
         $this->load->view('includes/template',$content);       
     }
 
     public function credit_management_sruho(){
-        $this->load->model('person_model');
-        $this->load->model('system_model');
+        $this->load->model('Person_model', 'person_model');
+        $this->load->model('System_model', 'system_model');
         $content['user_type_id'] = $this->session->userdata('user_type_id');
         $credits_ledger_list = $this->person_model->get_persons_with_credit(19);
         $content['main_content'] = 'canteen_employees/credit_management_sruho';
@@ -749,6 +761,38 @@ class Employee extends MY_Controller {
            
         } // if(!empty($_FILES['xls_debit']['name'])) { 
     } // import_customer_debits(){
+
+    public function ajax_update_credit(){
+        $employee_no = $this->input->post('employee_no');
+        $current_salary_deduction = $this->input->post('credit_amount');
+        $debit_amount = $this->input->post('paid_amount');
+        $current_salary_deduction = $this->input->post('credit_amount');
+        $current_user = $this->session->userdata('user_id');
+        $employee_id = $this->input->post('person_id');
+        $person_name =  $this->input->post('name');
+
+        $new_salary_deduction = $current_salary_deduction  - $debit_amount;
+        $person_debit_params = array(
+            $new_salary_deduction,
+            $current_user,
+            $employee_id
+        );
+
+        $this->person_model->update_salary_deduction($person_debit_params);
+    
+        $debitted_params = array( 
+            $employee_id,
+            $employee_no,
+            $employee_no, // barcode number
+            $person_name,
+            $current_salary_deduction,
+            $debit_amount,
+            $current_user
+        );
+
+        $this->person_model->insert_person_debitted_credits($debitted_params);
+        echo "Successfully updated credit amount for " . $person_name . ' .';
+    }
     
     public function debit_result(){
         $content['main_content'] = 'employees/debit_result_view';
@@ -760,12 +804,24 @@ class Employee extends MY_Controller {
         $employees_list = $this->person_model->get_employee_by_department($department_id);
         foreach($employees_list as $emp){
             echo "<tr>";
-                echo "<td><input type='checkbox' class='cb_employee' data-person_id='".$emp->person_id."'/></td>";
+                echo "<td><button type='button' class='btn btn-danger btn-sm btn-remove-person' data-person_id='".$emp->person_id."'>Remove</td>";
                 echo "<td>" . $emp->employee_no . "</td>";
                 echo "<td>" . $emp->person_name . "</td>";
                 echo "<td>" . $emp->remaining_amount . "</td>";
+                echo "<td>" . $emp->remaining_amount . "</td>";
             echo "</tr>";
         }
+    }
+
+    public function ajax_get_employees_with_credit(){
+        $credits_ledger_list = $this->person_model->get_all_persons_with_credit();
+        echo json_encode($credits_ledger_list);
+    }
+
+    public function ajax_get_employees_by_department2(){
+        $department_id = $this->input->post('department_id');
+        $employees_list = $this->person_model->get_employee_by_department2($department_id);
+        echo json_encode($employees_list);
     }
 
     public function ajax_get_employees_with_credit_by_department(){
@@ -805,7 +861,7 @@ class Employee extends MY_Controller {
         $excel = PHPExcel_IOFactory::load("./files/credit_management_template.xlsx");
         $row = 4;
         $ctr = 1;
-        $this->load->model('person_model');
+        $this->load->model('Person_model', 'person_model');
         $selected_employees = $this->input->post('selected_employees');
         $employee_type = $this->input->post('employee_type');
         if($employee_type == "mdi"){
@@ -861,7 +917,7 @@ class Employee extends MY_Controller {
     public function ajax_print_employee_credits(){
 
         $this->load->library('pdf');
-        $this->load->model('person_model');
+        $this->load->model('Person_model', 'person_model');
         
         $selected_employees = $this->input->post('selected_employees');
         $from_date = $this->input->post('from_date');
@@ -1211,5 +1267,87 @@ class Employee extends MY_Controller {
         force_download('ma_allowance-'.date('YmdHis').'.xlsx', $excelFileContents);
 
 
+    }
+
+    public function ajax_get_departments() {
+        $this->load->model('System_model', 'system_model');
+        $departments_list = $this->system_model->get_departments();
+        echo json_encode($departments_list);
+    }
+
+    public function ajax_reload_meal_allowance(){              
+
+        $current_user = $this->session->userdata('user_id');
+        $employeesList = $this->input->post('employees');
+
+        // set to inactive the previous uploaded meal allowance by department
+        
+
+
+        foreach($employeesList as $employee) {
+            $start_date = $employee['start_date'];
+            $end_date = $employee['end_date'];
+            $meal_allowance_params = array(
+                $employee['person_id'],
+                1, // employee person type id
+                $employee['barcode_value'],
+                1, // only per day
+                $employee['meal_allowance_rate'], // rate
+                $employee['meal_allowance_rate'], // alloted amount
+                $employee['meal_allowance_rate'], // remaining amount
+                null, // max allowance daily, applicable for stockholder only
+                null, // weekly claims count, applicable for stockholder only
+                $start_date,
+                $end_date,
+                $current_user
+            );
+            $this->person_model->insert_employee_meal_allowance($meal_allowance_params);
+        }
+
+        //     //  Loop through each row of the worksheet in turn
+        //     for ($row = $base_row; $row <= $highestRow; $row++){  // start from 2 to avoid header
+        //         //  Read a row of data into an array
+        //         $row_data = $sheet->rangeToArray('B' . $row . ':' . $highestColumn . $row,
+        //                                         NULL,
+        //                                         TRUE,
+        //                                         FALSE);
+
+        //         // xls details
+        //         $employee_no = $row_data[0][0];
+        //         $employee_name = $row_data[0][1];
+        //         $no_of_days = $row_data[0][2];
+            
+
+        //         $employee_no = (string)$employee_no;
+        //         if (array_key_exists($employee_no, $employee_recordset)) { // check if employee exists
+        //             $employee_id = $employee_recordset[$employee_no]['id'];
+        //             $alloted_amount = $employee_recordset[$employee_no]['meal_allowance_rate'] * $no_of_days;
+        //             $meal_allowance_params = array(
+        //                 $employee_id,
+        //                 1, // employee person type id
+        //                 $employee_recordset[$employee_no]['barcode_no'],
+        //                 $no_of_days,
+        //                 $employee_recordset[$employee_no]['meal_allowance_rate'],
+        //                 $alloted_amount,
+        //                 $alloted_amount,
+        //                 null, // max allowance daily, applicable for stockholder only
+        //                 null, // weekly claims count, applicable for stockholder only
+        //                 $valid_from,
+        //                 $valid_until,
+        //                 $current_user
+        //             );
+        //             $this->person_model->insert_employee_meal_allowance($meal_allowance_params);
+                    
+                    
+                
+        
+        //     }
+
+        // }
+    
+      
+    
+        
+     
     }
 }

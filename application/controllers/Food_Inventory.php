@@ -4,8 +4,8 @@ class Food_Inventory extends MY_Controller {
 
     public function __construct(){
         parent::__construct();
-        $this->load->model('food_model');
-        $this->load->model('inventory_item_model');
+        $this->load->model('Food_model', 'food_model');
+        $this->load->model('Inventory_Item_Model', 'inventory_item_model');
         $this->load->helper('encryption');
         $this->load->helper('string');
         $this->load->helper('date_formatter');
@@ -298,6 +298,7 @@ class Food_Inventory extends MY_Controller {
                                         Action <span class="caret"></span>
                                       </button>
                                       <ul class="dropdown-menu dropdown-menu-right">
+                                      <li><a href="edit_food/'.encode_string($d).'">Edit</a></li>
                                         <li><a href="'.base_url().'reports/cost_vs_sales_report/'.$enc_food_id.'" target="_blank">View Details</a></li>';
                                         /*if($user_type_id == 6 || $user_type_id == 3){
                                             if(in_array($row['category'],array('Breakfast','Lunch','Dinner','Rice'))) { */// Stock adjustment is only avaialble in these categories  
@@ -586,7 +587,7 @@ class Food_Inventory extends MY_Controller {
     public function process_food_cancellation(){
         $food_id = $this->input->post('food_id');
         $reason = $this->input->post('reason');
-        $this->load->model('inventory_item_model');
+        $this->load->model('Inventory_Item_Model', 'inventory_item_model');
         $food_ingredients = $this->food_model->get_food_ingredients($food_id);
         $transaction_status_id = 2;
 
@@ -610,14 +611,14 @@ class Food_Inventory extends MY_Controller {
                   );
         $this->food_model->cancel_food($params);
 
-        redirect('food_inventory/all_food_sales');
+        redirect('Food_Inventory/all_food_sales');
 
     }
 
     public function process_food_closing(){
         $food_id = $this->input->post('food_id');
         $reason = $this->input->post('reason');
-        $this->load->model('inventory_item_model');
+        $this->load->model('Inventory_Item_Model', 'inventory_item_model');
         $transaction_status_id = 3;
         $params = array(
                     $reason,
@@ -626,13 +627,14 @@ class Food_Inventory extends MY_Controller {
                     $food_id
                   );
         $this->food_model->close_food($params);
-        redirect('food_inventory/all_food_sales');
+        redirect('Food_Inventory/all_food_sales');
     }
 
 
     public function ajax_get_foods_menu(){
         $category = $this->input->post('category');
         $foods_list = $this->food_model->get_foods_list($category);
+     
         $meal_img_dir = $this->config->item('meal_img_dir');
         if(!empty($foods_list)){
             echo '<div class="row">';
@@ -642,8 +644,14 @@ class Food_Inventory extends MY_Controller {
                 $food_js_qty_id = "fd_qty_" . $food->food_id;
                 $item_price_qty_width = ($food->quantity > 0) ? "8" : "12";
 
-                echo '<div class="col-md-4 col-sm-6 col-xs-12">
-                        <div class="box box-danger food-container"  id="'.$food_js_id.'">
+                echo '<div class="col-md-3 col-sm-6 col-xs-12">
+                        <div class="box  food-container btn-add-to-order '.($food->quantity > 0 ? 'has-stock box-success' : 'no-stock box-danger').'" 
+                            data-food_name="'.$food->food_name.'"
+                            data-price="'.$food->unit_price.'"
+                            data-qty="'.$food->quantity.'" 
+                            data-orig_qty="'.$food->quantity.'" 
+                            data-food_id="'.$food->food_id.'"
+                            id="'.$food_js_id.'">
                             <div class="box-body">
                                 <div class="food-img-wrapper">
                                     <img src="'.$meal_img_dir . $food_image.'" class="img-responsive"/>
@@ -653,25 +661,13 @@ class Food_Inventory extends MY_Controller {
                                         <span class="food-name">'.strip_str_ellipsis($food->food_name,47).'</span><br/>   
                                     </div>
                                     <div class="row">
-                                        <div class="col-md-'.$item_price_qty_width.'">
+                                        <div class="col-md-12">
                                             <span class="food-price text-danger">Price : '.$food->unit_price.'</span><br/>
                                             <span class="food-available-quantity text-muted">Quantity : 
                                                 <span class="food-qty" data-orig_qty="'.$food->quantity.'" id="'.$food_js_qty_id.'">'.($food->quantity != 0 ? $food->quantity : "Out of stock!").'</span>
                                             </span>
                                         </div>
                                         ';
-                            if($food->quantity > 0) {
-                                echo '<div class="col-md-4">
-                                            <button type="button" 
-                                                    data-food_name="'.$food->food_name.'"
-                                                    data-price="'.$food->unit_price.'"
-                                                    data-qty="'.$food->quantity.'" 
-                                                    data-orig_qty="'.$food->quantity.'" 
-                                                    data-food_id="'.$food->food_id.'"
-                                                    class="btn btn-primary btn-sm btn-add-to-order">Add to order</button>
-                                            
-                                        </div>';
-                            }
                 echo            '   </div>
                                 </div>
                             </div>
@@ -685,6 +681,12 @@ class Food_Inventory extends MY_Controller {
             echo "<h1 class='text-center'>No items found</h1>";
         }
     } // public function ajax_get_foods_menu(){
+
+    public function ajax_get_foods_menu_data(){
+        $category = $this->input->post('category');
+        $foods_list = $this->food_model->get_foods_list($category);
+        echo json_encode($foods_list);
+    }
 
     public function print_food_barcode(){
         $food_ids = explode(',',$this->input->post('food_ids'));

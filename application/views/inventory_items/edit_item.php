@@ -19,7 +19,7 @@
         </div>
        
         <div class="box-body">
-            <form class="form-horizontal" name="frm_data" id="frm_data" action="<?php echo base_url();?>inventory_items/update_inventory_item" method="POST">
+            <form class="form-horizontal" name="frm_data" id="frm_data" action="<?php echo base_url();?>Inventory_Items/update_inventory_item" method="POST">
                 <div clas="row">
                     <div class="col-md-6">
                         <div class="form-group">
@@ -34,6 +34,17 @@
                             <div class="col-md-9">
                                 <input type="text" class="form-control" name="item_name" value="<?php echo $inventory_item_details[0]->item_name;?>"/>
                                 <span class="form-error-msg"><?php echo form_error('item_name'); ?></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-3">Category</label>
+                            <div class="col-md-9">
+                                <select class="form-control" id="sel_category" name="category">
+                                    <option value="ingredients" <?php echo $inventory_item_details[0]->category == 'ingredients' ? 'selected' : '' ?>>Ingredients</option>
+                                    <option value="kitchen" <?php echo $inventory_item_details[0]->category == 'kitchen' ? 'selected' : '' ?>>Kitchen</option>
+                                    <option value="consumables" <?php echo $inventory_item_details[0]->category == 'consumables' ? 'selected' : '' ?>>Consumables</option>
+                                </select>
+                                <span class="form-error-msg"><?php echo form_error('category'); ?></span>
                             </div>
                         </div>
                         <div class="form-group">

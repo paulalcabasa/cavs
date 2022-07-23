@@ -28,7 +28,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 //$config['base_url'] = 'http://localhost/nsmdih_cms/';
 //$config['base_url'] = 'http://192.168.0.2/nsmdih_cms/';
-$config['base_url'] = 'http://'.$_SERVER['HTTP_HOST'].'/nsmdih_cms/';
+$config['base_url'] = 'http://'.$_SERVER['HTTP_HOST'].'/CAVS/';
 /*/
 |--------------------------------------------------------------------------
 | Index File
@@ -373,7 +373,7 @@ $config['encryption_key'] = 'mdiluap';
 */
 $config['sess_driver'] = 'files';
 $config['sess_cookie_name'] = 'ci_session';
-$config['sess_expiration'] = 7200;
+$config['sess_expiration'] = 0;
 $config['sess_save_path'] = NULL;
 $config['sess_match_ip'] = FALSE;
 $config['sess_time_to_update'] = 300;
@@ -528,3 +528,8 @@ $config['proxy_ips'] = '';
 
 $config['meal_img_dir'] = $config['base_url'] . "assets/images/foods/";
 $config['person_img_dir'] = $config['base_url'] . "assets/images/person_images/";
+
+$config["allowed_types"] ="*";
+
+
+$config['composer_autoload'] = 'vendor/autoload.php';

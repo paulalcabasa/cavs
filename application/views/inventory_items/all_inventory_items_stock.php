@@ -162,7 +162,7 @@ $(document).ready(function(){
       var dt = $('#tbl_item_stock').DataTable({
         "processing": true,
         "serverSide": true,
-        "ajax": "<?php echo base_url();?>inventory_items/dt_get_inventory_item_stock/<?php echo $inventory_item_id;?>",
+        "ajax": "<?php echo base_url();?>Inventory_Items/dt_get_inventory_item_stock/<?php echo $inventory_item_id;?>",
         "columns": [
             { "data": "stock_no" },
             { "data": "initial_quantity" },
@@ -187,7 +187,7 @@ $(document).ready(function(){
                 stock_id : stock_id,
                 status : status
             },
-            url:"<?php echo base_url();?>inventory_items/ajax_update_item_stock_status",
+            url:"<?php echo base_url();?>Inventory_Items/ajax_update_item_stock_status",
             success:function(response){
                 dt.draw();
             }
@@ -204,7 +204,7 @@ $(document).ready(function(){
                 stock_id : stock_id,
                 inventory_item_id : inventory_item_id
             },
-            url:"<?php echo base_url();?>inventory_items/ajax_update_item_stock",
+            url:"<?php echo base_url();?>Inventory_Items/ajax_update_item_stock",
             success:function(response){
                 location.reload();
             }

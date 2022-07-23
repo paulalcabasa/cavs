@@ -42,5 +42,7 @@
   <script src="<?php echo base_url();?>assets/js/my_helper.js"></script>
   <!-- AdminLTE App -->
   <script src="<?php echo base_url();?>plugins/adminlte-2.3.4/dist/js/app.min.js"></script>
+  <script src="<?php echo base_url();?>assets/js/raphael-min.js"></script>
+  <script src="<?php echo base_url();?>plugins/adminlte-2.3.4/plugins/morris/morris.min.js"></script>
 </head>
 <body class="hold-transition skin-blue sidebar-mini">

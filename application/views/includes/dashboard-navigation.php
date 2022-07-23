@@ -3,7 +3,7 @@
   $profile_link = "";
   $user_type = $this->session->userdata('user_type_id');
   if($user_type == 6){ // dietitian
-    $home_link = base_url() . 'food_inventory/all_food_sales';
+    $home_link = base_url() . 'Food_Inventory/all_food_sales';
     $profile_link = base_url() . 'user/edit/';
   }
   if($user_type == 4){ // cashier
@@ -156,29 +156,33 @@
         <li><a href="<?php echo base_url();?>employee"><i class="ion-person-stalker"></i> <span>Employees</span></a></li>
         <li><a href="<?php echo base_url();?>stockholder"><i class="ion-person-stalker"></i> <span>Stockholders</span></a></li>
         <li><a href="<?php echo base_url();?>user"><i class="ion-person-stalker"></i> <span>Users</span></a></li>
-       
+        <li class="header">MEAL ALLOWANCE</li>
+        <li><a href="<?php echo base_url();?>employee/meal_allowance"><i class="ion-person-stalker"></i> <span> Allowance</span></a></li>
+        <li><a href="<?php echo base_url();?>employee/credit_management"><i class="ion-person-stalker"></i> <span> Credits</span></a></li>
+        <li><a href="<?php echo base_url();?>meal_allowance_category/list"><i class="ion-person-stalker"></i> <span> Meal Allowance Category</span></a></li>
         <li class="header">TRANSACTION</li>
         <li><a href="<?php echo base_url();?>transaction/new_transaction"><i class="fa fa-plus-circle"></i> <span>New</span></a></li>
+        <li><a href="<?php echo base_url();?>transaction/new_transaction_v1"><i class="fa fa-plus-circle"></i> <span>New - version 1</span></a></li>
+    
         <li><a href="<?php echo base_url();?>transaction/all_transactions"><i class="fa fa-book"></i> <span>All Transactions</span></a></li>
         
         <li class="header">SALES</li>
-        <li><a href="<?php echo base_url();?>food_inventory/new_food"><i class="fa fa-plus"></i> <span>New</span></a></li>
-        <li><a href="<?php echo base_url();?>food_inventory/all_food_sales"><i class="fa fa-book"></i> <span>Food Sales</span></a></li>
+        <li><a href="<?php echo base_url();?>Food_Inventory/new_food"><i class="fa fa-plus"></i> <span>New</span></a></li>
+        <li><a href="<?php echo base_url();?>Food_Inventory/all_food_sales"><i class="fa fa-book"></i> <span>Food Sales</span></a></li>
         <li><a href="<?php echo base_url();?>reports/view_food_items_onhand" target="_blank"><i class="fa fa-book"></i> <span>Food Items Onhand</span></a></li>
-        <li><a href="<?php echo base_url();?>food_categories" target="_blank"><i class="fa fa-book"></i> <span>Food Categories</span></a></li>
+        <li><a href="<?php echo base_url();?>Food_categories" target="_blank"><i class="fa fa-book"></i> <span>Food Categories</span></a></li>
 
         <li class="header">EXPENSES</li>
-        <li><a href="<?php echo base_url();?>inventory_expense/all_inventory_expenses"><i class="fa fa-book"></i> <span>Expense Items</span></a></li>
+        <li><a href="<?php echo base_url();?>Inventory_Expense/all_inventory_expenses"><i class="fa fa-book"></i> <span>Expense Items</span></a></li>
         
         <li class="header">INVENTORY</li>
-        <li><a href="<?php echo base_url();?>inventory_items"><i class="fa fa-book"></i> <span>Items</span></a></li>
+        <li><a href="<?php echo base_url();?>Inventory_Items"><i class="fa fa-book"></i> <span>Items</span></a></li>
         <li><a href="<?php echo base_url();?>supplier"><i class="fa fa-book"></i> <span>Suppliers</span></a></li>
-        <li><a href="<?php echo base_url();?>unit_of_measure"><i class="fa fa-book"></i> <span>Unit of Measure</span></a></li>
+        <li><a href="<?php echo base_url();?>Unit_of_Measure"><i class="fa fa-book"></i> <span>Unit of Measure</span></a></li>
         <li><a href="<?php echo base_url();?>reports/view_inventory_items_onhand" target="_blank"><i class="fa fa-book"></i> <span>Inventory Items Onhand</span></a></li>
 
-        <li class="header">ACCOUNTING</li>
-        <li><a href="<?php echo base_url();?>employee/credit_management"><i class="ion-person-stalker"></i> <span>Credit Management</span></a></li>
-              
+        <!-- <li class="header">ACCOUNTING</li>
+                -->
        
         <li class="header">REPORTS</li>
         <li><a href="<?php echo base_url();?>reports/sales_report"><i class="fa fa-bar-chart"></i> <span>Sales Report</span></a></li>
@@ -201,22 +205,24 @@
          <li><a href="<?php echo base_url();?>stockholder"><i class="ion-person-stalker"></i> <span>Stockholders</span></a></li>
         <li class="header">TRANSACTION</li>
         <li><a href="<?php echo base_url();?>transaction/new_transaction"><i class="fa fa-plus-circle"></i> <span>New</span></a></li>
+        <li><a href="<?php echo base_url();?>transaction/new_transaction_v1"><i class="fa fa-plus-circle"></i> <span>New - version 1</span></a></li>
+    
         <li><a href="<?php echo base_url();?>transaction/all_transactions"><i class="fa fa-book"></i> <span>All Transactions</span></a></li>
         
         <li class="header">SALES</li>
-        <li><a href="<?php echo base_url();?>food_inventory/new_food"><i class="fa fa-plus"></i> <span>New</span></a></li>
-        <li><a href="<?php echo base_url();?>food_inventory/all_food_sales"><i class="fa fa-book"></i> <span>Food Sales</span></a></li>
+        <li><a href="<?php echo base_url();?>Food_Inventory/new_food"><i class="fa fa-plus"></i> <span>New</span></a></li>
+        <li><a href="<?php echo base_url();?>Food_Inventory/all_food_sales"><i class="fa fa-book"></i> <span>Food Sales</span></a></li>
         <li><a href="<?php echo base_url();?>reports/view_food_items_onhand" target="_blank"><i class="fa fa-book"></i> <span>Food Items Onhand</span></a></li>
-        <li><a href="<?php echo base_url();?>food_categories" target="_blank"><i class="fa fa-book"></i> <span>Food Categories</span></a></li>
+        <li><a href="<?php echo base_url();?>Food_categories" target="_blank"><i class="fa fa-book"></i> <span>Food Categories</span></a></li>
 
         <li class="header">EXPENSES</li>
-        <li><a href="<?php echo base_url();?>inventory_expense/all_inventory_expenses"><i class="fa fa-book"></i> <span>Expense Items</span></a></li>
+        <li><a href="<?php echo base_url();?>Inventory_Expense/all_inventory_expenses"><i class="fa fa-book"></i> <span>Expense Items</span></a></li>
        
         <li class="header">INVENTORY</li>
-        <li><a href="<?php echo base_url();?>inventory_items"><i class="fa fa-book"></i> <span>Items</span></a></li>
+        <li><a href="<?php echo base_url();?>Inventory_Items"><i class="fa fa-book"></i> <span>Items</span></a></li>
         
         <li><a href="<?php echo base_url();?>supplier"><i class="fa fa-book"></i> <span>Suppliers</span></a></li>
-        <li><a href="<?php echo base_url();?>unit_of_measure"><i class="fa fa-book"></i> <span>Unit of Measure</span></a></li>
+        <li><a href="<?php echo base_url();?>Unit_of_Measure"><i class="fa fa-book"></i> <span>Unit of Measure</span></a></li>
         <li><a href="<?php echo base_url();?>reports/view_inventory_items_onhand" target="_blank"><i class="fa fa-book"></i> <span>Inventory Items Onhand</span></a></li>      
         
 
@@ -242,10 +248,8 @@
         <?php if($this->session->userdata['user_type_id'] == 10) { ?>
 
         <li><a href="<?php echo base_url();?>employee"><i class="ion-person-stalker"></i> <span>Employees</span></a></li>
-        <li><a href="<?php echo base_url();?>reports/billing_summary"><i class="fa fa-bar-chart"></i> <span>Billing Summary Report</span></a></li>
-        <li><a href="<?php echo base_url();?>user"><i class="ion-person-stalker"></i> <span>Users</span></a></li>
-         <li><a href="<?php echo base_url();?>employee/credit_management"><i class="ion-person-stalker"></i> <span>Credit Management</span></a></li>
-       
+        <li><a href="<?php echo base_url();?>meal_allowance_category/list"><i class="ion-person-stalker"></i> <span> Meal Allowance Category</span></a></li>
+        <li><a href="<?php echo base_url();?>employee/meal_allowance"><i class="ion-person-stalker"></i> <span> Allowance</span></a></li>
         <?php } ?>       
   
         <!-- cashier -->
@@ -253,12 +257,15 @@
       
         <li class="header">TRANSACTION</li>
         <li><a href="<?php echo base_url();?>transaction/new_transaction"><i class="fa fa-plus-circle"></i> <span>New</span></a></li>
+        <li><a href="<?php echo base_url();?>transaction/new_transaction_v1"><i class="fa fa-plus-circle"></i> <span>New - version 1</span></a></li>
+          
+      
         <li><a href="<?php echo base_url();?>transaction/all_transactions"><i class="fa fa-book"></i> <span>All Transactions</span></a></li>
         <li class="header">SALES</li>
-        <li><a href="<?php echo base_url();?>food_inventory/all_food_sales"><i class="fa fa-book"></i> <span>Food Sales</span></a></li>
+        <li><a href="<?php echo base_url();?>Food_Inventory/all_food_sales"><i class="fa fa-book"></i> <span>Food Sales</span></a></li>
         <li><a href="<?php echo base_url();?>reports/view_food_items_onhand" target="_blank"><i class="fa fa-book"></i> <span>Food Items Onhand</span></a></li>
-
-
+        <li><a href="<?php echo base_url();?>reports/sales_report"><i class="fa fa-bar-chart"></i> <span>Sales Report</span></a></li>
+    
         <?php } ?>  
 	
  	      <?php if($this->session->userdata['user_type_id'] == 16) { ?>

@@ -36,7 +36,7 @@
               ?>
                 <div class="row">
                     <div class="col-md-6">
-                        <form class="form-horizontal" id="frm_data" target="_blank" method="POST" action="<?php echo base_url();?>food_inventory/print_food_barcode">
+                        <form class="form-horizontal" id="frm_data" target="_blank" method="POST" action="<?php echo base_url();?>Food_Inventory/print_food_barcode">
                             <div class="form-group">  
                                 <label class="col-md-3 control-label">Date</label>
                                 <div class="col-md-9">
@@ -125,7 +125,7 @@ function initialize_table(start_date,end_date,status_ids){
     tbl = $('#tbl_active_inventory').DataTable({
         "processing": true,
         "serverSide": true,
-        "ajax": "<?php echo base_url();?>food_inventory/dt_all_inventory_list/"+status_ids+"/"+start_date+"/"+end_date,
+        "ajax": "<?php echo base_url();?>Food_Inventory/dt_all_inventory_list/"+status_ids+"/"+start_date+"/"+end_date,
     		"columnDefs": [
     			{ "visible": false, "targets": 10 }
     		]
@@ -147,7 +147,7 @@ $(document).ready(function(){
 		transaction_state_id = $(this).data("state_id");
 		$.ajax({
 			type:"POST",
-			url:"<?php echo base_url();?>food_inventory/update_food_state",
+			url:"<?php echo base_url();?>Food_Inventory/update_food_state",
 			data:{
 				food_id : food_id,
 				transaction_state_id : transaction_state_id
@@ -173,7 +173,7 @@ $(document).ready(function(){
 	$("#btn_save_adjustments").click(function(){
 		$.ajax({
 			type:"POST",
-			url : "<?php echo base_url();?>food_inventory/ajax_adjust_quantity",
+			url : "<?php echo base_url();?>Food_Inventory/ajax_adjust_quantity",
 			data:{
 				food_id : food_id,
 				added_qty : $("#txt_adj_food_to_qty").val(),

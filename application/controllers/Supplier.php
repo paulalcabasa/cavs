@@ -4,7 +4,7 @@ class Supplier extends MY_Controller {
 
     public function __construct(){
         parent::__construct();
-        $this->load->model('supplier_model');
+        $this->load->model('Supplier_model', 'Supplier_model');
 	$this->load->helper('encryption');
     }
 
@@ -85,7 +85,7 @@ class Supplier extends MY_Controller {
                 $address,
                 $create_user
             );
-            $this->supplier_model->insert_supplier($supplier_params);
+            $this->Supplier_model->insert_supplier($supplier_params);
             $this->session->set_flashdata('success_flag', TRUE);
             $this->session->set_flashdata('message', 'Supplier has been successfully added.');
             $this->session->set_flashdata('subject', 'Success');
@@ -95,9 +95,9 @@ class Supplier extends MY_Controller {
 
     public function edit_supplier(){
        // $this->load->helper('encryption');
-        $this->load->model('system_model');
+        $this->load->model('System_model', 'system_model');
         $supplier_id = decode_string($this->uri->segment(3));
-        $supplier_details = $this->supplier_model->get_supplier_details($supplier_id);
+        $supplier_details = $this->Supplier_model->get_supplier_details($supplier_id);
         $status_list = $this->system_model->get_status();
         $content['main_content'] = 'suppliers/edit_supplier';
         $content['supplier_details'] = $supplier_details;
@@ -124,7 +124,7 @@ class Supplier extends MY_Controller {
             $create_user,
             $supplier_id
         );
-        $this->supplier_model->update_supplier($supplier_params);
+        $this->Supplier_model->update_supplier($supplier_params);
         $this->session->set_flashdata('success_flag', TRUE);
         $this->session->set_flashdata('message', 'Supplier has been successfully updated.');
         $this->session->set_flashdata('subject', 'Success');

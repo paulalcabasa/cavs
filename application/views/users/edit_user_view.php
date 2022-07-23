@@ -115,33 +115,7 @@
 			        			</div>
 			        		</div>
 
-<?php
- // $user_type = $this->session->userdata('user_type_id');
-/*  if($user_type IN (6,)){ // dietitian
-    $home_link = base_url() . 'food_inventory/all_food_sales';
-    $profile_link = base_url() . 'user/edit/';
-  }
-  if($user_type == 4){ // cashier
-    $home_link ='transaction/new_transaction';
-    $profile_link = base_url() . 'user/edit/';
-  }
-  else if($user_type == 10){ // human resources
-    $home_link = base_url() . 'employee';
-    $profile_link = base_url() . 'user/edit/';
-  }
-  else if($user_type == 3){ // administrator
-    $home_link = base_url() . 'employee';
-    $profile_link = base_url() . 'user/edit/';
-  }
-  else if($user_type == 16){
-    $home_link = base_url() . 'employee/credit_management'; // accounting
-    $profile_link = base_url() . 'user/edit/';
-  }
-  else if($user_type == 1 || $user_type == 8){ // employee
-    $home_link =  base_url() .'portal/transaction_history';
-    $profile_link = base_url() . 'user/edit/';
-  }*/
-?>
+
 <?php 
 	$user_type = $this->session->userdata('user_type_id');
 	if($user_type == 10 || $user_type == 3) { 

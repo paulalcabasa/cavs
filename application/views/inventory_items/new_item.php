@@ -29,8 +29,20 @@
                                 <span class="form-error-msg"><?php echo form_error('item_name'); ?></span>
                             </div>
                         </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-3">Category</label>
+                            <div class="col-md-9">
+                                <select class="form-control" id="sel_category" name="category">
+                                    <option value="ingredients">Ingredients</option>
+                                    <option value="kitchen">Kitchen</option>
+                                    <option value="consumables">Consumables</option>
+                                </select>
+                                <span class="form-error-msg"><?php echo form_error('category'); ?></span>
+                            </div>
+                        </div>
                     </div>
                 </div>
+               
             </form>
         </div> <!-- /.box-body -->
       

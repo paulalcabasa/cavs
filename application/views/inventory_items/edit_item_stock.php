@@ -43,7 +43,7 @@
                     </div>
                 </div>
                 <div class="box-body">
-                    <form  name="frm_data" id="frm_data" action="<?php echo base_url();?>inventory_items/update_item_stock" method="POST">
+                    <form  name="frm_data" id="frm_data" action="<?php echo base_url();?>Inventory_Items/update_item_stock" method="POST">
                         <input type='hidden' name="stock_id" value="<?php echo $stock_details[0]->stock_id;?>"/>
                         <div class="form-group">
                             <label class="control-label">Quantity</label>

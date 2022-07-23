@@ -14,7 +14,7 @@
             <h3 class="box-title">List of Inventory Items</h3>
 
             <div class="box-tools pull-right">
-                <a href="inventory_items/new_item" class="btn btn-primary btn-sm">New Item</a>
+                <a href="Inventory_Items/new_item" class="btn btn-primary btn-sm">New Item</a>
               
             </div>
         </div>
@@ -22,6 +22,7 @@
             <table id="tbl_inventory_items" class="display table dt-responsive nowrap"  cellspacing="0" width="100%">
                 <thead>
                     <tr>
+                        <th>Category</th>
                         <th>Inventory No</th>
                         <th>Item Name</th>
                         <th>Remaining Quantity</th>
@@ -43,8 +44,9 @@ $(document).ready(function(){
       var dt = $('#tbl_inventory_items').DataTable({
         "processing": true,
         "serverSide": true,
-        "ajax": "inventory_items/dt_get_inventory_items",
+        "ajax": "Inventory_Items/dt_get_inventory_items",
         "columns": [
+            { "data": "category" },
             { "data": "inventory_item_no" },
             { "data": "item_name" },
             { "data": "remaining_quantity" },

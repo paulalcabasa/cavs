@@ -202,7 +202,8 @@ class Person_model extends CI_Model {
 	}
 
 	public function get_person_details_by_category($search_category,$search_value,$person_type){
-		$sql = "SELECT p.id person_id,
+		$sql = "SELECT p.id person_id,	
+				   p.barcode_value,
 			       p.employee_no,
 			       p.first_name,
 			       p.middle_name,
@@ -220,14 +221,14 @@ class Person_model extends CI_Model {
 			
 			       (SELECT id
 					FROM meal_allowance
-					WHERE CURDATE() BETWEEN valid_from AND valid_until
+					WHERE NOW() BETWEEN valid_from AND valid_until
 					AND person_id = p.id
 					ORDER BY date_created DESC
 					LIMIT 1
 					) meal_allowance_id,
 			       (SELECT remaining_amount
 					FROM meal_allowance
-					WHERE CURDATE() BETWEEN valid_from AND valid_until
+					WHERE NOW() BETWEEN valid_from AND valid_until
 					AND person_id = p.id
 					ORDER BY date_created DESC
 					LIMIT 1
@@ -235,14 +236,14 @@ class Person_model extends CI_Model {
 					(SELECT CASE 
 					 			WHEN valid_from IS NOT NULL AND valid_until IS NOT NULL
 					 			THEN CONCAT(
-										DATE_FORMAT(valid_from,'%m/%d/%Y'),
+										DATE_FORMAT(valid_from,'%m/%d/%Y %h:%i %p'),
 										' to ',
-										DATE_FORMAT(valid_until,'%m/%d/%Y')
+										DATE_FORMAT(valid_until,'%m/%d/%Y %h:%i %p')
 									  )
 								ELSE NULL
 							END ma_validity_date
 					FROM meal_allowance
-					WHERE CURDATE() BETWEEN valid_from AND valid_until
+					WHERE NOW() BETWEEN valid_from AND valid_until
 					AND person_id = p.id
 					ORDER BY date_created DESC
 					LIMIT 1
@@ -284,7 +285,7 @@ class Person_model extends CI_Model {
 		 			   valid_until,
 		 			   date_created
 				FROM meal_allowance
-				WHERE CURDATE() BETWEEN valid_from AND valid_until
+				WHERE NOW() BETWEEN valid_from AND valid_until
 					  AND person_id = ?
 				      AND id = ?";
 		$query = $this->db->query($sql,array($person_id,$meal_allowance_id));
@@ -374,6 +375,32 @@ class Person_model extends CI_Model {
 				WHERE p.salary_deduction > 0
 				      AND pt.id = ?";
 		$query = $this->db->query($sql,$person_type_id);
+		return $query->result();
+	}
+
+	public function get_all_persons_with_credit(){
+		$sql = "SELECT p.id person_id,
+				       pt.person_type_name,
+				       p.employee_no,
+				       CONCAT(
+				           p.last_name,
+				           ',',
+				           p.first_name,
+				           ' ',
+				           (CASE 
+								WHEN p.middle_name IS NOT NULL 
+								THEN CONCAT(LEFT(p.middle_name,1),'.') 
+					   			ELSE ''
+					   		END)
+					) name,
+					p.salary_deduction credit_amount,
+					p.person_image,
+					p.salary_deduction paid_amount,
+					'' remarks
+				FROM persons p LEFT JOIN person_types pt
+					ON p.person_type_id = pt.id
+				WHERE p.salary_deduction > 0";
+		$query = $this->db->query($sql);
 		return $query->result();
 	}
 
@@ -537,6 +564,25 @@ class Person_model extends CI_Model {
 		$query = $this->db->query($sql,$department_id);
 		return $query->result();
 	}
+
+	public function get_employee_by_department2($department_id){
+		$sql = "SELECT pr.id person_id,
+					pr.employee_no,
+					CONCAT(pr.last_name, ' ', pr.first_name) person_name,
+					dp.meal_allowance_rate,
+					pr.department_id,
+					pr.barcode_value,
+					CONCAT(DATE_FORMAT(CURDATE(),'%Y-%m-%d'), '', TIME_FORMAT(dp.meal_allowance_start_time,'T%H:%i')) start_date,
+					DATE_FORMAT(DATE_ADD(CONCAT(CURDATE(), ' ', dp.meal_allowance_start_time), INTERVAL dp.shift_hours HOUR), '%Y-%m-%dT%H:%i') end_date
+				FROM persons pr
+					LEFT JOIN departments dp
+						ON pr.department_id = dp.id
+				WHERE pr.department_id = ?
+						AND pr.person_type_id = 1
+						AND pr.person_state_id = 1";
+		$query = $this->db->query($sql,$department_id);
+		return $query->result();
+	}
 	
 	public function get_employees_sd_by_cutoff($ids,$from_date,$end_date){
 		//$ids = explode(",",$ids);
@@ -619,6 +665,39 @@ class Person_model extends CI_Model {
   		         psv.first_name ASC";
   		$query = $this->db->query($sql,$status_id);
   		return $query->result();
+	}
+
+	public function get_cashiers(){
+		$sql = "SELECT p.id person_id,
+			       p.employee_no,
+			       p.first_name,
+			       p.middle_name,
+			       p.last_name,
+			       p.address,
+			       p.contact_no,
+			       p.person_image,
+			       p.person_type_id,
+			       p.user_id,
+			       pt.person_type_name,
+			       ps.status,
+			       u.username,
+			       u.passcode,
+			       u.last_login,
+			       p.department_id,
+			       p.barcode_value,
+			       p.person_state_id,
+			       dpt.department_name
+			FROM persons p LEFT JOIN person_types pt
+				ON p.person_type_id = pt.id
+			     LEFT JOIN person_state ps
+				ON ps.id = p.person_state_id
+			     LEFT JOIN users u
+				ON u.id = p.user_id
+				LEFT JOIN departments dpt
+				 ON dpt.id = p.department_id
+			WHERE pt.id IN (4)";
+		$query = $this->db->query($sql);
+		return $query->result();
 	}
 
 	

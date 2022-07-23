@@ -4,10 +4,11 @@ class Reports extends MY_Controller {
 
     public function __construct(){
         parent::__construct();
-        $this->load->model('reports_model');
-        $this->load->model('food_model');
-        $this->load->model('transaction_model');
-        $this->load->model('system_model');
+        $this->load->model('Reports_model', 'reports_model');
+        $this->load->model('Food_model', 'food_model');
+        $this->load->model('Person_model', 'person_model');
+        $this->load->model('Transaction_model', 'transaction_model');
+        $this->load->model('System_model', 'system_model');
         $this->load->helper('encryption');
     }
 
@@ -32,7 +33,7 @@ class Reports extends MY_Controller {
                                 <th>Customer Name</th>
                                 <th>Food Name</th>
                                 <th>Unit Price</th>
-                                <th>Quantity</th>
+                            <th>Quantity</th>
                                 <th>Amount</th>
                                 <th>Transaction Date</th>
                             </tr>
@@ -126,6 +127,8 @@ class Reports extends MY_Controller {
 
     public function sales_report(){
         $customer_list = $this->transaction_model->get_customers_category();
+        $cashiers_list = $this->person_model->get_cashiers();
+        $content['cashiers_list'] = $cashiers_list;
         $content['customer_list'] = $customer_list;
         $content['main_content'] = 'reports/sales_report';
         $this->load->view('includes/template',$content);
@@ -138,8 +141,10 @@ class Reports extends MY_Controller {
         $end_date = $this->input->post('end_date');
         $customer_type = $this->input->post('customer_type');
         $customer_detail = $this->input->post('customer_detail',true);
+        $transacted_by = $this->input->post('transacted_by',true);
+   
         $report_title = "Sales Report";
-        $report_content = $this->generate_sales_report($start_date,$end_date,$customer_type,$customer_detail);
+        $report_content = $this->generate_sales_report($start_date,$end_date,$customer_type,$customer_detail,$transacted_by);
         $pdf = new Pdf(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
    
         // set document information
@@ -186,7 +191,7 @@ class Reports extends MY_Controller {
         $pdf->Output('sales_report'.date('YmdHis').'.pdf', 'I');
     }
 
-    public function generate_sales_report($start_date,$end_date,$customer_type,$customer_detail){
+    public function generate_sales_report($start_date,$end_date,$customer_type,$customer_detail, $transacted_by){
         $data = '<table border="1" cellpadding="3" style="font-size:9px;">
                         <thead>
                             <tr>
@@ -202,8 +207,10 @@ class Reports extends MY_Controller {
             $start_date,
             $end_date,
             $customer_type,
-            $customer_detail
+            $customer_detail,
+            $transacted_by
         );
+    
         $report_data = $this->reports_model->generate_sales_report($params);
         $total_sales = 0;
         foreach($report_data as $row){
@@ -425,7 +432,7 @@ class Reports extends MY_Controller {
     }
 
     public function credits_ledger_report(){
-        $this->load->model('person_model');
+        $this->load->model('Person_model', 'person_model');
         $credits_ledger_list = $this->person_model->get_persons_with_credit();
         $content['main_content'] = 'reports/credits_ledger_report';
         $content['credits_ledger_list'] = $credits_ledger_list;
@@ -1129,8 +1136,8 @@ class Reports extends MY_Controller {
     }
 
     public function supplier_item_price(){
-        $this->load->model('unit_of_measure_model');
-        $this->load->model('inventory_item_model');
+        $this->load->model('Unit_of_Measure_model', 'unit_of_measure_model');
+        $this->load->model('Inventory_Item_Model', 'inventory_item_model');
         $uom_list = $this->unit_of_measure_model->get_uom_list();
         $list_of_items = $this->inventory_item_model->get_inventory_items_list(); 
         $content['list_of_items'] = $list_of_items;
@@ -1173,8 +1180,8 @@ class Reports extends MY_Controller {
     }
 
     public function supplier_item_price_pdf(){
-        $this->load->model('unit_of_measure_model');
-        $this->load->model('inventory_item_model');
+        $this->load->model('Unit_of_Measure_model', 'unit_of_measure_model');
+        $this->load->model('Inventory_Item_Model', 'inventory_item_model');
         $item_id = $this->input->post("item_name");
         $unit_of_measure_id = $this->input->post("unit_of_measure");
         $item_details = $this->inventory_item_model->get_inventory_item_details($item_id);
@@ -1341,7 +1348,7 @@ class Reports extends MY_Controller {
     }
 
     public function sales_report_by_payment_type(){
-        $this->load->model('system_model');
+        $this->load->model('System_model', 'system_model');
         $modes_of_payment = $this->system_model->get_payment_modes();
         $content['modes_of_payment'] = $modes_of_payment;
         $content['main_content'] = 'reports/sales_report_by_payment_type';

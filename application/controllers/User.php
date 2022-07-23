@@ -5,7 +5,7 @@ class User extends MY_Controller {
 		parent::__construct();
 		$this->load->helper('form');
         $this->load->helper('encryption');
-        $this->load->model('user_model');
+        $this->load->model('User_model', 'user_model');
 	}
 
     public function index(){
@@ -151,9 +151,9 @@ class User extends MY_Controller {
             $this->new_user(); // load new employee view and display errors
         }
         else {
-            $this->load->model('user_model');
-            $this->load->model('person_model');
-            $this->load->model('system_model');
+            $this->load->model('User_model', 'user_model');
+            $this->load->model('Person_model', 'person_model');
+            $this->load->model('System_model', 'system_model');
             $create_user = $this->session->userdata('user_id');
             $user_id = $this->user_model->add_user($this->input->post('username'),$this->input->post('password'));
             $person_type_id = $this->input->post('sel_user_type'); // default ID of stockholder type in persons table
@@ -180,7 +180,7 @@ class User extends MY_Controller {
     }
 
     public function edit(){
-        $this->load->model('person_model');
+        $this->load->model('Person_model', 'person_model');
         $person_id = decode_string($this->uri->segment(3));
         $person_details = $this->person_model->get_person_details($person_id);
         $content['person_types'] = $this->user_model->get_person_types();
@@ -210,7 +210,7 @@ class User extends MY_Controller {
             }
         }
       
-        $this->load->model('person_model');
+        $this->load->model('Person_model', 'person_model');
         $update_user = $this->session->userdata('user_id');
         $params = array(
             $this->input->post('first_name'),

@@ -4,7 +4,7 @@ class Unit_of_Measure extends MY_Controller {
 
     public function __construct(){
         parent::__construct();
-        $this->load->model('unit_of_measure_model');
+        $this->load->model('Unit_of_Measure_model', 'unit_of_measure_model');
 	$this->load->helper('encryption');
     }
 
@@ -29,7 +29,7 @@ class Unit_of_Measure extends MY_Controller {
                 'db' => 'uom_id',   
                 'dt' => 'uom_id',
                 'formatter' => function( $d, $row ) {
-                     $btn_data = '<a href="unit_of_measure/edit_uom/'.encode_string($d).'"><i class="fa fa-edit fa-1x"></i></a></li>';
+                     $btn_data = '<a href="Unit_of_Measure/edit_uom/'.encode_string($d).'"><i class="fa fa-edit fa-1x"></i></a></li>';
                     return $btn_data;
                 }
             )
@@ -94,13 +94,13 @@ class Unit_of_Measure extends MY_Controller {
             $this->session->set_flashdata('success_flag', TRUE);
             $this->session->set_flashdata('message', '<strong>'.$description.' ('.$abbreviation.')</strong>  has been successfully added.');
             $this->session->set_flashdata('subject', 'Success');
-            redirect('unit_of_measure/new_uom');
+            redirect('Unit_of_Measure/new_uom');
         }
     }
 
     public function edit_uom(){
       //  $this->load->helper('encryption');
-        $this->load->model('system_model');
+        $this->load->model('System_model', 'system_model');
         $uom_id = decode_string($this->uri->segment(3));
         $uom_details = $this->unit_of_measure_model->get_unit_of_measure_details($uom_id);
         $status_list = $this->system_model->get_status();
@@ -129,7 +129,7 @@ class Unit_of_Measure extends MY_Controller {
         $this->session->set_flashdata('success_flag', TRUE);
         $this->session->set_flashdata('message', '<strong>'.$description.' ('.$abbreviation.')</strong> has been successfully updated.');
         $this->session->set_flashdata('subject', 'Success');
-        redirect('unit_of_measure/edit_uom/' . encode_string($uom_id));
+        redirect('Unit_of_Measure/edit_uom/' . encode_string($uom_id));
               
     }
 

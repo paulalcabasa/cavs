@@ -293,7 +293,7 @@ $(document).ready(function(){
         $("#food_info_modal").modal("show");
         // start of ajax method for passing data
         $.ajax({
-            url: "<?php echo base_url();?>food_inventory/add_food",
+            url: "<?php echo base_url();?>Food_Inventory/add_food",
             type: 'POST',
             data: formData,
             cache: false,

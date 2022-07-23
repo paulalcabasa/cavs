@@ -4,7 +4,7 @@ class Inventory_Items extends MY_Controller {
 
     public function __construct(){
         parent::__construct();
-        $this->load->model('inventory_item_model');
+        $this->load->model('Inventory_Item_Model', 'inventory_item_model');
 	$this->load->helper('encryption');
     }
 
@@ -22,6 +22,7 @@ class Inventory_Items extends MY_Controller {
         // Table's primary key
         $primaryKey = 'inventory_item_id';
         $columns = array(
+            array( 'db' => 'category', 'dt' => 'category' ),
             array( 'db' => 'inventory_item_no', 'dt' => 'inventory_item_no' ),
             array( 'db' => 'item_name',  'dt' => 'item_name' ),
             array( 'db' => 'remaining_quantity',  'dt' => 'remaining_quantity' ),
@@ -31,7 +32,7 @@ class Inventory_Items extends MY_Controller {
                 'dt' => 'item_stock',
                 'formatter' => function( $d, $row ) {
                     
-                     $btn_data = '<a href="inventory_items/all_inventory_items_stock/'.encode_string($d).'" data-state_id="4"><i class="fa fa-edit fa-1x"></i></a>';
+                     $btn_data = '<a href="Inventory_Items/all_inventory_items_stock/'.encode_string($d).'" data-state_id="4"><i class="fa fa-edit fa-1x"></i></a>';
                     return $btn_data;
                 }
             ),
@@ -40,7 +41,7 @@ class Inventory_Items extends MY_Controller {
                 'dt' => 'edit_item',
                 'formatter' => function( $d, $row ) {
                     
-                     $btn_data = '<a href="inventory_items/edit_item/'.encode_string($d).'" data-state_id="4"><i class="fa fa-edit fa-1x"></i></a>';
+                     $btn_data = '<a href="Inventory_Items/edit_item/'.encode_string($d).'" data-state_id="4"><i class="fa fa-edit fa-1x"></i></a>';
                     return $btn_data;
                 }
             )
@@ -85,22 +86,24 @@ class Inventory_Items extends MY_Controller {
         }
         else {
             $item_name = $this->input->post('item_name');
+            $category = $this->input->post('category');
             $create_user = $this->session->userdata('user_id');
             $item_params = array(
                 $item_name,
+                $category,
                 $create_user
             );
             $this->inventory_item_model->insert_inventory_items($item_params);
             $this->session->set_flashdata('success_flag', TRUE);
             $this->session->set_flashdata('message', $item_name . ' has been successfully added.');
             $this->session->set_flashdata('subject', 'Success');
-            redirect('inventory_items/new_item');
+            redirect('Inventory_Items/new_item');
         }
     }
 
     public function edit_item(){
         $this->load->helper('encryption');
-        $this->load->model('system_model');
+        $this->load->model('System_model', 'system_model');
         $inventory_item_id = decode_string($this->uri->segment(3));
         $inventory_item_details = $this->inventory_item_model->get_inventory_item_details($inventory_item_id);
         $status_list = $this->system_model->get_status();
@@ -116,9 +119,11 @@ class Inventory_Items extends MY_Controller {
         $item_name = $this->input->post('item_name');
         $inventory_item_id = $this->input->post('inventory_item_id');
         $status_id = $this->input->post('status');
+        $category = $this->input->post('category');
         $create_user = $this->session->userdata('user_id');
         $inventory_item_params = array(
             $item_name,
+            $category,
             $status_id,
             $create_user,
             $inventory_item_id
@@ -127,7 +132,7 @@ class Inventory_Items extends MY_Controller {
         $this->session->set_flashdata('success_flag', TRUE);
         $this->session->set_flashdata('message', 'Inventory item has been successfully updated.');
         $this->session->set_flashdata('subject', 'Success');
-        redirect('inventory_items/edit_item/' . encode_string($inventory_item_id));              
+        redirect('Inventory_Items/edit_item/' . encode_string($inventory_item_id));              
     }
 
     public function all_inventory_items_stock(){
@@ -211,12 +216,12 @@ class Inventory_Items extends MY_Controller {
 
     public function load_new_item_stock_page($inventory_item_id_enc){
         $this->load->helper('encryption');
-        $this->load->model('unit_of_measure_model');
-        $this->load->model('supplier_model');
+        $this->load->model('Unit_of_Measure_model', 'unit_of_measure_model');
+        $this->load->model('Supplier_model', 'Supplier_model');
         $inventory_item_id = decode_string($inventory_item_id_enc);
         $inventory_item_details = $this->inventory_item_model->get_inventory_item_details($inventory_item_id);
         $uom_list = $this->unit_of_measure_model->get_uom_list();
-        $supplier_list = $this->supplier_model->get_suppliers_list();
+        $supplier_list = $this->Supplier_model->get_suppliers_list();
         $content['inventory_item_id'] = $inventory_item_id;
         $content['inventory_item_id_enc'] = $inventory_item_id_enc;
         $content['inventory_item_details'] = $inventory_item_details;
@@ -292,18 +297,18 @@ class Inventory_Items extends MY_Controller {
             $this->session->set_flashdata('success_flag', TRUE);
             $this->session->set_flashdata('message', 'Item has been successfully added.');
             $this->session->set_flashdata('subject', 'Success');
-            redirect('inventory_items/new_item_stock/' . encode_string($inventory_item_id));
+            redirect('Inventory_Items/new_item_stock/' . encode_string($inventory_item_id));
         }
     }
 
     public function edit_item_stock(){
         $this->load->helper('encryption');
-        $this->load->model('unit_of_measure_model');
-        $this->load->model('supplier_model');
+        $this->load->model('Unit_of_Measure_model', 'unit_of_measure_model');
+        $this->load->model('Supplier_model', 'Supplier_model');
         $stock_id = decode_string($this->uri->segment(3));
         $stock_details = $this->inventory_item_model->get_inventory_item_stock_details($stock_id);
         $uom_list = $this->unit_of_measure_model->get_uom_list();
-        $supplier_list = $this->supplier_model->get_suppliers_list();
+        $supplier_list = $this->Supplier_model->get_suppliers_list();
         $disp_purchase_date = $stock_details[0]->purchase_date;
      
         if($disp_purchase_date != "" || $disp_purchase_date != null){
@@ -343,7 +348,7 @@ class Inventory_Items extends MY_Controller {
         $this->session->set_flashdata('success_flag', TRUE);
         $this->session->set_flashdata('message', 'Item has been successfully updated.');
         $this->session->set_flashdata('subject', 'Success');
-        redirect('inventory_items/edit_item_stock/' . encode_string($stock_id));
+        redirect('Inventory_Items/edit_item_stock/' . encode_string($stock_id));
     }
 
 

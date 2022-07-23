@@ -3,9 +3,9 @@ class Cron extends CI_Controller {
  
     public function __construct() {
         parent::__construct();
-        $this->load->model('stockholder_model');
-        $this->load->model('person_model');
-        $this->load->model('system_model');
+        $this->load->model('Stockholder_model' ,'stockholder_model');
+        $this->load->model('Person_model', 'person_model');
+        $this->load->model('System_model', 'system_model');
         // this controller can only be called from the command line
       //  if (!$this->input->is_cli_request()) show_error('Direct access is not allowed');
     }
@@ -105,9 +105,22 @@ class Cron extends CI_Controller {
 	
     public function test_cron(){
 	
-	$this->load->model('test_model');   
-	$this->test_model->test_insert(); 
+        $this->load->model('test_model');   
+        $this->test_model->test_insert(); 
 
     }
+
+    public function load_employees(){
+        try {
+            $xls_file = './files/employees/stockholder_masterfile.xlsx';
+            $inputFileType = PHPExcel_IOFactory::identify($xls_file);
+            $objReader = PHPExcel_IOFactory::createReader($inputFileType);
+            $objPHPExcel = $objReader->load($xls_file);
+        } catch(Exception $e) {
+            die('Error loading file "'.pathinfo($inputFileName,PATHINFO_BASENAME).'": '.$e->getMessage());
+        }
+
+    }
+
 
 }

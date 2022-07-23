@@ -21,7 +21,11 @@ class Food_model extends CI_Model {
 		FROM foods fd LEFT JOIN food_categories fc
 			ON fd.food_category_id = fc.id
 		WHERE fd.transaction_state_id = 4
-              AND fd.food_category_id = ?";
+              AND fd.food_category_id = ?
+			  AND fd.quantity > 0
+		ORDER BY fd.quantity desc,
+				 fd.food_name
+				 ";
 		$query = $this->db->query($sql,$category);
 		return $query->result();
 	}
@@ -30,6 +34,7 @@ class Food_model extends CI_Model {
 		$sql = "SELECT id,
 					   category
 				FROM food_categories fc
+				WHERE active = 'y'
 				ORDER BY category ASC";
 		$query = $this->db->query($sql);
 		return $query->result();
@@ -365,6 +370,7 @@ class Food_model extends CI_Model {
                        category
                 FROM food_categories
                 WHERE saleable = 1
+				AND active = 'y'
                 ORDER BY sequence";
         $query = $this->db->query($sql);
         return $query->result();

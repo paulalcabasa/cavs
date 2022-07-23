@@ -312,7 +312,7 @@ $(document).ready(function(){
 					food_id : food_id,
 					new_barcode : new_barcode
 				},
-				url:"<?php echo base_url();?>food_inventory/ajax_update_food_barcode",
+				url:"<?php echo base_url();?>Food_Inventory/ajax_update_food_barcode",
 				success(response){
 					if(response == 'exists'){
 						alert("Barcode already exists, please enter a new barcode.");

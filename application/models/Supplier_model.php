@@ -30,7 +30,7 @@ class Supplier_Model extends CI_Model {
 				       st.description state,
 				       format_person_name(ps.first_name,ps.middle_name,ps.last_name) created_by,
 				       DATE_FORMAT(sp.date_created,'%m/%d/%Y') date_created
-				FROM suppliers sp LEFT JOIN STATUS st
+				FROM suppliers sp LEFT JOIN `status` st
 					ON sp.status_id = st.id
 				     LEFT JOIN users u
 					ON u.id = sp.create_user

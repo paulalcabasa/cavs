@@ -43,8 +43,6 @@ class User_model extends CI_Model {
 			);
 			$this->update_last_login($data[0]->user_id);
 			$this->session->set_userdata($user_data);
-
-			var_dump($this->session->userdata('user_id'));
 			return true;
 		}
 		else {

@@ -1,2 +1,5 @@
 files/
 application/logs
+assets/images/person_images
+vendor
+composer.lock
