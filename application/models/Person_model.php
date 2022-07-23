@@ -218,7 +218,7 @@ class Person_model extends CI_Model {
 			       u.last_login,
 			       CONCAT(p.last_name,', ',p.first_name,' ',LEFT(p.middle_name,1),'.') full_name1,
 			       p.salary_deduction,
-			
+				   dept.meal_allowance_rate, 
 			       (SELECT id
 					FROM meal_allowance
 					WHERE NOW() BETWEEN valid_from AND valid_until
@@ -261,13 +261,24 @@ class Person_model extends CI_Model {
 					AND person_id = p.id
 					ORDER BY date_created DESC
 					LIMIT 1
-					) ma_weekly_claims_count
+					) ma_weekly_claims_count,
+					(SELECT SUM(tp.amount) consumed
+					FROM transaction_headers th
+					LEFT JOIN transaction_payments tp
+					ON th.id = tp.transaction_header_id 
+					WHERE th.transaction_status = 1
+					AND  tp.payment_mode_id = 1 
+					AND person_id = p.id
+					AND DATE(th.date_created) BETWEEN DATE(NOW()) AND DATE(NOW())
+					) consumed_amount
 			FROM persons p LEFT JOIN person_types pt
-				ON p.person_type_id = pt.id
-			     LEFT JOIN person_state ps
-				ON ps.id = p.person_state_id
-			     LEFT JOIN users u
-				ON u.id = p.user_id
+					ON p.person_type_id = pt.id
+				LEFT JOIN person_state ps
+					ON ps.id = p.person_state_id
+				LEFT JOIN users u
+					ON u.id = p.user_id
+				LEFT JOIN departments dept
+					ON dept.id = p.department_id
 			WHERE p.".$search_category." = ?
 			      AND pt.id = ?";
 		$query = $this->db->query($sql,array($search_value,$person_type));

@@ -108,6 +108,12 @@
 
 										<span class="text-bold">Meal Allowance</span><br/>
 										<span>PHP <span>{{ !employee.remaining_amount ? '0.00' : employee.remaining_amount}}</span></span><br/>
+
+										<span class="text-bold">Daily Limit</span><br/>
+										<span>PHP <span>{{ !employee.meal_allowance_rate ? '0.00' : employee.meal_allowance_rate}}</span></span><br/>
+
+										<span class="text-bold">Consumed Amount</span><br/>
+										<span>PHP <span>{{ !employee.meal_allowance_rate ? '0.00' : employee.consumed_amount}}</span></span><br/>
 									</div>
 								</div>
 								<div class="row" id="guest_details" v-if="transaction.customer_type == 11">
@@ -414,7 +420,6 @@ Vue.createApp({
 					customer_type : customerType
 				},
 				success:function(response){
-
 					if($.trim(response) === "invalid"){
 						return false;
 					}
@@ -535,13 +540,14 @@ Vue.createApp({
 				}	
 
 				var mealAllowance = this.employee.remaining_amount;
-
+				var allowedAllowanceDaily = this.employee.meal_allowance_rate - this.employee.consumed_amount;
+				
 				var excessToAllowance = 0;
 				var chargeToAllowance = 0;
 				
-				if(mealAllowance < grandTotal) {
-					excessToAllowance = grandTotal - mealAllowance;
-					chargeToAllowance = mealAllowance;
+				if(allowedAllowanceDaily < grandTotal) {
+					excessToAllowance = grandTotal - allowedAllowanceDaily;
+					chargeToAllowance = allowedAllowanceDaily;
 				} else {
 					chargeToAllowance = grandTotal;
 				}
@@ -555,9 +561,6 @@ Vue.createApp({
 				if(excessToAllowance > 0){
 					this.payment_modes[this.transaction.customer_type][1].amount = excessToAllowance;
 				}
-
-				
-
 			} else {
 				this.payment_modes[this.transaction.customer_type][0].amount = grandTotal;
 			}
