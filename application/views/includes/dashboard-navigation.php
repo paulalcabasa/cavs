@@ -249,7 +249,7 @@
 
         <li><a href="<?php echo base_url();?>employee"><i class="ion-person-stalker"></i> <span>Employees</span></a></li>
         <li><a href="<?php echo base_url();?>meal_allowance_category/list"><i class="ion-person-stalker"></i> <span> Meal Allowance Category</span></a></li>
-      
+        <li><a href="<?php echo base_url();?>employee/meal_allowance"><i class="ion-person-stalker"></i> <span> Allowance</span></a></li>
         <?php } ?>       
   
         <!-- cashier -->
