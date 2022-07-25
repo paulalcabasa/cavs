@@ -71,7 +71,8 @@ class Person_model extends CI_Model {
 					update_user = ?,
 					date_updated = NOW(),
 					department_id = ?,
-					person_state_id = ?
+					person_state_id = ?,
+					barcode_value = ?
 				WHERE id = ?";
 		$this->db->query($sql,$params);
 	}

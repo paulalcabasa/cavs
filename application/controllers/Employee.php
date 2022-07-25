@@ -260,6 +260,7 @@ class Employee extends MY_Controller {
             $update_user,
             $this->input->post('department'),
             $this->input->post('state'),
+            $this->input->post('barcode_no'),
             $this->input->post('employee_id')
         );
         $this->person_model->update_person_details($params);

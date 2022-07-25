@@ -104,7 +104,7 @@
 										</span><br/>
 										
 										<span class="text-bold">Name</span><br/>
-										<span>{{ !employee.employee_no ? '(Select customer)' : employee.full_name1}}</span><br/>
+										<span>{{ !employee.employee_no ? '(Select customer)' : employee.first_name + ' ' + employee.last_name }}</span><br/>
 
 										<span class="text-bold">Meal Allowance</span><br/>
 										<span>PHP <span>{{ !employee.remaining_amount ? '0.00' : employee.remaining_amount}}</span></span><br/>

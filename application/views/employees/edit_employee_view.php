@@ -37,7 +37,7 @@
 			        		<div class="form-group">
 			        			<label class="col-md-3 control-label">Barcode No</label>
 			        			<div class="col-md-9">
-			        				<input type="text" maxlength="30" readonly="readonly" class="form-control" placeholder="Barcode Number" name="barcode_no" value="<?php echo $employee_details->barcode_value;?>" />
+			        				<input type="text" maxlength="30" class="form-control" placeholder="Barcode Number" name="barcode_no" value="<?php echo $employee_details->barcode_value;?>" />
 			        				<span class='help-block form-error-msg'><?php echo form_error('barcode_no');?></span>
 			        			</div>
 			        		</div>
