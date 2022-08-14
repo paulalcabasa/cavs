@@ -331,6 +331,12 @@ $("document").ready(function(){
 		$("#txt_barcode_no_vue").val($("#txt_barcode_no").val());
 		$('#txt_barcode_no_vue')[0].dispatchEvent(new CustomEvent('input'));
 	}); 
+
+	
+	$("#txt_barcode_no").on('input', function(){
+		$("#txt_barcode_no_vue").val($("#txt_barcode_no").val());
+		$('#txt_barcode_no_vue')[0].dispatchEvent(new CustomEvent('input'));
+	}); 
 });
 
 Vue.createApp({
