@@ -18,7 +18,7 @@ class Pdf extends TCPDF {
         $header_data = $this->getHeaderData();
         $this->SetFont('times', 'C', 11);
         $this->SetY(9);   
-        $this->Cell(0, 0, 'Sta. Rosa United Healthy Options, Inc', 0, false, 'L', 0, '', 0, false, 'M', 'M');
+        $this->Cell(0, 0, 'Carmona Allied Ventures and Services Inc.', 0, false, 'L', 0, '', 0, false, 'M', 'M');
         $this->SetY(13);
         $this->Cell(0, 0, $header_data['title'], 0, false, 'L', 0, '', 0, false, 'M', 'M');
         $this->SetY(17);
