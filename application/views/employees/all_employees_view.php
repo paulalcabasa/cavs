@@ -53,6 +53,8 @@
                                 <?php echo $employee->alloted_amount;?>
                                     <?php if($employee->alloted_amount != "") { ?>
                                         <a href="#" class="btn-remove-allowance" data-person_id="<?php echo $employee->person_id; ?>">Remove</a>
+                                    <?php } else { ?>
+                                        <a href="employee/meal_allowance_single/<?php echo $employee->person_id; ?>">Add</a>
                                     <?php } ?>
                                 </td>
                                 <td><?php echo $employee->remaining_amount;?></td>

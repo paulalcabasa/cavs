@@ -274,8 +274,22 @@ class Employee extends MY_Controller {
     public function meal_allowance(){
         $this->load->model('System_model', 'system_model');
         $departments_list = $this->system_model->get_departments();
+    
         $content['main_content'] = 'employees/meal_allowance_view';
         $content['message_subject'] = null;
+        $content['person_id'] = null;
+        $content['message_body'] = '<p class="text-center text-muted">Click on the <strong>Upload file</strong> button to start reloading meal allowances.</p>';
+        $content['flag'] = null; 
+        $this->load->view('includes/template',$content);
+    }
+
+    public function meal_allowance_single(){
+        $this->load->model('System_model', 'system_model');
+        $person_id = $this->uri->segment(3);
+        $content['main_content'] = 'employees/meal_allowance_single_view';
+        $content['message_subject'] = null;
+        $content['person_id'] = $person_id;
+        $content['employees_list'] = $this->person_model->get_single_employee_by_department2($person_id);
         $content['message_body'] = '<p class="text-center text-muted">Click on the <strong>Upload file</strong> button to start reloading meal allowances.</p>';
         $content['flag'] = null; 
         $this->load->view('includes/template',$content);
@@ -1280,7 +1294,6 @@ class Employee extends MY_Controller {
 
         $current_user = $this->session->userdata('user_id');
         $employeesList = $this->input->post('employees');
-
         // set to inactive the previous uploaded meal allowance by department
         foreach($employeesList as $employee) {
             $start_date = $employee['start_date'];
@@ -1343,10 +1356,7 @@ class Employee extends MY_Controller {
 
         // }
     
-      
     
-        
-     
     }
 
     public function ajax_remove_allowance(){

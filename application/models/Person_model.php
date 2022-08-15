@@ -595,6 +595,23 @@ class Person_model extends CI_Model {
 		$query = $this->db->query($sql,$department_id);
 		return $query->result();
 	}
+
+	public function get_single_employee_by_department2($person_id){
+		$sql = "SELECT pr.id person_id,
+					pr.employee_no,
+					CONCAT(pr.last_name, ' ', pr.first_name) person_name,
+					dp.meal_allowance_rate,
+					pr.department_id,
+					pr.barcode_value,
+					CONCAT(DATE_FORMAT(CURDATE(),'%Y-%m-%d'), '', TIME_FORMAT(dp.meal_allowance_start_time,'T%H:%i')) start_date,
+					DATE_FORMAT(DATE_ADD(CONCAT(CURDATE(), ' ', dp.meal_allowance_start_time), INTERVAL dp.shift_hours HOUR), '%Y-%m-%dT%H:%i') end_date
+				FROM persons pr
+					LEFT JOIN departments dp
+						ON pr.department_id = dp.id
+				WHERE pr.id = ?";
+		$query = $this->db->query($sql,$person_id);
+		return $query->result();
+	}
 	
 	public function get_employees_sd_by_cutoff($ids,$from_date,$end_date){
 		//$ids = explode(",",$ids);
