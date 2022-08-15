@@ -1282,9 +1282,6 @@ class Employee extends MY_Controller {
         $employeesList = $this->input->post('employees');
 
         // set to inactive the previous uploaded meal allowance by department
-        
-
-
         foreach($employeesList as $employee) {
             $start_date = $employee['start_date'];
             $end_date = $employee['end_date'];
@@ -1350,5 +1347,17 @@ class Employee extends MY_Controller {
     
         
      
+    }
+
+    public function ajax_remove_allowance(){
+        $person_id = $this->input->post('person_id');
+        $meal_allowance_details = $this->person_model->get_person_allowance_details($person_id);
+        $meal_allowance_id = $meal_allowance_details[0]->meal_allowance_id;
+        $this->person_model->expire_meal_allowance($meal_allowance_id);
+        echo json_encode([
+            'message' => 'allowance removed',
+            'person_id' => $person_id,
+            'meal_allowance_details' => $meal_allowance_details
+        ]);
     }
 }

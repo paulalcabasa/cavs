@@ -712,5 +712,68 @@ class Person_model extends CI_Model {
 		return $query->result();
 	}
 
+	public function get_person_allowance_details($person_id){
+		$sql = "SELECT p.id person_id,	
+				   p.barcode_value,
+			       p.employee_no,
+			       p.first_name,
+			       p.middle_name,
+			       p.last_name,
+			       p.address,
+			       p.contact_no,
+			       p.person_image,
+			       pt.person_type_name,
+			       ps.status,
+				   dept.meal_allowance_rate, 
+			       (SELECT id
+					FROM meal_allowance
+					WHERE NOW() BETWEEN valid_from AND valid_until
+					AND person_id = p.id
+					ORDER BY date_created DESC
+					LIMIT 1
+					) meal_allowance_id,
+			       (SELECT remaining_amount
+					FROM meal_allowance
+					WHERE NOW() BETWEEN valid_from AND valid_until
+					AND person_id = p.id
+					ORDER BY date_created DESC
+					LIMIT 1
+					) remaining_amount,
+					(SELECT CASE 
+					 			WHEN valid_from IS NOT NULL AND valid_until IS NOT NULL
+					 			THEN CONCAT(
+										DATE_FORMAT(valid_from,'%m/%d/%Y %h:%i %p'),
+										' to ',
+										DATE_FORMAT(valid_until,'%m/%d/%Y %h:%i %p')
+									  )
+								ELSE NULL
+							END ma_validity_date
+					FROM meal_allowance
+					WHERE NOW() BETWEEN valid_from AND valid_until
+					AND person_id = p.id
+					ORDER BY date_created DESC
+					LIMIT 1
+					) ma_validity_date
+			FROM persons p LEFT JOIN person_types pt
+					ON p.person_type_id = pt.id
+				LEFT JOIN person_state ps
+					ON ps.id = p.person_state_id
+				LEFT JOIN users u
+					ON u.id = p.user_id
+				LEFT JOIN departments dept
+					ON dept.id = p.department_id
+			WHERE p.id = ?";
+		$query = $this->db->query($sql, $person_id);
+		return $query->result();
+	}
+
+	public function expire_meal_allowance($meal_allowance_id){
+		$sql = "UPDATE meal_allowance 
+				SET valid_until = NOW()
+				WHERE id = ?";
+		$this->db->query($sql, $meal_allowance_id);
+	}
+
+
 	
 }
