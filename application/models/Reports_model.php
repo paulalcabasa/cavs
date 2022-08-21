@@ -65,40 +65,103 @@ class Reports_model extends CI_Model {
 		$start_date = $query_params[0];
 		$end_date = $query_params[1];
 
-	
-		$this->db->select("transaction_no,
-					       customer_type,
-					       customer_name,
-					       total_amount,
-					       transaction_date");
-		$this->db->from('transactions_v');
-		$this->db->where('	transaction_status', 1);
-		$this->db->where('DATE(date_created) >=', $start_date);
-		$this->db->where('DATE(date_created) <=', $end_date);
-		if($transacted_by != '') {
-			$this->db->where('create_user', $transacted_by);
-		}
-		if($customer_type != "all"){
-			$this->db->where('person_type_id', $customer_type);
-			if($customer_detail != ""){
-				$this->db->group_start();
-				if($customer_type == 1 || $customer_type == 8) {
-					$this->db->or_like('employee_no', $customer_detail,'after');
-					$this->db->or_like('customer_name', $customer_detail,'after');
-				}
-				else if($customer_type == 12){
-					$this->db->or_like('customer_name', $customer_detail,'after');
-					$this->db->or_like('patient_room_no', $customer_detail,'after');
-					$this->db->or_like('patient_reference_no', $customer_detail,'after');
-				}
-				else if($customer_type == 11 || $customer_type == 14){
-					$this->db->or_like('customer_name', $customer_detail,'after');
-				}
+		$where = "";
 
-				$this->db->group_end();
-			}
+		if($customer_type != "all"){
+			$where .= "AND th.person_type_id = ". $customer_type;
 		}
-		$query = $this->db->get();
+		if($transacted_by != 'all') {
+			$where .= "AND th.create_user = ". $transacted_by;
+		}
+
+		// if($customer_type != "all"){
+		// 	$this->db->where('person_type_id', $customer_type);
+		// 	if($customer_detail != ""){
+		// 		$this->db->group_start();
+		// 		if($customer_type == 1 || $customer_type == 8) {
+		// 			$this->db->or_like('employee_no', $customer_detail,'after');
+		// 			$this->db->or_like('customer_name', $customer_detail,'after');
+		// 		}
+		// 		else if($customer_type == 12){
+		// 			$this->db->or_like('customer_name', $customer_detail,'after');
+		// 			$this->db->or_like('patient_room_no', $customer_detail,'after');
+		// 			$this->db->or_like('patient_reference_no', $customer_detail,'after');
+		// 		}
+		// 		else if($customer_type == 11 || $customer_type == 14){
+		// 			$this->db->or_like('customer_name', $customer_detail,'after');
+		// 		}
+
+		// 		$this->db->group_end();
+		// 	}
+		// }
+
+		$sql = "SELECT th.id transaction_header_id,
+					pt.person_type_name,
+					CONCAT(cashier_person.first_name,' ', cashier_person.last_name) cashier_name,
+					th.barcode_no,
+					CONCAT(customer.first_name,' ', customer.last_name) customer_name,
+					th.discount_percent,
+					SUM(CASE WHEN tp.payment_mode_id = 1 THEN tp.amount ELSE 0 END) consumed_allowance,
+					SUM(CASE WHEN tp.payment_mode_id = 2 THEN tp.amount ELSE 0 END) added_cash,
+					DATE_FORMAT(th.date_created,'%M, %d %Y') date_created,
+					DATE_FORMAT(th.date_created,'%h:%i %p') time_created,
+					th.person_id,
+					th.total_amount
+				FROM transaction_headers th 
+					LEFT JOIN person_types pt
+						ON pt.id = th.person_type_id
+					LEFT JOIN users cashier_user
+						ON cashier_user.id = th.create_user
+					LEFT JOIN persons cashier_person
+						ON cashier_person.user_id = cashier_user.id
+					LEFT JOIN persons customer
+						ON customer.id = th.person_id
+					LEFT JOIN  transaction_payments tp
+						ON tp.transaction_header_id = th.id
+					LEFT JOIN payment_modes pm	
+						ON pm.id = tp.payment_mode_id
+				WHERE DATE(th.date_created) BETWEEN '$start_date' AND '$end_date' 
+				". $where ."
+				GROUP BY th.person_id,th.id
+				ORDER BY customer.last_name, customer.first_name";
+			$query = $this->db->query($sql);
+		
+			return $query->result();
+
+	
+		// $this->db->select("transaction_no,
+		// 			       customer_type,
+		// 			       customer_name,
+		// 			       total_amount,
+		// 			       transaction_date");
+		// $this->db->from('transactions_v');
+		// $this->db->where('	transaction_status', 1);
+		// $this->db->where('DATE(date_created) >=', $start_date);
+		// $this->db->where('DATE(date_created) <=', $end_date);
+		// if($transacted_by != '') {
+		// 	$this->db->where('create_user', $transacted_by);
+		// }
+		// if($customer_type != "all"){
+		// 	$this->db->where('person_type_id', $customer_type);
+		// 	if($customer_detail != ""){
+		// 		$this->db->group_start();
+		// 		if($customer_type == 1 || $customer_type == 8) {
+		// 			$this->db->or_like('employee_no', $customer_detail,'after');
+		// 			$this->db->or_like('customer_name', $customer_detail,'after');
+		// 		}
+		// 		else if($customer_type == 12){
+		// 			$this->db->or_like('customer_name', $customer_detail,'after');
+		// 			$this->db->or_like('patient_room_no', $customer_detail,'after');
+		// 			$this->db->or_like('patient_reference_no', $customer_detail,'after');
+		// 		}
+		// 		else if($customer_type == 11 || $customer_type == 14){
+		// 			$this->db->or_like('customer_name', $customer_detail,'after');
+		// 		}
+
+		// 		$this->db->group_end();
+		// 	}
+		// }
+		// $query = $this->db->get();
 		return $query->result();
 	}
 

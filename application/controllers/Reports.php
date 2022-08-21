@@ -145,7 +145,7 @@ class Reports extends MY_Controller {
    
         $report_title = "Sales Report";
         $report_content = $this->generate_sales_report($start_date,$end_date,$customer_type,$customer_detail,$transacted_by);
-        $pdf = new Pdf(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+        $pdf = new Pdf();
    
         // set document information
         $pdf->SetCreator(PDF_CREATOR);
@@ -182,7 +182,7 @@ class Reports extends MY_Controller {
         $pdf->SetFont('times', '', 9);
 
         // add a page
-        $pdf->AddPage();
+        $pdf->AddPage('L');
 
         // set some text to print
         $pdf->writeHTML($report_content, true, false, true, false, '');
@@ -197,9 +197,14 @@ class Reports extends MY_Controller {
                             <tr>
                                 <th>Transaction No.</th>
                                 <th>Customer Type</th>
-                                <th>Customer Name</th>
-                                <th>Amount</th>
-                                <th>Transaction Date</th>
+                                <th>Cashier</th>
+                                <th>Barcode</th>
+                                <th>Customer</th>
+                                <th>Discount</th>
+                                <th>Amount Due</th>
+                                <th>Added Cash</th>
+                                <th>Date</th>
+                                <th>Time</th>
                             </tr>
                         </thead>
                         <tbody>';
@@ -212,20 +217,27 @@ class Reports extends MY_Controller {
         );
     
         $report_data = $this->reports_model->generate_sales_report($params);
+        // print_r($report_data);
+        // die;
         $total_sales = 0;
         foreach($report_data as $row){
             $data .= '<tr>
-                            <td>'.$row->transaction_no.'</td>
-                            <td>'.$row->customer_type.'</td>
+                            <td>'.$row->transaction_header_id.'</td>
+                            <td>'.$row->person_type_name.'</td>
+                            <td>'.$row->cashier_name.'</td>
+                            <td>'.$row->barcode_no.'</td>
                             <td>'.$row->customer_name.'</td>
-                            <td>'.$row->total_amount.'</td>
-                            <td>'.$row->transaction_date.'</td>
+                            <td>'.$row->discount_percent.'</td>
+                            <td>'.$row->consumed_allowance.'</td>
+                            <td>'.$row->added_cash.'</td>
+                            <td>'.$row->date_created.'</td>
+                            <td>'.$row->time_created.'</td>
                       </tr>';
             $total_sales += $row->total_amount;
         }
         $data .=  '<tr>
-                <th colspan="3" align="right">Total Sales</th>
-                <th colspan="2">'.number_format($total_sales,2,'.',',').'</th>
+                <th colspan="6" align="right">Total Sales</th>
+                <th colspan="4">'.number_format($total_sales,2,'.',',').'</th>
               </tr>
               </tbody></table>';
         return $data;

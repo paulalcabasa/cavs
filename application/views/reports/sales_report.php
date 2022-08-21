@@ -46,12 +46,12 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="form-group">  
+                        <!-- <div class="form-group">  
                             <label class="col-md-3 control-label" id="txt_customer_type">Customer</label>
                             <div class="col-md-9">
                                 <input type="text" class="form-control" id="txt_customer_detail" name="customer_detail" placeholder="Enter customer details"/>
                             </div>
-                        </div>
+                        </div> -->
 
                         <div class="form-group">  
                             <label class="col-md-3 control-label">Transacted by</label>
