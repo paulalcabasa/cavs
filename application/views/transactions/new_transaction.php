@@ -166,6 +166,7 @@
 								</div>
 							</div>
 							<div class="col-sm-7">
+								<p class="alert alert-danger" v-if="transaction.customer_type == 1 && (parseFloat(employee.consumed_amount) == parseFloat(employee.meal_allowance_rate)) && parseFloat(employee.consumed_amount) > 0">Meal allowance for this employee has been fully consumed!</p>
 								<div class="input-group">
 									<input type="text" class="form-control" placeholder="Scan item barcode here..." id="txt_orders_barcode" />
 									<input type="hidden" class='form-control' placeholder="Scan item barcode here..." id="txt_orders_barcode_vue" v-model="order_item_barcode"/>
