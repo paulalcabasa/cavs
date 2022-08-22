@@ -74,14 +74,6 @@
 			        			</div>
 			        		</div>
 
-						
-
-			        		<div class="form-group">
-			        			<label class="col-md-3 control-label">Username</label>
-			        			<div class="col-md-9">
-			        				<input type="text" readonly="readonly" class="form-control" placeholder="Username" name="username" value="<?php echo $person_details->username;?>"/>
-			        			</div>
-			        		</div>
 			        		<div class="form-group">
 			        			<label class="col-md-3 control-label">Username</label>
 			        			<div class="col-md-9">
