@@ -6,7 +6,7 @@
 <div class="content-wrapper"> <!-- Content Wrapper. Contains page content -->
     <section class="content-header"> <!-- Content Header (Page header) -->
         <h1>All Employees
-            <small>Comprehensive list of New Sinai MDI Employees</small>
+            <small>Comprehensive list of CAVS Employees</small>
         </h1>
     </section>
     <section class="content"> <!-- Main content -->
