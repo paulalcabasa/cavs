@@ -68,10 +68,10 @@ class Reports_model extends CI_Model {
 		$where = "";
 
 		if($customer_type != "all"){
-			$where .= "AND th.person_type_id = ". $customer_type;
+			$where .= " AND th.person_type_id = ". $customer_type;
 		}
 		if($transacted_by != 'all') {
-			$where .= "AND th.create_user = ". $transacted_by;
+			$where .= " AND th.create_user = ". $transacted_by;
 		}
 
 		// if($customer_type != "all"){
@@ -430,23 +430,60 @@ class Reports_model extends CI_Model {
 	}
 
 	public function get_sales_report_per_payment_type($start_date,$end_date,$payment_modes){
-		$this->db->select("tps.id payment_id,
-					       CONCAT('OR',LPAD(tps.transaction_header_id,5,'0')) transaction_no,
-					       pt.person_type_name customer_type,
-					       th.customer_name,
-					       pm.mode_of_payment,
-					       tps.amount,
-					       DATE_FORMAT(th.date_created,'%m/%d/%Y') transaction_date");
-		$this->db->from('transaction_payments tps');
-		$this->db->join('payment_modes pm','tps.payment_mode_id = pm.id','left');
-		$this->db->join('transaction_headers th','th.id = tps.transaction_header_id','left');
-		$this->db->join('person_types pt','pt.id = th.person_type_id','left');
-		$this->db->where('th.transaction_status', 1);
-		$this->db->where('DATE(th.date_created) >=', $start_date);
-		$this->db->where('DATE(th.date_created) <=', $end_date);
-		$this->db->where_in('tps.payment_mode_id',$payment_modes);
-		$query = $this->db->get();
-		
+		// $this->db->select("tps.id payment_id,
+		// 			       CONCAT('OR',LPAD(tps.transaction_header_id,5,'0')) transaction_no,
+		// 			       pt.person_type_name customer_type,
+		// 			       CASE WHEN th.customer_name is null THEN p.first_name else th.customer_name e customer_name,
+		// 			       pm.mode_of_payment,
+		// 			       tps.amount,
+		// 			       DATE_FORMAT(th.date_created,'%m/%d/%Y') transaction_date");
+		// $this->db->from('transaction_payments tps');
+		// $this->db->join('payment_modes pm','tps.payment_mode_id = pm.id','left');
+		// $this->db->join('transaction_headers th','th.id = tps.transaction_header_id','left');
+		// $this->db->join('person_types pt','pt.id = th.person_type_id','left');
+		// $this->db->join('persons p','p.id = th.person_id','left');
+		// $this->db->where('th.transaction_status', 1);
+		// $this->db->where('DATE(th.date_created) >=', $start_date);
+		// $this->db->where('DATE(th.date_created) <=', $end_date);
+		// $this->db->where_in('tps.payment_mode_id',$payment_modes);
+		// $query = $this->db->get();
+		$where_pmode = "";
+
+		foreach($payment_modes as $p) {
+			$where_pmode .= $p . ",";
+		}
+
+		$where_pmode = substr($where_pmode, 0, strlen($where_pmode) -1);
+
+		$sql = "SELECT
+					tps.id
+					payment_id,
+					CONCAT('OR', LPAD(tps.transaction_header_id, 5, '0'))
+					transaction_no,
+					pt.person_type_name
+					customer_type,
+					CASE 
+						WHEN th.customer_name = '' THEN CONCAT(p.first_name,' ', p.last_name) 
+						ELSE th.customer_name 
+					END customer_name,
+					pm.mode_of_payment,
+					tps.amount,
+					DATE_FORMAT(th.date_created, '%m/%d/%Y')
+						transaction_date
+					FROM   transaction_payments tps
+						LEFT JOIN payment_modes pm
+								ON tps.payment_mode_id = pm.id
+						LEFT JOIN transaction_headers th
+								ON th.id = tps.transaction_header_id
+						LEFT JOIN person_types pt
+								ON pt.id = th.person_type_id
+						LEFT JOIN persons p
+								ON p.id = th.person_id
+					WHERE  th.transaction_status = 1
+						AND DATE(th.date_created) >= '$start_date'
+						AND DATE(th.date_created) <= '$end_date'
+						AND tps.payment_mode_id IN($where_pmode) ";
+		$query = $this->db->query($sql);
 		return $query->result();
 	}
 
