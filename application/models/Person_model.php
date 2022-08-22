@@ -77,6 +77,22 @@ class Person_model extends CI_Model {
 		$this->db->query($sql,$params);
 	}
 
+	public function update_person_details2($params){
+		$sql = "UPDATE persons 
+				SET first_name = ?,
+					middle_name = ?,
+					last_name = ?,
+					address = ?,
+					contact_no = ?,
+					person_image = ?,
+					update_user = ?,
+					date_updated = NOW(),
+					department_id = ?,
+					person_state_id = ?
+				WHERE id = ?";
+		$this->db->query($sql,$params);
+	}
+
 	public function get_all_employee_nos(){
 		$sql = "SELECT employee_no 
 				FROM persons 
