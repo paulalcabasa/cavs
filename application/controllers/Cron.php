@@ -119,7 +119,34 @@ class Cron extends CI_Controller {
         } catch(Exception $e) {
             die('Error loading file "'.pathinfo($inputFileName,PATHINFO_BASENAME).'": '.$e->getMessage());
         }
+    }
 
+    public function reload_meal_allowance(){              
+        $current_user = -1;
+        $employeesList = $this->person_model->get_employees_allowance_rates();
+       
+        foreach($employeesList as $employee) {
+            $start_date = (date("Y-m-d") . ' ' . $employee->meal_allowance_start_time);
+            $end_date = new DateTime($start_date);
+            $end_date->add(new DateInterval('PT' . $employee->shift_hours . 'H'));
+        
+            $meal_allowance_params = array(
+                $employee->person_id,
+                1, // employee person type id
+                $employee->barcode_value,
+                1, // only per day
+                $employee->meal_allowance_rate, // rate
+                $employee->meal_allowance_rate, // alloted amount
+                $employee->meal_allowance_rate, // remaining amount
+                null, // max allowance daily, applicable for stockholder only
+                null, // weekly claims count, applicable for stockholder only
+                $start_date,
+                $end_date->format('Y-m-d H:i:s'),
+                $current_user
+            );
+
+            $this->person_model->insert_employee_meal_allowance($meal_allowance_params);
+        }    
     }
 
 
