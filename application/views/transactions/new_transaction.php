@@ -73,7 +73,7 @@
 						</div>
 						<h3 class="transaction-header">ORDERS</h3>
 						<div>
-							<button type="button" class="btn btn-success" @click="saveOrder()">SAVE</button>
+							<button type="button" class="btn btn-success" @click="saveOrder()" :disabled="processing_order">SAVE</button>
 						</div>
 					</div>
 					<div class="box-body">
@@ -343,6 +343,7 @@ $("document").ready(function(){
 Vue.createApp({
     data() {
         return {
+			processing_order : false,
 			customer_types: <?php echo json_encode($customer_list, JSON_HEX_TAG); ?>,
 			payment_modes: <?php echo json_encode($payment_modes, JSON_HEX_TAG); ?>,
 			food_categories: <?php echo json_encode($food_categories, JSON_HEX_TAG); ?>,
@@ -573,7 +574,7 @@ Vue.createApp({
 			}
 		},
 		saveOrder(){
-
+			var _this = this;
 			if(this.transaction.customer_type == 1) {
 				if(!this.employee.employee_no){
 					alert('Please scan employee barcode no.');
@@ -626,13 +627,16 @@ Vue.createApp({
 				attribute3 		  : this.transaction.attribute3
 			};
 
-		
+			this.processing_order = true;
+			
 			$.ajax({
 				type:"POST",
 				url:"<?php echo base_url();?>"+"transaction/ajax_add_new_transaction",
 				data: transactionData,
 				success:function(response){
-				
+					_this.processing_order = false;
+
+					
 					var data = JSON.parse(response);
 					if(data.transaction_status){ // if there were errors 
 						is_reload_flag = false;
