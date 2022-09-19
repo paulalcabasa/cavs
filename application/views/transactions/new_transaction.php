@@ -344,6 +344,7 @@ Vue.createApp({
     data() {
         return {
 			processing_order : false,
+			is_reload_flag : false,
 			customer_types: <?php echo json_encode($customer_list, JSON_HEX_TAG); ?>,
 			payment_modes: <?php echo json_encode($payment_modes, JSON_HEX_TAG); ?>,
 			food_categories: <?php echo json_encode($food_categories, JSON_HEX_TAG); ?>,
@@ -582,6 +583,8 @@ Vue.createApp({
 				}	
 			}
 
+			
+
 			var grandTotal = this.computeGrandTotal();
 		
 			var ordersList = [];
@@ -638,18 +641,17 @@ Vue.createApp({
 
 					
 					var data = JSON.parse(response);
-					if(data.transaction_status){ // if there were errors 
-						is_reload_flag = false;
+					if(response.transaction_status){ // if there were errors 
+						_this.is_reload_flag = false;
 					}
 					else {
-						is_reload_flag = true;
+						_this.is_reload_flag = true;
 					}
 												
 					$("#txn_body").html(data.message);
 					$("#txn_modal").modal("show");
 				}
 			});
-	
 			
 		}
     },
@@ -657,7 +659,12 @@ Vue.createApp({
 		this.fetchFoodMenuByCategory(this.food_categories[0]);
 		
 		this.customer_type = this.getCustomerTypeData(this.transaction.customer_type);
-
+		var self = this;
+		$("#txn_modal").on("hidden.bs.modal",function(){
+			if(self.is_reload_flag){
+				window.location.reload();
+			}
+		});
     }
 }).mount('#app')
 
