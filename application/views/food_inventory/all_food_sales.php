@@ -56,6 +56,7 @@
                         </form>
                      
                 </div>
+            <div style="overflow-x:scroll;">
             <table class="table table-bordered" id="tbl_active_inventory">
               <thead>
                 <tr>
@@ -75,6 +76,7 @@
               </thead>
               <tbody></tbody>
             </table>
+            </div>
               </div>
             </div>
         </div>
