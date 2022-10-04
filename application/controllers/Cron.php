@@ -147,7 +147,9 @@ class Cron extends CI_Controller {
 
             $this->person_model->insert_employee_meal_allowance($meal_allowance_params);
         }    
+
+        // for logging purposes
+        $this->load->model('test_model');   
+        $this->test_model->test_insert(); 
     }
-
-
 }

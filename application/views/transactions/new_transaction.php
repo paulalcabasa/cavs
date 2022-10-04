@@ -323,6 +323,12 @@ $("document").ready(function(){
 		$("#txt_orders_barcode_vue, #txt_orders_barcode").val('');
 	});
 
+	$("#txt_orders_barcode").on('input', function(){
+		$("#txt_orders_barcode_vue").val($("#txt_orders_barcode").val());
+		$('#txt_orders_barcode_vue')[0].dispatchEvent(new CustomEvent('input'));
+	}); 
+
+
 	$("#txt_barcode_no").scannerDetection(function(){
 		$("#txt_barcode_no_vue").val($("#txt_barcode_no").val());
 		$('#txt_barcode_no_vue')[0].dispatchEvent(new CustomEvent('input'));

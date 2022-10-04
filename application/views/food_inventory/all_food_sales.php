@@ -68,6 +68,7 @@
                   <th>No. of Sales</th>
                   <th>Status</th>
                   <th>Date Created</th>
+                  <th>Barcode</th>
                   <th>Action</th>
                   <th>Transaction State ID</th>
                 </tr>
@@ -127,7 +128,7 @@ function initialize_table(start_date,end_date,status_ids){
         "serverSide": true,
         "ajax": "<?php echo base_url();?>Food_Inventory/dt_all_inventory_list/"+status_ids+"/"+start_date+"/"+end_date,
     		"columnDefs": [
-    			{ "visible": false, "targets": 10 }
+    			{ "visible": false, "targets": 11 }
     		]
     });
      return tbl;

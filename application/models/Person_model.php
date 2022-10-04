@@ -808,16 +808,26 @@ class Person_model extends CI_Model {
 	}
 
 	public function get_employees_allowance_rates(){
-		$sql = "SELECT pr.id person_id,
+		$sql = "SELECT employees.*
+				FROM 
+					(SELECT pr.id person_id,
 						pr.barcode_value,
 						dt.meal_allowance_rate,
 						dt.meal_allowance_start_time,
-						dt.shift_hours
-				FROM persons pr INNER JOIN person_types pt
-					ON pr.person_type_id = pt.id
-				INNER JOIN departments dt
-					ON dt.id = pr.department_id
-				WHERE pr.person_state_id = 1";
+						dt.shift_hours,
+						(SELECT id
+						FROM meal_allowance
+						WHERE NOW() BETWEEN valid_from AND valid_until
+						AND person_id = pr.id
+						ORDER BY date_created DESC
+						LIMIT 1
+						) meal_allowance_id
+					FROM persons pr INNER JOIN person_types pt
+						ON pr.person_type_id = pt.id
+					INNER JOIN departments dt
+						ON dt.id = pr.department_id
+					WHERE pr.person_state_id = 1) employees
+				WHERE employees.meal_allowance_id IS NULL";
 		$query = $this->db->query($sql);
 		return $query->result();
 	}

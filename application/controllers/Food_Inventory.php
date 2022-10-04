@@ -258,9 +258,10 @@ class Food_Inventory extends MY_Controller {
             ),
             array( 'db' => 'status', 'dt' => 7),
             array( 'db' => 'date_created', 'dt' => 8),
+            array( 'db' => 'barcode_value', 'dt' => 9),
             array( 
                 'db' => 'food_id', 
-                'dt' => 9,
+                'dt' => 10,
                 'formatter' => function($d,$row){
                     // if new = Open, Closed, Edit
                     // if open = closed
@@ -337,7 +338,7 @@ class Food_Inventory extends MY_Controller {
                     return $btn_data;
                 }
             ),
-            array( 'db' => 'transaction_state_id', 'dt' => 10)
+            array( 'db' => 'transaction_state_id', 'dt' => 11)
         );
 
         // SQL server connection information

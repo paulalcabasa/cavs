@@ -329,7 +329,10 @@ class Food_model extends CI_Model {
                      LEFT JOIN transaction_states ts
                         ON ts.id = fd.transaction_state_id
                 WHERE fd.barcode_value = ?
-                      AND fd.transaction_state_id = 4"; // only get food items that is open for transaction
+                      AND fd.transaction_state_id = 4
+					  AND fd.quantity > 0
+				ORDER BY fd.date_created ASC
+				LIMIT 1"; // only get food items that is open for transaction
         $query = $this->db->query($sql,$barcode);
         return $query->result();
     }
