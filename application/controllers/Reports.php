@@ -9,6 +9,7 @@ class Reports extends MY_Controller {
         $this->load->model('Person_model', 'person_model');
         $this->load->model('Transaction_model', 'transaction_model');
         $this->load->model('System_model', 'system_model');
+        $this->load->model('Meal_Allowance_Category_model', 'meal_allowance_category_model');
         $this->load->helper('encryption');
     }
 
@@ -1458,4 +1459,40 @@ class Reports extends MY_Controller {
         return $data;
     }
     
+    public function meal_allowance_report_form() {
+        $categories = $this->meal_allowance_category_model->get_list();
+        $content['categories'] = $categories;
+        $content['main_content'] = 'reports/meal_allowance_report';
+        $this->load->view('includes/template',$content);
+    }
+
+    public function meal_allowance_report() {
+        $date = $this->input->post('start_date');
+        $meal_allowance_category = $this->input->post('meal_allowance_category');
+        $report_data = $this->reports_model->get_employee_allowance_report($date,$meal_allowance_category);
+
+        header('Content-Type: text/csv');
+        header('Content-Disposition: attachment; filename="'.'meal-allowance-report-'.date('Y-m-d').'.csv'.'"');
+        $data = array(
+            'Meal Allowance Id,First Name,Last Name,Category,Alloted Amount, Valid From, Valid Until', // header
+        );
+
+        foreach($report_data as $report) {
+            $row_data = $report->meal_allowance_id . ',';
+            $row_data .= $report->first_name . ',';
+            $row_data .= $report->last_name . ',';
+            $row_data .= $report->meal_allowance_category . ',';
+            $row_data .= $report->alloted_amount . ',';
+            $row_data .= $report->valid_from . ',';
+            $row_data .= $report->valid_until . ',';
+            array_push($data, $row_data);
+        }
+
+        $fp = fopen('php://output', 'wb');
+        foreach ( $data as $line ) {
+            $val = explode(",", $line);
+            fputcsv($fp, $val);
+        }
+        fclose($fp);
+    }
 }

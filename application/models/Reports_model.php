@@ -487,4 +487,28 @@ class Reports_model extends CI_Model {
 		return $query->result();
 	}
 
+	public function get_employee_allowance_report($date, $category) {
+		$where = "";
+
+		if($category != "") {
+			$where = " AND person.department_id = '$category'";
+		}
+		$sql = "SELECT allowance.alloted_amount,
+						person.first_name,
+						person.last_name,
+						allowance_category.department_name meal_allowance_category,
+						DATE_FORMAT(allowance.valid_from, '%m/%d/%Y %h:%i %p') valid_from,
+						DATE_FORMAT(allowance.valid_until, '%m/%d/%Y %h:%i %p') valid_until,
+						allowance.id meal_allowance_id
+				FROM meal_allowance allowance
+				LEFT JOIN persons person
+					ON allowance.person_id = person.id
+				LEFT JOIN departments allowance_category
+					ON allowance_category.id = person.department_id
+				WHERE DATE(allowance.date_created) BETWEEN '$date' AND '$date'
+				".$where."
+				ORDER BY person.last_name, person.first_name, person.department_id";
+		$query = $this->db->query($sql);
+		return $query->result();
+	}
 }
