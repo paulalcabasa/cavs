@@ -30,6 +30,7 @@ class Transaction extends MY_Controller {
         $content['customer_list'] = $customer_list;
         $content['payment_modes'] = $grouped_payment_modes;
         $content['meal_img_dir'] = $meal_img_dir;
+        $content['base_url'] = base_url();
    
         $content['default_customer'] = 1; // id of Employee type of person
     //    $content['temp_transaction_no'] = $temp_transaction_no; // id of Employee type of person

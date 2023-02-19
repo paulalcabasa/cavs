@@ -114,6 +114,8 @@
 
 										<span class="text-bold">Consumed Amount</span><br/>
 										<span>PHP <span>{{ !employee.meal_allowance_rate ? '0.00' : employee.consumed_amount}}</span></span><br/>
+
+										<span v-if="employee.person_id"><a href="#" @click="openViewAllowanceHistory(employee)" style="font-size:16px;font-weight:bold;">View allowance history</a></span>
 									</div>
 								</div>
 								<div class="row" id="guest_details" v-if="transaction.customer_type == 11">
@@ -373,7 +375,8 @@ Vue.createApp({
 				attribute2 : '',
 				attribute3 : ''
 			},
-			numpad_items: ['7','8','9','4','5','6','1','2','3','.','0', 'C']
+			numpad_items: ['7','8','9','4','5','6','1','2','3','.','0', 'C'],
+			base_url : <?php echo json_encode($base_url, JSON_HEX_TAG); ?>
         }
     },
 	watch: {
@@ -659,6 +662,9 @@ Vue.createApp({
 				}
 			});
 			
+		},
+		openViewAllowanceHistory(employee) {
+			window.open(this.base_url + 'employee/meal_allowance_history/' + this.employee.person_id);
 		}
     },
     mounted : function () {

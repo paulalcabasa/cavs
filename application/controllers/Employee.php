@@ -1348,10 +1348,6 @@ class Employee extends MY_Controller {
         //                 $current_user
         //             );
         //             $this->person_model->insert_employee_meal_allowance($meal_allowance_params);
-                    
-                    
-                
-        
         //     }
 
         // }
@@ -1369,5 +1365,18 @@ class Employee extends MY_Controller {
             'person_id' => $person_id,
             'meal_allowance_details' => $meal_allowance_details
         ]);
+    }
+
+    public function meal_allowance_history(){
+        $this->load->model('System_model', 'system_model');
+        $person_id = $this->uri->segment(3);
+        $content['main_content'] = 'employees/meal_allowance_history_view';
+        $content['message_subject'] = null;
+        $content['person_id'] = $person_id;
+        $content['person_details'] = $this->person_model->get_person_details($person_id);
+        $content['meal_allowance_history'] = $this->person_model->get_employee_meal_allowance_history_by_person_id($person_id);
+        $content['message_body'] = '';
+        $content['flag'] = null; 
+        $this->load->view('includes/template',$content);
     }
 }

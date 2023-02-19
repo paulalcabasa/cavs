@@ -57,7 +57,16 @@
                                         <a href="employee/meal_allowance_single/<?php echo $employee->person_id; ?>">Add</a>
                                     <?php } ?>
                                 </td>
-                                <td><?php echo $employee->remaining_amount;?></td>
+                                <td>
+                                    <?php if($employee->remaining_amount) { ?>
+                                        <?php echo ($employee->remaining_amount);?>
+                                    <?php } else { ?>
+                                        0.00 
+                                    <?php } ?>
+                                    |
+                                    <a target="_blank" href="employee/meal_allowance_history/<?php echo $employee->person_id; ?>">View history</a>
+                                </td>
+                              
                                 <td><?php echo $employee->ma_validity_date;?></td>
                                 <td><a href='employee/edit/<?php echo encode_string($employee->person_id);?>'><i class='fa fa-edit fa-1x'></i></a></td>
                                
