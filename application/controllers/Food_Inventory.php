@@ -176,8 +176,17 @@ class Food_Inventory extends MY_Controller {
         }
     }
 
-    public function all_food_sales(){
+    public function all_food_sales_v2(){
         $content['main_content'] = 'food_inventory/all_food_sales';
+        $this->load->view('includes/template',$content);
+    }
+
+    public function all_food_sales(){
+        $foods = $this->food_model->get_food_sales_list();
+        $user_type_id = $this->session->userdata('user_type_id');
+        $content['foods'] = $foods;
+        $content['user_type_id'] = $user_type_id;
+        $content['main_content'] = 'food_inventory/all_food_sales_v2';
         $this->load->view('includes/template',$content);
     }
 
@@ -301,11 +310,12 @@ class Food_Inventory extends MY_Controller {
                                       <ul class="dropdown-menu dropdown-menu-right">
                                       <li><a href="edit_food/'.encode_string($d).'">Edit</a></li>
                                         <li><a href="'.base_url().'reports/cost_vs_sales_report/'.$enc_food_id.'" target="_blank">View Details</a></li>';
-                                        /*if($user_type_id == 6 || $user_type_id == 3){
-                                            if(in_array($row['category'],array('Breakfast','Lunch','Dinner','Rice'))) { */// Stock adjustment is only avaialble in these categories  
+                                        if($user_type_id == 6 || $user_type_id == 3){
+                                        //    if(in_array($row['category'],array('Breakfast','Lunch','Dinner','Rice'))) { */// Stock adjustment is only avaialble in these categories  
                                                 $btn_data .= '<li><a href="#" data-food_name="'.$food_name.'" data-current_qty="'.$current_quantity.'" data-food_id="'.$food_id.'" data-formatted_food_id="'.$formatted_food_id.'" class="btn_adjust_qty">Stock Adjustment</a></li>';
                                          /*   }
                                         }*/
+                                        }
                                         
                         if($current_quantity > 0){
                             $btn_data .= ' <li><a href="close_food_item/'.$enc_food_id.'" data-id="'.$d.'">Close</a></li>';

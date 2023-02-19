@@ -169,7 +169,8 @@
         
         <li class="header">SALES</li>
         <li><a href="<?php echo base_url();?>Food_Inventory/new_food"><i class="fa fa-plus"></i> <span>New</span></a></li>
-        <li><a href="<?php echo base_url();?>Food_Inventory/all_food_sales"><i class="fa fa-book"></i> <span>Food Sales</span></a></li>
+        <li><a href="<?php echo base_url();?>Food_Inventory/all_food_sales"><i class="fa fa-book"></i> <span>Food Sales - Active</span></a></li>
+        <li><a href="<?php echo base_url();?>Food_Inventory/all_food_sales_v2"><i class="fa fa-book"></i> <span>Food Sales History</span></a></li>
         <li><a href="<?php echo base_url();?>reports/view_food_items_onhand" target="_blank"><i class="fa fa-book"></i> <span>Food Items Onhand</span></a></li>
         <li><a href="<?php echo base_url();?>Food_categories" target="_blank"><i class="fa fa-book"></i> <span>Food Categories</span></a></li>
 
@@ -212,7 +213,8 @@
         
         <li class="header">SALES</li>
         <li><a href="<?php echo base_url();?>Food_Inventory/new_food"><i class="fa fa-plus"></i> <span>New</span></a></li>
-        <li><a href="<?php echo base_url();?>Food_Inventory/all_food_sales"><i class="fa fa-book"></i> <span>Food Sales</span></a></li>
+        <li><a href="<?php echo base_url();?>Food_Inventory/all_food_sales"><i class="fa fa-book"></i> <span>Food Sales - Active</span></a></li>
+        <li><a href="<?php echo base_url();?>Food_Inventory/all_food_sales_v2"><i class="fa fa-book"></i> <span>Food Sales History</span></a></li>
         <li><a href="<?php echo base_url();?>reports/view_food_items_onhand" target="_blank"><i class="fa fa-book"></i> <span>Food Items Onhand</span></a></li>
         <li><a href="<?php echo base_url();?>Food_categories" target="_blank"><i class="fa fa-book"></i> <span>Food Categories</span></a></li>
 
@@ -264,7 +266,8 @@
       
         <li><a href="<?php echo base_url();?>transaction/all_transactions"><i class="fa fa-book"></i> <span>All Transactions</span></a></li>
         <li class="header">SALES</li>
-        <li><a href="<?php echo base_url();?>Food_Inventory/all_food_sales"><i class="fa fa-book"></i> <span>Food Sales</span></a></li>
+        <li><a href="<?php echo base_url();?>Food_Inventory/all_food_sales"><i class="fa fa-book"></i> <span>Food Sales - Active</span></a></li>
+        <li><a href="<?php echo base_url();?>Food_Inventory/all_food_sales_v2"><i class="fa fa-book"></i> <span>Food Sales History</span></a></li>
         <li><a href="<?php echo base_url();?>reports/view_food_items_onhand" target="_blank"><i class="fa fa-book"></i> <span>Food Items Onhand</span></a></li>
         <!-- <li><a href="<?php echo base_url();?>reports/sales_report"><i class="fa fa-bar-chart"></i> <span>Sales Report</span></a></li> -->
     
