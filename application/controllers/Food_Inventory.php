@@ -177,7 +177,13 @@ class Food_Inventory extends MY_Controller {
     }
 
     public function all_food_sales_v2(){
-        $content['main_content'] = 'food_inventory/all_food_sales';
+        // $content['main_content'] = 'food_inventory/all_food_sales';
+        // $this->load->view('includes/template',$content);
+        $foods = $this->food_model->get_food_sales_list_history();
+        $user_type_id = $this->session->userdata('user_type_id');
+        $content['foods'] = $foods;
+        $content['user_type_id'] = $user_type_id;
+        $content['main_content'] = 'food_inventory/all_food_sales_history';
         $this->load->view('includes/template',$content);
     }
 
