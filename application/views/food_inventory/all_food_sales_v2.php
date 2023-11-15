@@ -1,13 +1,18 @@
 <div class="content-wrapper"> <!-- Content Wrapper. Contains page content -->
     <section class="content-header"> <!-- Content Header (Page header) -->
         <h1>Food Sales Inventory</h1>
-        <small>Total Items: <span class="badge btn-success"><?= count($foods); ?></span></small>
+        <small>Total Items: <span class="badge btn-success"><?= count($foods); ?></span></small><br/><br/>
+        <button id="btn_print_barcode" class="btn btn-primary">Print Barcode</button>
+        <form class="form-horizontal" id="frm_data" target="_blank" method="POST" action="<?php echo base_url();?>Food_Inventory/print_food_barcode">
+            <input id="txt_food_ids" type="hidden" name="food_ids">
+        </form>
     </section>
     <section class="content"> <!-- Main content -->
         <div class="box"> <!-- Default box -->
             <div class="box-body">
                 <table class="table food-sales-table">
                     <thead>
+                        <th></th>
                         <th>Food No</th>
                         <th>Name</th>
                         <th>Category</th>
@@ -22,6 +27,7 @@
                     <tbody>
                     <?php foreach ($foods as $food) : ?>
                         <tr>
+                            <td><input type='checkbox' value='<?= $food->food_id ?>' class='cb_food'/></td>
                             <td><?= $food->food_id ?></td>
                             <td><?= $food->food_name ?></td>
                             <td><?= $food->category ?></td>
@@ -51,6 +57,7 @@
                                     </button>
                                     <ul class="dropdown-menu dropdown-menu-right">
                                         <li><a href="#" class="btn_update_status" data-id="<?= $food->food_id ?>" data-state_id="4">Open</a></li>
+                                        <li><a href="#" class="btn_update_status" data-id="<?= $food->food_id ?>" data-state_id="4">Print Barcode</a></li>
                                         <li><a href="cancel_food_item/<?= encode_string($food->food_id) ?>">Cancel</a></li>      
                                     </ul>
                                 </div>
@@ -182,6 +189,24 @@ $("body").on("click",".btn_adjust_qty",function(){
     $("#txt_adj_food_name").val(food_name);
     $("#txt_adj_food_from_qty").val(current_qty);
     $("#dialog_qty_adjustment").modal('show');
+});
+
+var selected_foods = [];
+var index = 0;
+$("#btn_print_barcode").click(function(){
+    $('.cb_food').each(function(){
+        if($(this).is(":checked")){
+            selected_foods[index] = $(this).val();
+            index++;
+        }
+    });
+    if(index > 0){
+        $("#txt_food_ids").val(selected_foods);
+        $("#frm_data").submit();
+    }
+    else {
+        alert('Kindly select foods to print barcode.');
+    }
 });
 </script>
 
