@@ -177,9 +177,15 @@ class Food_Inventory extends MY_Controller {
     }
 
     public function all_food_sales_v2(){
-        // $content['main_content'] = 'food_inventory/all_food_sales';
-        // $this->load->view('includes/template',$content);
-        $foods = $this->food_model->get_food_sales_list_history();
+        $pageNo = !empty($this->uri->segment('3')) ? $this->uri->segment('3') : 1;
+        $searchQuery = !empty($this->uri->segment('4')) ? $this->uri->segment('4') : '';
+        $recordsPerPage = 10;
+        $params = [
+            'page_no' => $pageNo,
+            'search_query' => $searchQuery,
+            'records_per_page' => $recordsPerPage
+        ];
+        $foods = $this->food_model->get_food_sales_list_history($params);
         $user_type_id = $this->session->userdata('user_type_id');
         $content['foods'] = $foods;
         $content['user_type_id'] = $user_type_id;
@@ -769,7 +775,7 @@ class Food_Inventory extends MY_Controller {
             'bgcolor' => false, //array(255,255,255), falsearray(0,0,0)
             'text' => true,
             'font' => 'helvetica',
-            'fontsize' => 8,
+            'fontsize' => 8,    
             'stretchtext' => 4
         );
 
