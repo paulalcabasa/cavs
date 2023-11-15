@@ -1,9 +1,19 @@
 <div class="content-wrapper"> <!-- Content Wrapper. Contains page content -->
     <section class="content-header"> <!-- Content Header (Page header) -->
         <h1>Food Sales Inventory (Closed)</h1>
-        <small>Total Items: <span class="badge btn-success"><?= count($foods); ?></span></small>
+        <small>Total Items: <span class="badge btn-success"><?= $foodTotal ?></span></small>
     </section>
     <section class="content"> <!-- Main content -->
+        <!-- search form -->
+        <form action="<?php echo $inventoryBaseUrl; ?>" method="get" class="sidebar-form">
+            <div class="input-group">
+            <input type="text" name="search" class="form-control" placeholder="Search by food name...">
+                <span class="input-group-btn">
+                    <button type="submit" id="search-btn" class="btn btn-flat"><i class="fa fa-search"></i>
+                    </button>
+                </span>
+            </div>
+        </form>
         <div class="box"> <!-- Default box -->
             <div class="box-body">
                 <table class="table food-sales-table">
@@ -98,7 +108,17 @@
                     <?php endforeach; ?>
                     </tbody>
                 </table>
-          
+                    
+                <ul class="pagination">
+                    <li><a href="<?php echo $inventoryBaseUrl; ?>1">First</a></li>
+                    <li class="<?php if($pageNo <= 1){ echo 'disabled'; } ?>">
+                        <a href="<?php if($pageNo <= 1){ echo '#'; } else { echo $inventoryBaseUrl .($pageNo - 1); } ?>">Prev</a>
+                    </li>
+                    <li class="<?php if($pageNo >= $totalPages){ echo 'disabled'; } ?>">
+                        <a href="<?php if($pageNo >= $totalPages){ echo '#'; } else { echo $inventoryBaseUrl .($pageNo + 1); } ?>">Next</a>
+                    </li>
+                    <li><a href="<?php echo $inventoryBaseUrl; ?><?php echo $totalPages; ?>">Last</a></li>
+                </ul>                            
             </div>  
         </div>
         

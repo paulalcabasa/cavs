@@ -439,7 +439,6 @@ class Food_model extends CI_Model {
 	}
 
 	public function get_food_sales_list_history($params){
-		$offset = ($params['page_no'] - 1) * $params['records_per_page'];
 		$sql = "SELECT  fd.id            AS food_id,
 						fd.barcode_value AS barcode_value,
 						fc.category      AS category,
@@ -457,16 +456,35 @@ class Food_model extends CI_Model {
 						DATE_FORMAT(fd.date_created,'%Y-%m-%d') AS original_date_created
 				FROM foods fd INNER JOIN food_categories fc
 							ON fd.food_category_id = fc.id
-						INNER JOIN transaction_states ts ON       
+							INNER JOIN transaction_states ts ON       
 							ts.id = fd.transaction_state_id
-						INNER JOIN food_quantity_adjustments fqa
+							INNER JOIN food_quantity_adjustments fqa
 							ON fqa.food_id = fd.id
 				WHERE fd.food_type_id = 1
 				AND ts.id IN (3)
+				AND LOWER(fd.food_name) LIKE ". "'%" . ($params['query']) . "%'" . "
 				GROUP BY fd.id
 				ORDER BY fd.date_created DESC
-				LIMIT " . $offset . "," . $params['records_per_page'];
+				LIMIT " . $params['offset'] . "," . $params['records_per_page'];
+
 		$query = $this->db->query($sql);
 		return $query->result();
+	}
+
+	public function get_food_sales_list_history_total(){
+		$sql = "SELECT count(foods.id) total_foods
+		FROM   (SELECT fd.id
+				FROM   foods fd
+					   INNER JOIN food_categories fc
+							   ON fd.food_category_id = fc.id
+					   INNER JOIN transaction_states ts
+							   ON ts.id = fd.transaction_state_id
+					   INNER JOIN food_quantity_adjustments fqa
+							   ON fqa.food_id = fd.id
+				WHERE  fd.food_type_id = 1
+					   AND ts.id IN ( 3 )
+				GROUP  BY fd.id) foods";
+		$result = $this->db->query($sql);
+		return $result->result()[0]->total_foods;
 	}
 }

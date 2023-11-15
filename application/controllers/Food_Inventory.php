@@ -178,17 +178,28 @@ class Food_Inventory extends MY_Controller {
 
     public function all_food_sales_v2(){
         $pageNo = !empty($this->uri->segment('3')) ? $this->uri->segment('3') : 1;
-        $searchQuery = !empty($this->uri->segment('4')) ? $this->uri->segment('4') : '';
+        $query = isset($_GET['search']) ? $_GET['search'] : '';
         $recordsPerPage = 10;
+        $offset = ($pageNo - 1) * $recordsPerPage;
         $params = [
             'page_no' => $pageNo,
-            'search_query' => $searchQuery,
-            'records_per_page' => $recordsPerPage
+            'query' => $query,
+            'records_per_page' => $recordsPerPage,
+            'offset' => $offset
         ];
+    
         $foods = $this->food_model->get_food_sales_list_history($params);
         $user_type_id = $this->session->userdata('user_type_id');
+        $foodTotal = $this->food_model->get_food_sales_list_history_total();
+        $inventoryBaseUrl = base_url() . '/Food_Inventory/all_food_sales_v2/';
+        $totalPages = ceil($foodTotal / $recordsPerPage); 
         $content['foods'] = $foods;
         $content['user_type_id'] = $user_type_id;
+        $content['pageNo'] = $pageNo;
+        $content['totalPages'] = $totalPages;
+        $content['inventoryBaseUrl'] = $inventoryBaseUrl;
+        $content['foodTotal'] = $foodTotal;
+        $content['query'] = $query;
         $content['main_content'] = 'food_inventory/all_food_sales_history';
         $this->load->view('includes/template',$content);
     }
