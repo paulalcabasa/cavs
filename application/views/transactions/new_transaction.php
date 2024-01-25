@@ -114,14 +114,14 @@
 										<span class="text-bold">Name</span><br/>
 										<span>{{ !employee.employee_no ? '(Select customer)' : employee.first_name + ' ' + employee.last_name }}</span><br/>
 
-										<!-- <span class="text-bold">Meal Allowance</span><br/>
+									 	<span class="text-bold">Meal Allowance</span><br/>
 										<span>PHP <span>{{ !employee.remaining_amount ? '0.00' : employee.remaining_amount}}</span></span><br/>
 
 										<span class="text-bold">Daily Limit</span><br/>
 										<span>PHP <span>{{ !employee.meal_allowance_rate ? '0.00' : employee.meal_allowance_rate}}</span></span><br/>
-
+								
 										<span class="text-bold">Consumed Amount</span><br/>
-										<span>PHP <span>{{ !employee.meal_allowance_rate ? '0.00' : employee.consumed_amount}}</span></span><br/> -->
+										<span>PHP <span>{{ !employee.meal_allowance_rate ? '0.00' : employee.meal_allowance_rate - employee.remaining_amount}}</span></span><br/> 
 
 										<span v-if="employee.person_id"><a href="#" @click="openViewAllowanceHistory(employee)" style="font-size:16px;font-weight:bold;">View Allowance</a></span>
 									</div>

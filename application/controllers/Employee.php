@@ -1312,7 +1312,8 @@ class Employee extends MY_Controller {
                 $end_date,
                 $current_user
             );
-            $this->person_model->insert_employee_meal_allowance($meal_allowance_params);
+            $meal_allowance_id = $this->person_model->insert_employee_meal_allowance($meal_allowance_params);
+            $this->person_model->update_person_meal_allowance_id($employee['person_id'], $meal_allowance_id);
         }
 
         //     //  Loop through each row of the worksheet in turn
@@ -1378,5 +1379,14 @@ class Employee extends MY_Controller {
         $content['message_body'] = '';
         $content['flag'] = null; 
         $this->load->view('includes/template',$content);
+    }
+
+    public function update_meal_allowance_ids(){
+        $employees_with_meal_allowance_id = $this->person_model->get_all_employees_meal_allowance_id();
+       // print_r($employees_with_meal_allowance_id);
+        foreach($employees_with_meal_allowance_id as $employee) {
+            $this->person_model->update_person_meal_allowance_id($employee->person_id, $employee->meal_allowance_id);
+            echo $employee['person_id'] . ' updated <br/>';
+        }
     }
 }
