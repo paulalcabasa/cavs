@@ -95,9 +95,17 @@
 										<input type="hidden" id="txt_meal_allowance_id"/>
 										<input type="hidden" id="txt_barcode_no_used"/>
 										<span class="text-bold" id="lbl_person_id">Barcode no</span><br/>
-										<span><input type="text" id="txt_barcode_no" placeholder="Select Employee" class="form-control input-sm"  /></span>
-										<input type="hidden" id="txt_barcode_no_vue" v-model="employee_barcode_no" placeholder="Select Employee" class="form-control input-sm"  />
-										
+										<!-- <span>
+										<input type="text" id="txt_barcode_no" placeholder="Select Employee" class="form-control input-sm"  /></span>
+										<input type="hidden" id="txt_barcode_no_vue" v-model="employee_barcode_no" placeholder="Select Employee" class="form-control input-sm"  /> -->
+										<div class="input-group">
+											<input type="text" class="form-control" placeholder="Select Employee" id="txt_barcode_no_vue"  v-model="employee_barcode_no" />
+											<!-- <input type="hidden" class='form-control' placeholder="Select Employee" id="txt_orders_barcode_vue" v-model="order_item_barcode"/> -->
+											<span class="input-group-btn">
+												<button class="btn btn-default" type="button" @click="getEmployee(employee_barcode_no)" id="txt_search_employee">Search <i v-if="fetching_employee == true" class="fa fa-spinner fa-pulse fa-1x fa-fw"></i></button>
+											</span>
+										</div>
+
 										<span class="text-bold">Employee No</span><br/>
 										<span>
 											<span>{{ !employee.employee_no ? '(Select customer)' : employee.employee_no }}</span>
@@ -106,16 +114,16 @@
 										<span class="text-bold">Name</span><br/>
 										<span>{{ !employee.employee_no ? '(Select customer)' : employee.first_name + ' ' + employee.last_name }}</span><br/>
 
-										<span class="text-bold">Meal Allowance</span><br/>
+										<!-- <span class="text-bold">Meal Allowance</span><br/>
 										<span>PHP <span>{{ !employee.remaining_amount ? '0.00' : employee.remaining_amount}}</span></span><br/>
 
 										<span class="text-bold">Daily Limit</span><br/>
 										<span>PHP <span>{{ !employee.meal_allowance_rate ? '0.00' : employee.meal_allowance_rate}}</span></span><br/>
 
 										<span class="text-bold">Consumed Amount</span><br/>
-										<span>PHP <span>{{ !employee.meal_allowance_rate ? '0.00' : employee.consumed_amount}}</span></span><br/>
+										<span>PHP <span>{{ !employee.meal_allowance_rate ? '0.00' : employee.consumed_amount}}</span></span><br/> -->
 
-										<span v-if="employee.person_id"><a href="#" @click="openViewAllowanceHistory(employee)" style="font-size:16px;font-weight:bold;">View allowance history</a></span>
+										<span v-if="employee.person_id"><a href="#" @click="openViewAllowanceHistory(employee)" style="font-size:16px;font-weight:bold;">View Allowance</a></span>
 									</div>
 								</div>
 								<div class="row" id="guest_details" v-if="transaction.customer_type == 11">
@@ -316,6 +324,9 @@
 <script src="../assets/js/vue-barcode-scanner.js"></script>
 <script>
 $("document").ready(function(){
+
+	$("#txt_barcode_no_vue").focus();
+
 	$("#txt_orders_barcode").scannerDetection(function(){
 		$("#txt_orders_barcode_vue").val($("#txt_orders_barcode").val());
 		$('#txt_orders_barcode_vue')[0].dispatchEvent(new CustomEvent('input'));
@@ -353,6 +364,7 @@ Vue.createApp({
         return {
 			processing_order : false,
 			is_reload_flag : false,
+			fetching_employee: false,
 			customer_types: <?php echo json_encode($customer_list, JSON_HEX_TAG); ?>,
 			payment_modes: <?php echo json_encode($payment_modes, JSON_HEX_TAG); ?>,
 			food_categories: <?php echo json_encode($food_categories, JSON_HEX_TAG); ?>,
@@ -421,35 +433,6 @@ Vue.createApp({
 				}
 			});
 		},
-		employee_barcode_no(newBarcode, oldBarcode){
-			
-			if(newBarcode == ''){
-				return false;
-			}
-
-
-			var customerType = this.transaction.customer_type;
-			var _this = this;
-			$.ajax({
-				type:"POST",
-				url:"<?php echo base_url();?>"+"transaction/ajax_get_employee_details",
-				data:{
-					barcode_no   : newBarcode,
-					customer_type : customerType
-				},
-				success:function(response){
-					if($.trim(response) === "invalid"){
-						return false;
-					}
-
-					var data = JSON.parse(response);
-					_this.employee = data[0];
-					_this.employee_barcode_no = '';
-					$("#txt_barcode_no, #txt_barcode_no_vue").val("");
-					_this.computePayments();
-				}
-			});
-		}
 	},
     methods : {
 		fetchFoodMenuByCategory(category){
@@ -665,6 +648,31 @@ Vue.createApp({
 		},
 		openViewAllowanceHistory(employee) {
 			window.open(this.base_url + 'employee/meal_allowance_history/' + this.employee.person_id);
+		},
+		getEmployee(employeeBarcodeNo) {
+			this.fetching_employee = true;
+			var customerType = this.transaction.customer_type;
+			var _this = this;
+			$.ajax({
+				type:"POST",
+				url:"<?php echo base_url();?>"+"transaction/ajax_get_employee_details",
+				data:{
+					barcode_no   : employeeBarcodeNo,
+					customer_type : customerType
+				},
+				success:function(response){
+					_this.fetching_employee = false;
+					if($.trim(response) === "invalid"){
+						return false;
+					}
+
+					var data = JSON.parse(response);
+					_this.employee = data[0];
+					_this.employee_barcode_no = '';
+					$("#txt_barcode_no, #txt_barcode_no_vue").val("");
+					_this.computePayments();
+				}
+			});
 		}
     },
     mounted : function () {

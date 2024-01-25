@@ -92,8 +92,7 @@ class Transaction extends MY_Controller {
 
     public function ajax_get_employee_details(){       
     
-        $person_details = $this->person_model->get_person_details_by_category(
-                            "barcode_value",
+        $person_details = $this->person_model->get_person_details_by_barcode(
                             $this->input->post('barcode_no'),
                             $this->input->post('customer_type')
                           );

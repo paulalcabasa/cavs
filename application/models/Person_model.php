@@ -302,6 +302,45 @@ class Person_model extends CI_Model {
 		return $query->result();
 	}
 
+	public function get_person_details_by_barcode($search_value,$person_type){
+		$sql = "SELECT p.id person_id,	
+				   p.barcode_value,
+			       p.employee_no,
+			       p.first_name,
+			       p.middle_name,
+			       p.last_name,
+			       p.address,
+			       p.contact_no,
+			       p.person_image,
+			       pt.person_type_name,
+			       ps.status,
+			       u.username,
+			       u.passcode,
+			       u.last_login,
+			       CONCAT(p.last_name,', ',p.first_name,' ',LEFT(p.middle_name,1),'.') full_name1,
+			       p.salary_deduction,
+				   dept.meal_allowance_rate, 
+			       (SELECT id
+					FROM meal_allowance
+					WHERE NOW() BETWEEN valid_from AND valid_until
+					AND person_id = p.id
+					ORDER BY date_created DESC
+					LIMIT 1
+					) meal_allowance_id
+			FROM persons p LEFT JOIN person_types pt
+					ON p.person_type_id = pt.id
+				LEFT JOIN person_state ps
+					ON ps.id = p.person_state_id
+				LEFT JOIN users u
+					ON u.id = p.user_id
+				LEFT JOIN departments dept
+					ON dept.id = p.department_id
+			WHERE p.barcode_value = ?
+			      AND pt.id = ?";
+		$query = $this->db->query($sql,array($search_value,$person_type));
+		return $query->result();
+	}
+
 	public function get_employee_meal_allowance($person_id,$meal_allowance_id){
 		$sql = "SELECT id,
 		 			   person_id,
