@@ -352,7 +352,7 @@ class Person_model extends CI_Model {
 		 			   valid_until,
 		 			   date_created
 				FROM meal_allowance
-				WHERE NOW() BETWEEN valid_from AND valid_until
+				WHERE 1 = 1
 					  AND person_id = ?
 				      AND id = ?";
 		$query = $this->db->query($sql,array($person_id,$meal_allowance_id));
@@ -939,7 +939,8 @@ class Person_model extends CI_Model {
 					LEFT JOIN persons p
 						ON p.user_id = u.id
 				WHERE ma.person_id = ?
-				ORDER BY id DESC";
+				ORDER BY id DESC
+				LIMIT 5";
 		$query = $this->db->query($sql,array($person_id));
 		return $query->result();
 	}
