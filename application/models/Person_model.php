@@ -640,10 +640,17 @@ class Person_model extends CI_Model {
 					pr.department_id,
 					pr.barcode_value,
 					CONCAT(DATE_FORMAT(CURDATE(),'%Y-%m-%d'), '', TIME_FORMAT(dp.meal_allowance_start_time,'T%H:%i')) start_date,
-					DATE_FORMAT(DATE_ADD(CONCAT(CURDATE(), ' ', dp.meal_allowance_start_time), INTERVAL dp.shift_hours HOUR), '%Y-%m-%dT%H:%i') end_date
+					DATE_FORMAT(DATE_ADD(CONCAT(CURDATE(), ' ', dp.meal_allowance_start_time), INTERVAL dp.shift_hours HOUR), '%Y-%m-%dT%H:%i') end_date,
+					pr.meal_allowance_id,
+					now() between ma.valid_from and ma.valid_until is_allowance_valid,
+					ma.valid_from,
+					ma.valid_until,
+					ma.date_created last_allowance_loaded
 				FROM persons pr
 					LEFT JOIN departments dp
 						ON pr.department_id = dp.id
+					LEFT JOIN meal_allowance ma
+						ON ma.id = pr.meal_allowance_id
 				WHERE pr.department_id = ?
 						AND pr.person_type_id = 1
 						AND pr.person_state_id = 1";
@@ -940,7 +947,7 @@ class Person_model extends CI_Model {
 						ON p.user_id = u.id
 				WHERE ma.person_id = ?
 				ORDER BY id DESC
-				LIMIT 5";
+				LIMIT 150";
 		$query = $this->db->query($sql,array($person_id));
 		return $query->result();
 	}

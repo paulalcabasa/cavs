@@ -274,9 +274,9 @@ class Employee extends MY_Controller {
     public function meal_allowance(){
         $this->load->model('System_model', 'system_model');
         $departments_list = $this->system_model->get_departments();
-    
         $content['main_content'] = 'employees/meal_allowance_view';
         $content['message_subject'] = null;
+        $content['allowanceResult'] = $this->session->flashdata('allowanceResult');
         $content['person_id'] = null;
         $content['message_body'] = '<p class="text-center text-muted">Click on the <strong>Upload file</strong> button to start reloading meal allowances.</p>';
         $content['flag'] = null; 
@@ -1291,9 +1291,10 @@ class Employee extends MY_Controller {
     }
 
     public function ajax_reload_meal_allowance(){              
-
+        date_default_timezone_set('Asia/Manila');
         $current_user = $this->session->userdata('user_id');
         $employeesList = $this->input->post('employees');
+        $messageData = '';
         // set to inactive the previous uploaded meal allowance by department
         foreach($employeesList as $employee) {
             $start_date = $employee['start_date'];
@@ -1312,9 +1313,26 @@ class Employee extends MY_Controller {
                 $end_date,
                 $current_user
             );
-            $meal_allowance_id = $this->person_model->insert_employee_meal_allowance($meal_allowance_params);
-            $this->person_model->update_person_meal_allowance_id($employee['person_id'], $meal_allowance_id);
+
+            if ($employee['is_allowance_valid'] == 'null' || $employee['is_allowance_valid'] == 0) {
+                $starttimestamp = strtotime($employee['last_allowance_loaded']);
+                $endtimestamp = strtotime(date('Y-m-d H:i:s'));
+                $difference = abs($endtimestamp - $starttimestamp)/3600;
+                
+                // last meal allowance load must be 20 hours ago
+                if ($difference > 20) {
+                    $meal_allowance_id = $this->person_model->insert_employee_meal_allowance($meal_allowance_params);
+                    $this->person_model->update_person_meal_allowance_id($employee['person_id'], $meal_allowance_id);
+                    $messageData = $messageData . '<li>' . $employee['meal_allowance_rate'] . ' has been loaded to ' . $employee['person_name'] .  '</li>';    
+                }
+            }
         }
+
+        if ($messageData == '') {
+            $messageData = 'No employee was loaded.';
+        }
+
+        $this->session->set_flashdata('allowanceResult', $messageData);
 
         //     //  Loop through each row of the worksheet in turn
         //     for ($row = $base_row; $row <= $highestRow; $row++){  // start from 2 to avoid header

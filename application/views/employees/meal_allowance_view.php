@@ -7,7 +7,15 @@
     
     <section class="content"> <!-- Main content -->
         <p class="alert alert-info">Remove the persons to exclude from the meal allowance, not checking anyone will reset all alowances of all the employees.</p>
-        <p class="alert alert-success" v-if="submitFlag">Meal allowances has been successfully updated.</p>
+        <?php
+            if ($allowanceResult !== null) {
+        ?>
+            <div class="alert alert-success">
+                <ul>
+                    <?php echo $allowanceResult; ?>
+                </ul>
+            </div>
+        <?php } ?>
         
         <div class="nav-tabs-custom">
             <ul class="nav nav-tabs">
@@ -147,6 +155,8 @@ Vue.createApp({
                 success:function(response){
                     self.submitFlag = true;
                     $("#modalConfirm").modal('hide');
+                    
+                    window.location.reload();
                 }
             });
         }
