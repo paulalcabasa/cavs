@@ -116,14 +116,15 @@
 
 									 	<span class="text-bold">Meal Allowance</span><br/>
 										<span>PHP <span>{{ !employee.remaining_amount ? '0.00' : employee.remaining_amount}}</span></span><br/>
-
+<!-- 
 										<span class="text-bold">Daily Limit</span><br/>
-										<span>PHP <span>{{ !employee.meal_allowance_rate ? '0.00' : employee.meal_allowance_rate}}</span></span><br/>
+										<span>PHP <span>{{ !employee.meal_allowance_rate ? '0.00' : employee.meal_allowance_rate}}</span></span><br/> -->
 								
 										<span class="text-bold">Consumed Amount</span><br/>
 										<span>PHP <span>{{ !employee.meal_allowance_rate ? '0.00' : employee.meal_allowance_rate - employee.remaining_amount}}</span></span><br/> 
 
-										<span v-if="employee.person_id"><a href="#" @click="openViewAllowanceHistory(employee)" style="font-size:16px;font-weight:bold;">View Allowance</a></span>
+										<!-- <span v-if="employee.person_id"><a href="#" @click="openViewAllowanceHistory(employee)" style="font-size:16px;font-weight:bold;">View Allowance</a></span> -->
+										<span v-if="employee.person_id"><a href="#" @click="viewRecentOrders(employee)" style="font-size:16px;font-weight:bold;">View recent orders</a></span>
 									</div>
 								</div>
 								<div class="row" id="guest_details" v-if="transaction.customer_type == 11">
@@ -649,6 +650,9 @@ Vue.createApp({
 		openViewAllowanceHistory(employee) {
 			window.open(this.base_url + 'employee/meal_allowance_history/' + this.employee.person_id);
 		},
+		viewRecentOrders(employee) {
+			window.open(this.base_url + 'employee/recent_orders/' + this.employee.person_id);
+		},
 		getEmployee(employeeBarcodeNo) {
 			this.fetching_employee = true;
 			var customerType = this.transaction.customer_type;
@@ -669,6 +673,7 @@ Vue.createApp({
 					var data = JSON.parse(response);
 					_this.employee = data[0];
 					_this.employee_barcode_no = '';
+					_this.employee.remaining_amount = _this.employee.alloted_amount - _this.employee.consumed_amount;
 					$("#txt_barcode_no, #txt_barcode_no_vue").val("");
 					_this.computePayments();
 				}

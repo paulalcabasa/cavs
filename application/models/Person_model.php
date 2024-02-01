@@ -302,7 +302,8 @@ class Person_model extends CI_Model {
 		return $query->result();
 	}
 
-	public function get_person_details_by_barcode($search_value,$person_type){
+	public function get_person_details_by_barcode($barcodeValue,$person_type){
+		$today = date('Y-m-d');
 		$sql = "SELECT p.id person_id,	
 						p.barcode_value,
 						p.employee_no,
@@ -320,11 +321,16 @@ class Person_model extends CI_Model {
 						CONCAT(p.last_name,', ',p.first_name,' ',LEFT(p.middle_name,1),'.') full_name1,
 						p.salary_deduction,
 						dept.meal_allowance_rate, 
+						dept.meal_allowance_rate ma_rate,
+						dept.meal_allowance_rate alloted_amount,
 						p.meal_allowance_id,
-						ma.alloted_amount,
-						ma.ma_rate,
-						ma.remaining_amount,
-						ma.alloted_amount - ma.remaining_amount consumed_amount
+						(SELECT COALESCE(SUM(amount),0)  consumed_amount
+						FROM `transaction_payments` tp INNER JOIN `transaction_headers` th
+							ON tp.transaction_header_id = th.id
+						WHERE payment_mode_id = 1
+						AND th.person_id = p.id
+						AND th.transaction_status = 1
+						AND DATE(th.date_created) BETWEEN ? AND ?) consumed_amount
 				FROM persons p LEFT JOIN person_types pt
 						ON p.person_type_id = pt.id
 					LEFT JOIN person_state ps
@@ -333,11 +339,15 @@ class Person_model extends CI_Model {
 						ON u.id = p.user_id
 					LEFT JOIN departments dept
 						ON dept.id = p.department_id
-					LEFT JOIN meal_allowance ma
-						ON ma.id = p.meal_allowance_id
 				WHERE p.barcode_value = ?
 					AND pt.id = ?";
-		$query = $this->db->query($sql,array($search_value,$person_type));
+		$query = $this->db->query($sql,array(
+				$today,
+				$today,
+				$barcodeValue,
+				$person_type
+		));
+	
 		return $query->result();
 	}
 
@@ -952,11 +962,52 @@ class Person_model extends CI_Model {
 		return $query->result();
 	}
 
+	public function get_employee_recent_orders_by_person_id($person_id){
+		$sql = 'SELECT th.id order_id,
+				fd.food_name,
+				DATE_FORMAT(th.date_created, "%m/%d/%Y %h:%i:%s %p") date_created,
+				pm.mode_of_payment,
+				tp.amount
+			FROM transaction_payments tp INNER JOIN transaction_headers th
+				ON tp.transaction_header_id = th.id
+				INNER JOIN transaction_lines tl
+					ON tl.transaction_header_id = th.id 
+				INNER JOIN foods fd
+					ON fd.id = tl.food_id
+				INNER JOIN payment_modes pm
+					ON pm.id = tp.payment_mode_id
+			WHERE 1 = 1
+			AND th.person_id = ?
+			AND pm.id = 1
+			AND th.transaction_status = 1
+			AND th.date_created >= DATE_ADD(CURDATE(), INTERVAL -7 DAY)
+			ORDER BY th.date_created DESC';
+		$query = $this->db->query($sql,array($person_id));
+		return $query->result();
+	}
+
 	public function update_person_meal_allowance_id($person_id, $meal_allowance_id){
 		$sql = "UPDATE persons
 				SET meal_allowance_id = ?
 				WHERE id = ?";
 		$query = $this->db->query($sql, [$meal_allowance_id, $person_id]);  
 		return $query;
+	}
+
+	public function get_employee_last_allowance(){
+		$sql = "SELECT id person_id,
+					employee_no,
+					first_name,
+					middle_name,
+					last_name,
+					meal_allowance_rate,
+					barcode_value,
+					salary_deduction,
+					(SELECT id FROM meal_allowance WHERE person_id = p.id ORDER BY id DESC LIMIT 1) meal_allowance_id
+				FROM persons p
+				WHERE person_type_id = 1
+					AND person_state_id = 1";
+		$query = $this->db->query($sql);
+		return $query->result();
 	}
 }

@@ -1290,8 +1290,7 @@ class Employee extends MY_Controller {
         echo json_encode($departments_list);
     }
 
-    public function ajax_reload_meal_allowance(){              
-        date_default_timezone_set('Asia/Manila');
+    public function ajax_reload_meal_allowance(){        
         $current_user = $this->session->userdata('user_id');
         $employeesList = $this->input->post('employees');
         $messageData = '';
@@ -1406,5 +1405,28 @@ class Employee extends MY_Controller {
             $this->person_model->update_person_meal_allowance_id($employee->person_id, $employee->meal_allowance_id);
             echo $employee['person_id'] . ' updated <br/>';
         }
+    }
+
+    public function map_employee_last_allowance(){              
+        $employeesList = $this->person_model->get_employee_last_allowance();
+        // set to inactive the previous uploaded meal allowance by department
+        foreach($employeesList as $employee) {
+            $this->person_model->update_person_meal_allowance_id($employee->person_id, $employee->meal_allowance_id);
+            echo 'Updated ' . $employee->person_id . '<br/>';
+        }
+    }
+
+    public function recent_orders(){
+        $this->load->model('System_model', 'system_model');
+        $person_id = $this->uri->segment(3);
+        $orders = $this->person_model->get_employee_recent_orders_by_person_id($person_id);
+        $content['main_content'] = 'employees/recent_orders_view';
+        $content['message_subject'] = null;
+        $content['person_id'] = $person_id;
+        $content['person_details'] = $this->person_model->get_person_details($person_id);
+        $content['recent_orders'] = $orders;
+        $content['message_body'] = '';
+        $content['flag'] = null; 
+        $this->load->view('includes/template',$content);
     }
 }
