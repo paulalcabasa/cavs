@@ -73,7 +73,7 @@
 						</div>
 						<h3 class="transaction-header">ORDERS</h3>
 						<div>
-							<button type="button" class="btn btn-success" @click="saveOrder()">SAVE</button>
+							<button type="button" class="btn btn-success" @click="saveOrder()" :disabled="processing_order">SAVE</button>
 						</div>
 					</div>
 					<div class="box-body">
@@ -95,19 +95,36 @@
 										<input type="hidden" id="txt_meal_allowance_id"/>
 										<input type="hidden" id="txt_barcode_no_used"/>
 										<span class="text-bold" id="lbl_person_id">Barcode no</span><br/>
-										<span><input type="text" id="txt_barcode_no" placeholder="Select Employee" class="form-control input-sm"  /></span>
-										<input type="hidden" id="txt_barcode_no_vue" v-model="employee_barcode_no" placeholder="Select Employee" class="form-control input-sm"  />
-										
+										<!-- <span>
+										<input type="text" id="txt_barcode_no" placeholder="Select Employee" class="form-control input-sm"  /></span>
+										<input type="hidden" id="txt_barcode_no_vue" v-model="employee_barcode_no" placeholder="Select Employee" class="form-control input-sm"  /> -->
+										<div class="input-group">
+											<input type="text" class="form-control" placeholder="Select Employee" id="txt_barcode_no_vue"  v-model="employee_barcode_no" />
+											<!-- <input type="hidden" class='form-control' placeholder="Select Employee" id="txt_orders_barcode_vue" v-model="order_item_barcode"/> -->
+											<span class="input-group-btn">
+												<button class="btn btn-default" type="button" @click="getEmployee(employee_barcode_no)" id="txt_search_employee">Search <i v-if="fetching_employee == true" class="fa fa-spinner fa-pulse fa-1x fa-fw"></i></button>
+											</span>
+										</div>
+
 										<span class="text-bold">Employee No</span><br/>
 										<span>
 											<span>{{ !employee.employee_no ? '(Select customer)' : employee.employee_no }}</span>
 										</span><br/>
 										
 										<span class="text-bold">Name</span><br/>
-										<span>{{ !employee.employee_no ? '(Select customer)' : employee.full_name1}}</span><br/>
+										<span>{{ !employee.employee_no ? '(Select customer)' : employee.first_name + ' ' + employee.last_name }}</span><br/>
 
-										<span class="text-bold">Meal Allowance</span><br/>
+									 	<span class="text-bold">Meal Allowance</span><br/>
 										<span>PHP <span>{{ !employee.remaining_amount ? '0.00' : employee.remaining_amount}}</span></span><br/>
+<!-- 
+										<span class="text-bold">Daily Limit</span><br/>
+										<span>PHP <span>{{ !employee.meal_allowance_rate ? '0.00' : employee.meal_allowance_rate}}</span></span><br/> -->
+								
+										<span class="text-bold">Consumed Amount</span><br/>
+										<span>PHP <span>{{ !employee.meal_allowance_rate ? '0.00' : employee.meal_allowance_rate - employee.remaining_amount}}</span></span><br/> 
+
+										<!-- <span v-if="employee.person_id"><a href="#" @click="openViewAllowanceHistory(employee)" style="font-size:16px;font-weight:bold;">View Allowance</a></span> -->
+										<span v-if="employee.person_id"><a href="#" @click="viewRecentOrders(employee)" style="font-size:16px;font-weight:bold;">View recent orders</a></span>
 									</div>
 								</div>
 								<div class="row" id="guest_details" v-if="transaction.customer_type == 11">
@@ -160,6 +177,7 @@
 								</div>
 							</div>
 							<div class="col-sm-7">
+								<p class="alert alert-danger" v-if="transaction.customer_type == 1 && (parseFloat(employee.consumed_amount) == parseFloat(employee.meal_allowance_rate)) && parseFloat(employee.consumed_amount) > 0">Meal allowance for this employee has been fully consumed!</p>
 								<div class="input-group">
 									<input type="text" class="form-control" placeholder="Scan item barcode here..." id="txt_orders_barcode" />
 									<input type="hidden" class='form-control' placeholder="Scan item barcode here..." id="txt_orders_barcode_vue" v-model="order_item_barcode"/>
@@ -307,6 +325,9 @@
 <script src="../assets/js/vue-barcode-scanner.js"></script>
 <script>
 $("document").ready(function(){
+
+	$("#txt_barcode_no_vue").focus();
+
 	$("#txt_orders_barcode").scannerDetection(function(){
 		$("#txt_orders_barcode_vue").val($("#txt_orders_barcode").val());
 		$('#txt_orders_barcode_vue')[0].dispatchEvent(new CustomEvent('input'));
@@ -315,6 +336,12 @@ $("document").ready(function(){
 	$("#txt_orders_barcode_clear").click(function(){
 		$("#txt_orders_barcode_vue, #txt_orders_barcode").val('');
 	});
+
+	$("#txt_orders_barcode").on('input', function(){
+		$("#txt_orders_barcode_vue").val($("#txt_orders_barcode").val());
+		$('#txt_orders_barcode_vue')[0].dispatchEvent(new CustomEvent('input'));
+	}); 
+
 
 	$("#txt_barcode_no").scannerDetection(function(){
 		$("#txt_barcode_no_vue").val($("#txt_barcode_no").val());
@@ -325,11 +352,20 @@ $("document").ready(function(){
 		$("#txt_barcode_no_vue").val($("#txt_barcode_no").val());
 		$('#txt_barcode_no_vue')[0].dispatchEvent(new CustomEvent('input'));
 	}); 
+
+	
+	$("#txt_barcode_no").on('input', function(){
+		$("#txt_barcode_no_vue").val($("#txt_barcode_no").val());
+		$('#txt_barcode_no_vue')[0].dispatchEvent(new CustomEvent('input'));
+	}); 
 });
 
 Vue.createApp({
     data() {
         return {
+			processing_order : false,
+			is_reload_flag : false,
+			fetching_employee: false,
 			customer_types: <?php echo json_encode($customer_list, JSON_HEX_TAG); ?>,
 			payment_modes: <?php echo json_encode($payment_modes, JSON_HEX_TAG); ?>,
 			food_categories: <?php echo json_encode($food_categories, JSON_HEX_TAG); ?>,
@@ -352,7 +388,8 @@ Vue.createApp({
 				attribute2 : '',
 				attribute3 : ''
 			},
-			numpad_items: ['7','8','9','4','5','6','1','2','3','.','0', 'C']
+			numpad_items: ['7','8','9','4','5','6','1','2','3','.','0', 'C'],
+			base_url : <?php echo json_encode($base_url, JSON_HEX_TAG); ?>
         }
     },
 	watch: {
@@ -397,36 +434,6 @@ Vue.createApp({
 				}
 			});
 		},
-		employee_barcode_no(newBarcode, oldBarcode){
-			
-			if(newBarcode == ''){
-				return false;
-			}
-
-
-			var customerType = this.transaction.customer_type;
-			var _this = this;
-			$.ajax({
-				type:"POST",
-				url:"<?php echo base_url();?>"+"transaction/ajax_get_employee_details",
-				data:{
-					barcode_no   : newBarcode,
-					customer_type : customerType
-				},
-				success:function(response){
-
-					if($.trim(response) === "invalid"){
-						return false;
-					}
-
-					var data = JSON.parse(response);
-					_this.employee = data[0];
-					_this.employee_barcode_no = '';
-					$("#txt_barcode_no, #txt_barcode_no_vue").val("");
-					_this.computePayments();
-				}
-			});
-		}
 	},
     methods : {
 		fetchFoodMenuByCategory(category){
@@ -535,13 +542,14 @@ Vue.createApp({
 				}	
 
 				var mealAllowance = this.employee.remaining_amount;
-
+				var allowedAllowanceDaily = this.employee.meal_allowance_rate - this.employee.consumed_amount;
+				
 				var excessToAllowance = 0;
 				var chargeToAllowance = 0;
 				
-				if(mealAllowance < grandTotal) {
-					excessToAllowance = grandTotal - mealAllowance;
-					chargeToAllowance = mealAllowance;
+				if(allowedAllowanceDaily < grandTotal) {
+					excessToAllowance = grandTotal - allowedAllowanceDaily;
+					chargeToAllowance = allowedAllowanceDaily;
 				} else {
 					chargeToAllowance = grandTotal;
 				}
@@ -555,21 +563,20 @@ Vue.createApp({
 				if(excessToAllowance > 0){
 					this.payment_modes[this.transaction.customer_type][1].amount = excessToAllowance;
 				}
-
-				
-
 			} else {
 				this.payment_modes[this.transaction.customer_type][0].amount = grandTotal;
 			}
 		},
 		saveOrder(){
-
+			var _this = this;
 			if(this.transaction.customer_type == 1) {
 				if(!this.employee.employee_no){
 					alert('Please scan employee barcode no.');
 					return false;
 				}	
 			}
+
+			
 
 			var grandTotal = this.computeGrandTotal();
 		
@@ -616,34 +623,73 @@ Vue.createApp({
 				attribute3 		  : this.transaction.attribute3
 			};
 
-		
+			this.processing_order = true;
+			
 			$.ajax({
 				type:"POST",
 				url:"<?php echo base_url();?>"+"transaction/ajax_add_new_transaction",
 				data: transactionData,
 				success:function(response){
-				
+					_this.processing_order = false;
+
+					
 					var data = JSON.parse(response);
-					if(data.transaction_status){ // if there were errors 
-						is_reload_flag = false;
+					if(response.transaction_status){ // if there were errors 
+						_this.is_reload_flag = false;
 					}
 					else {
-						is_reload_flag = true;
+						_this.is_reload_flag = true;
 					}
 												
 					$("#txn_body").html(data.message);
 					$("#txn_modal").modal("show");
 				}
 			});
-	
 			
+		},
+		openViewAllowanceHistory(employee) {
+			window.open(this.base_url + 'employee/meal_allowance_history/' + this.employee.person_id);
+		},
+		viewRecentOrders(employee) {
+			window.open(this.base_url + 'employee/recent_orders/' + this.employee.person_id);
+		},
+		getEmployee(employeeBarcodeNo) {
+			this.fetching_employee = true;
+			var customerType = this.transaction.customer_type;
+			var _this = this;
+			$.ajax({
+				type:"POST",
+				url:"<?php echo base_url();?>"+"transaction/ajax_get_employee_details",
+				data:{
+					barcode_no   : employeeBarcodeNo,
+					customer_type : customerType
+				},
+				success:function(response){
+					_this.fetching_employee = false;
+					if($.trim(response) === "invalid"){
+						return false;
+					}
+
+					var data = JSON.parse(response);
+					_this.employee = data[0];
+					_this.employee_barcode_no = '';
+					_this.employee.remaining_amount = _this.employee.alloted_amount - _this.employee.consumed_amount;
+					$("#txt_barcode_no, #txt_barcode_no_vue").val("");
+					_this.computePayments();
+				}
+			});
 		}
     },
     mounted : function () {
 		this.fetchFoodMenuByCategory(this.food_categories[0]);
 		
 		this.customer_type = this.getCustomerTypeData(this.transaction.customer_type);
-
+		var self = this;
+		$("#txn_modal").on("hidden.bs.modal",function(){
+			if(self.is_reload_flag){
+				window.location.reload();
+			}
+		});
     }
 }).mount('#app')
 

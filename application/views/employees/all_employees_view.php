@@ -6,7 +6,7 @@
 <div class="content-wrapper"> <!-- Content Wrapper. Contains page content -->
     <section class="content-header"> <!-- Content Header (Page header) -->
         <h1>All Employees
-            <small>Comprehensive list of New Sinai MDI Employees</small>
+            <small>Comprehensive list of CAVS Employees</small>
         </h1>
     </section>
     <section class="content"> <!-- Main content -->
@@ -33,7 +33,6 @@
                         <thead>
                             <tr>
                                 <th style="width:10%;">Employee No</th>
-                                <th style="width:10%;">Employee No</th>
                                 <th style="width:15%;">Name</th>
                                 <th style="width:10%;">Department</th>
                                 <th style="width:10%;">Alloted Amount</th>
@@ -47,12 +46,27 @@
                             foreach($employees_list as $employee){
                         ?>
                             <tr>
-                                <td><img width="50" height="50" src="<?php echo base_url();?>assets/images/person_images/<?php echo $employee->person_image;?>"/></td>
                                 <td><?php echo $employee->employee_no;?></td>
                                 <td><?php echo $employee->person_name;?></td>
                                 <td><?php echo $employee->department_name;?></td>
-                                <td><?php echo $employee->alloted_amount;?></td>
-                                <td><?php echo $employee->remaining_amount;?></td>
+                                <td>
+                                <?php echo $employee->alloted_amount;?>
+                                    <?php if($employee->alloted_amount != "") { ?>
+                                        <a href="#" class="btn-remove-allowance" data-person_id="<?php echo $employee->person_id; ?>">Remove</a>
+                                    <?php } else { ?>
+                                        <a href="employee/meal_allowance_single/<?php echo $employee->person_id; ?>">Add</a>
+                                    <?php } ?>
+                                </td>
+                                <td>
+                                    <?php if($employee->remaining_amount) { ?>
+                                        <?php echo ($employee->remaining_amount);?>
+                                    <?php } else { ?>
+                                        0.00 
+                                    <?php } ?>
+                                    |
+                                    <a target="_blank" href="employee/meal_allowance_history/<?php echo $employee->person_id; ?>">View history</a>
+                                </td>
+                              
                                 <td><?php echo $employee->ma_validity_date;?></td>
                                 <td><a href='employee/edit/<?php echo encode_string($employee->person_id);?>'><i class='fa fa-edit fa-1x'></i></a></td>
                                
@@ -68,6 +82,24 @@
         </div>
   
     </section> <!-- /.content -->
+
+    <div class="modal fade" id="modalConfirm" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h5 class="modal-title">Confirmation</h5>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure to remove the meal allowance?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="btn_confirm_remove">Confirm</button>
+            </div>
+        </div>
+    </div>
+</div>
+</div><!-- /.content-wrapper -->
 </div><!-- /.content-wrapper -->
 
 <script>
@@ -126,10 +158,33 @@ function initialize_table(person_state_id){
 
 $(document).ready(function(){
 
+    var person_id = 0; 
     $("#tbl_employees_list").DataTable();
     $(".btn_get_employees").click(function(){
         $("input[name=status_id]").val($(this).data('person_state_id'));
         $("#frm_filter").submit();
+    });
+
+
+    $(".btn-remove-allowance").click(function(ev){
+        ev.preventDefault();
+        person_id = $(this).attr('data-person_id');
+        $("#modalConfirm").modal('show');
+    });
+
+    $("#btn_confirm_remove").click(function(){
+        $.ajax({
+            url: "<?php echo base_url();?>employee/ajax_remove_allowance",
+            type: 'POST',
+            data: {
+                person_id : person_id
+            },
+            success: function (response) {
+                alert('Meal allowance has been updated');
+                window.location.reload();
+            }
+        });
+
     });
     // 1 is active, initialize table with only active employees
   //  var tbl = initialize_table(1);

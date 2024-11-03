@@ -7,7 +7,15 @@
     
     <section class="content"> <!-- Main content -->
         <p class="alert alert-info">Remove the persons to exclude from the meal allowance, not checking anyone will reset all alowances of all the employees.</p>
-        <p class="alert alert-success" v-if="submitFlag">Meal allowances has been successfully updated.</p>
+        <?php
+            if ($allowanceResult !== null) {
+        ?>
+            <div class="alert alert-success">
+                <ul>
+                    <?php echo $allowanceResult; ?>
+                </ul>
+            </div>
+        <?php } ?>
         
         <div class="nav-tabs-custom">
             <ul class="nav nav-tabs">
@@ -27,8 +35,11 @@
                     <table class="table display" width="100%" cellspacing="0" id="employees_list">
                         <thead>
                             <tr>
-                                <th colspan="4">
+                                <th colspan="3">
                                     <input  style="font-weight: 400;" type="text" class="form-control" v-model="search" placeholder="Search by employee name..."/>
+                                </th>
+                                <th>
+                                    <input  style="font-weight: 400;" type='text' class='form-control' v-model="global_meal_allowance_rate"/>
                                 </th>
                                 <th>
                                     <input  style="font-weight: 400;" type='datetime-local' class='form-control start_date' v-model="global_start_date"/>
@@ -95,7 +106,8 @@ Vue.createApp({
             departments : [],
             submitFlag : false,
             global_start_date: '',
-            global_end_date: ''
+            global_end_date: '',
+            global_meal_allowance_rate: ''
         }
     },
     methods : {
@@ -143,6 +155,8 @@ Vue.createApp({
                 success:function(response){
                     self.submitFlag = true;
                     $("#modalConfirm").modal('hide');
+                    
+                    window.location.reload();
                 }
             });
         }
@@ -169,7 +183,12 @@ Vue.createApp({
             this.employees.map( (employee, index) => {
                 this.employees[index].end_date = val; 
             });
-        }
+        },
+        global_meal_allowance_rate: function(val, oldVal){
+            this.employees.map( (employee, index) => {
+                this.employees[index].meal_allowance_rate = val; 
+            });
+        },
     }
 }).mount('#app')
 

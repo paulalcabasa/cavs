@@ -160,6 +160,7 @@
         <li><a href="<?php echo base_url();?>employee/meal_allowance"><i class="ion-person-stalker"></i> <span> Allowance</span></a></li>
         <li><a href="<?php echo base_url();?>employee/credit_management"><i class="ion-person-stalker"></i> <span> Credits</span></a></li>
         <li><a href="<?php echo base_url();?>meal_allowance_category/list"><i class="ion-person-stalker"></i> <span> Meal Allowance Category</span></a></li>
+        <li><a href="<?php echo base_url();?>reports/meal_allowance_report_form"><i class="ion-person-stalker"></i> <span> Report</span></a></li>
         <li class="header">TRANSACTION</li>
         <li><a href="<?php echo base_url();?>transaction/new_transaction"><i class="fa fa-plus-circle"></i> <span>New</span></a></li>
         <li><a href="<?php echo base_url();?>transaction/new_transaction_v1"><i class="fa fa-plus-circle"></i> <span>New - version 1</span></a></li>
@@ -168,7 +169,8 @@
         
         <li class="header">SALES</li>
         <li><a href="<?php echo base_url();?>Food_Inventory/new_food"><i class="fa fa-plus"></i> <span>New</span></a></li>
-        <li><a href="<?php echo base_url();?>Food_Inventory/all_food_sales"><i class="fa fa-book"></i> <span>Food Sales</span></a></li>
+        <li><a href="<?php echo base_url();?>Food_Inventory/all_food_sales"><i class="fa fa-book"></i> <span>Food Sales - Active</span></a></li>
+        <li><a href="<?php echo base_url();?>Food_Inventory/all_food_sales_v2"><i class="fa fa-book"></i> <span>Food Sales History</span></a></li>
         <li><a href="<?php echo base_url();?>reports/view_food_items_onhand" target="_blank"><i class="fa fa-book"></i> <span>Food Items Onhand</span></a></li>
         <li><a href="<?php echo base_url();?>Food_categories" target="_blank"><i class="fa fa-book"></i> <span>Food Categories</span></a></li>
 
@@ -211,7 +213,8 @@
         
         <li class="header">SALES</li>
         <li><a href="<?php echo base_url();?>Food_Inventory/new_food"><i class="fa fa-plus"></i> <span>New</span></a></li>
-        <li><a href="<?php echo base_url();?>Food_Inventory/all_food_sales"><i class="fa fa-book"></i> <span>Food Sales</span></a></li>
+        <li><a href="<?php echo base_url();?>Food_Inventory/all_food_sales"><i class="fa fa-book"></i> <span>Food Sales - Active</span></a></li>
+        <li><a href="<?php echo base_url();?>Food_Inventory/all_food_sales_v2"><i class="fa fa-book"></i> <span>Food Sales History</span></a></li>
         <li><a href="<?php echo base_url();?>reports/view_food_items_onhand" target="_blank"><i class="fa fa-book"></i> <span>Food Items Onhand</span></a></li>
         <li><a href="<?php echo base_url();?>Food_categories" target="_blank"><i class="fa fa-book"></i> <span>Food Categories</span></a></li>
 
@@ -250,6 +253,7 @@
         <li><a href="<?php echo base_url();?>employee"><i class="ion-person-stalker"></i> <span>Employees</span></a></li>
         <li><a href="<?php echo base_url();?>meal_allowance_category/list"><i class="ion-person-stalker"></i> <span> Meal Allowance Category</span></a></li>
         <li><a href="<?php echo base_url();?>employee/meal_allowance"><i class="ion-person-stalker"></i> <span> Allowance</span></a></li>
+        <li><a href="<?php echo base_url();?>reports/meal_allowance_report_form"><i class="ion-person-stalker"></i> <span> Report</span></a></li>
         <?php } ?>       
   
         <!-- cashier -->
@@ -262,9 +266,10 @@
       
         <li><a href="<?php echo base_url();?>transaction/all_transactions"><i class="fa fa-book"></i> <span>All Transactions</span></a></li>
         <li class="header">SALES</li>
-        <li><a href="<?php echo base_url();?>Food_Inventory/all_food_sales"><i class="fa fa-book"></i> <span>Food Sales</span></a></li>
+        <li><a href="<?php echo base_url();?>Food_Inventory/all_food_sales"><i class="fa fa-book"></i> <span>Food Sales - Active</span></a></li>
+        <li><a href="<?php echo base_url();?>Food_Inventory/all_food_sales_v2"><i class="fa fa-book"></i> <span>Food Sales History</span></a></li>
         <li><a href="<?php echo base_url();?>reports/view_food_items_onhand" target="_blank"><i class="fa fa-book"></i> <span>Food Items Onhand</span></a></li>
-        <li><a href="<?php echo base_url();?>reports/sales_report"><i class="fa fa-bar-chart"></i> <span>Sales Report</span></a></li>
+        <!-- <li><a href="<?php echo base_url();?>reports/sales_report"><i class="fa fa-bar-chart"></i> <span>Sales Report</span></a></li> -->
     
         <?php } ?>  
 	

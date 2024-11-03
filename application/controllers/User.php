@@ -224,7 +224,7 @@ class User extends MY_Controller {
             $this->input->post('state'),
             $this->input->post('person_id')
         );
-        $this->person_model->update_person_details($params);
+        $this->person_model->update_person_details2($params);
         $person_type_params = array(
             $this->input->post('sel_user_type'),
             $update_user,

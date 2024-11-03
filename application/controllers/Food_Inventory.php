@@ -176,8 +176,40 @@ class Food_Inventory extends MY_Controller {
         }
     }
 
+    public function all_food_sales_v2(){
+        $pageNo = !empty($this->uri->segment('3')) ? $this->uri->segment('3') : 1;
+        $query = isset($_GET['search']) ? $_GET['search'] : '';
+        $recordsPerPage = 10;
+        $offset = ($pageNo - 1) * $recordsPerPage;
+        $params = [
+            'page_no' => $pageNo,
+            'query' => $query,
+            'records_per_page' => $recordsPerPage,
+            'offset' => $offset
+        ];
+    
+        $foods = $this->food_model->get_food_sales_list_history($params);
+        $user_type_id = $this->session->userdata('user_type_id');
+        $foodTotal = $this->food_model->get_food_sales_list_history_total();
+        $inventoryBaseUrl = base_url() . '/Food_Inventory/all_food_sales_v2/';
+        $totalPages = ceil($foodTotal / $recordsPerPage); 
+        $content['foods'] = $foods;
+        $content['user_type_id'] = $user_type_id;
+        $content['pageNo'] = $pageNo;
+        $content['totalPages'] = $totalPages;
+        $content['inventoryBaseUrl'] = $inventoryBaseUrl;
+        $content['foodTotal'] = $foodTotal;
+        $content['query'] = $query;
+        $content['main_content'] = 'food_inventory/all_food_sales_history';
+        $this->load->view('includes/template',$content);
+    }
+
     public function all_food_sales(){
-        $content['main_content'] = 'food_inventory/all_food_sales';
+        $foods = $this->food_model->get_food_sales_list();
+        $user_type_id = $this->session->userdata('user_type_id');
+        $content['foods'] = $foods;
+        $content['user_type_id'] = $user_type_id;
+        $content['main_content'] = 'food_inventory/all_food_sales_v2';
         $this->load->view('includes/template',$content);
     }
 
@@ -258,9 +290,10 @@ class Food_Inventory extends MY_Controller {
             ),
             array( 'db' => 'status', 'dt' => 7),
             array( 'db' => 'date_created', 'dt' => 8),
+            array( 'db' => 'barcode_value', 'dt' => 9),
             array( 
                 'db' => 'food_id', 
-                'dt' => 9,
+                'dt' => 10,
                 'formatter' => function($d,$row){
                     // if new = Open, Closed, Edit
                     // if open = closed
@@ -300,11 +333,12 @@ class Food_Inventory extends MY_Controller {
                                       <ul class="dropdown-menu dropdown-menu-right">
                                       <li><a href="edit_food/'.encode_string($d).'">Edit</a></li>
                                         <li><a href="'.base_url().'reports/cost_vs_sales_report/'.$enc_food_id.'" target="_blank">View Details</a></li>';
-                                        /*if($user_type_id == 6 || $user_type_id == 3){
-                                            if(in_array($row['category'],array('Breakfast','Lunch','Dinner','Rice'))) { */// Stock adjustment is only avaialble in these categories  
+                                        if($user_type_id == 6 || $user_type_id == 3){
+                                        //    if(in_array($row['category'],array('Breakfast','Lunch','Dinner','Rice'))) { */// Stock adjustment is only avaialble in these categories  
                                                 $btn_data .= '<li><a href="#" data-food_name="'.$food_name.'" data-current_qty="'.$current_quantity.'" data-food_id="'.$food_id.'" data-formatted_food_id="'.$formatted_food_id.'" class="btn_adjust_qty">Stock Adjustment</a></li>';
                                          /*   }
                                         }*/
+                                        }
                                         
                         if($current_quantity > 0){
                             $btn_data .= ' <li><a href="close_food_item/'.$enc_food_id.'" data-id="'.$d.'">Close</a></li>';
@@ -337,7 +371,7 @@ class Food_Inventory extends MY_Controller {
                     return $btn_data;
                 }
             ),
-            array( 'db' => 'transaction_state_id', 'dt' => 10)
+            array( 'db' => 'transaction_state_id', 'dt' => 11)
         );
 
         // SQL server connection information
@@ -752,7 +786,7 @@ class Food_Inventory extends MY_Controller {
             'bgcolor' => false, //array(255,255,255), falsearray(0,0,0)
             'text' => true,
             'font' => 'helvetica',
-            'fontsize' => 8,
+            'fontsize' => 8,    
             'stretchtext' => 4
         );
 

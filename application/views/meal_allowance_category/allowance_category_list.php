@@ -24,6 +24,7 @@
                         <th>Rate</th>
                         <th>Start Time</th>
                         <th>Shift hours</th>
+                        <th>Active</th>
                         <th>Action</th>
                     </tr>
                 </thead>
@@ -33,6 +34,7 @@
                         <td>{{ row.meal_allowance_rate }}</td>
                         <td>{{ row.meal_allowance_start_time  }}</td>
                         <td>{{ row.shift_hours  }}</td>
+                        <td>{{ row.active_flag  }}</td>
                         <td><a href="#" @click="editForm(row)"><i class="fa fa-edit"></i></a></td>
                     </tr>
                 </tbody>
@@ -74,6 +76,15 @@
                             <input type="text" class="form-control" v-model="form.shift_hours"/>
                             <p class="text-danger">{{ errors['shift_hours'] }}</p>
                         </div>
+                        <div class="form-group">
+                            <label for="">Active</label>
+                           
+                            <select name="" v-model="form.active_flag" id="" class="form-control">
+                                <option value="y">Yes</option>
+                                <option value="n">No</option>
+                            </select>
+                            <p class="text-danger">{{ errors['active_flag'] }}</p>
+                        </div>
                     </form>
                 </div>
                 <div class="modal-footer">
@@ -106,7 +117,8 @@ Vue.createApp({
                 department_name : '',
                 meal_allowance_rate : '',
                 meal_allowance_start_time: '',
-                shift_hours: ''
+                shift_hours: '',
+                active_flag: 'y'
             },
             errors: []
         }
@@ -125,6 +137,7 @@ Vue.createApp({
             this.form.meal_allowance_rate = row.meal_allowance_rate;
             this.form.meal_allowance_start_time = row.meal_allowance_start_time;
             this.form.shift_hours = row.shift_hours;
+            this.form.active_flag = row.active_flag;
             $("#formModal").modal('show');
         },
         update(){

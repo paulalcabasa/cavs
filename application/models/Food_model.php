@@ -329,7 +329,10 @@ class Food_model extends CI_Model {
                      LEFT JOIN transaction_states ts
                         ON ts.id = fd.transaction_state_id
                 WHERE fd.barcode_value = ?
-                      AND fd.transaction_state_id = 4"; // only get food items that is open for transaction
+                      AND fd.transaction_state_id = 4
+					  AND fd.quantity > 0
+				ORDER BY fd.date_created ASC
+				LIMIT 1"; // only get food items that is open for transaction
         $query = $this->db->query($sql,$barcode);
         return $query->result();
     }
@@ -404,4 +407,84 @@ class Food_model extends CI_Model {
         $this->db->query($sql,array($food_id,$new_barcode,$user_id));
     }
   */
+
+	public function get_food_sales_list(){
+		$sql = "SELECT  fd.id            AS food_id,
+						fd.barcode_value AS barcode_value,
+						fc.category      AS category,
+						fd.food_name     AS food_name,
+						fd.unit_price    AS unit_price,
+						fd.quantity      AS quantity,
+						ts.status        AS status,
+						fd.initial_quantity + (
+						CASE
+								WHEN SUM(fqa.added_quantity) IS NULL THEN 0
+								ELSE SUM(fqa.added_quantity)
+						END) - fd.quantity                      AS no_of_sales,
+						DATE_FORMAT(fd.date_created,'%m/%d/%Y') AS date_created,
+						fd.transaction_state_id                 AS transaction_state_id,
+						DATE_FORMAT(fd.date_created,'%Y-%m-%d') AS original_date_created
+				FROM foods fd LEFT JOIN food_categories fc
+							ON fd.food_category_id = fc.id
+						LEFT JOIN transaction_states ts ON       
+							ts.id = fd.transaction_state_id
+						LEFT JOIN food_quantity_adjustments fqa
+							ON fqa.food_id = fd.id
+				WHERE fd.food_type_id = 1
+				AND ts.id IN (4, 5)
+				GROUP BY fd.id
+				ORDER BY fd.date_created DESC";
+		$query = $this->db->query($sql);
+		return $query->result();
+	}
+
+	public function get_food_sales_list_history($params){
+		$sql = "SELECT  fd.id            AS food_id,
+						fd.barcode_value AS barcode_value,
+						fc.category      AS category,
+						fd.food_name     AS food_name,
+						fd.unit_price    AS unit_price,
+						fd.quantity      AS quantity,
+						ts.status        AS status,
+						fd.initial_quantity + (
+						CASE
+								WHEN SUM(fqa.added_quantity) IS NULL THEN 0
+								ELSE SUM(fqa.added_quantity)
+						END) - fd.quantity                      AS no_of_sales,
+						DATE_FORMAT(fd.date_created,'%m/%d/%Y') AS date_created,
+						fd.transaction_state_id                 AS transaction_state_id,
+						DATE_FORMAT(fd.date_created,'%Y-%m-%d') AS original_date_created
+				FROM foods fd INNER JOIN food_categories fc
+							ON fd.food_category_id = fc.id
+							INNER JOIN transaction_states ts ON       
+							ts.id = fd.transaction_state_id
+							INNER JOIN food_quantity_adjustments fqa
+							ON fqa.food_id = fd.id
+				WHERE fd.food_type_id = 1
+				AND ts.id IN (3)
+				AND LOWER(fd.food_name) LIKE ". "'%" . ($params['query']) . "%'" . "
+				GROUP BY fd.id
+				ORDER BY fd.date_created DESC
+				LIMIT " . $params['offset'] . "," . $params['records_per_page'];
+
+		$query = $this->db->query($sql);
+		return $query->result();
+	}
+
+	public function get_food_sales_list_history_total(){
+		$sql = "SELECT count(foods.id) total_foods
+		FROM   (SELECT fd.id
+				FROM   foods fd
+					   INNER JOIN food_categories fc
+							   ON fd.food_category_id = fc.id
+					   INNER JOIN transaction_states ts
+							   ON ts.id = fd.transaction_state_id
+					   INNER JOIN food_quantity_adjustments fqa
+							   ON fqa.food_id = fd.id
+				WHERE  fd.food_type_id = 1
+					   AND ts.id IN ( 3 )
+				GROUP  BY fd.id) foods";
+		$result = $this->db->query($sql);
+		return $result->result()[0]->total_foods;
+	}
 }

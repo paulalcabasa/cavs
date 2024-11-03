@@ -56,6 +56,7 @@
                         </form>
                      
                 </div>
+            <div style="overflow-x:scroll;">
             <table class="table table-bordered" id="tbl_active_inventory">
               <thead>
                 <tr>
@@ -68,12 +69,14 @@
                   <th>No. of Sales</th>
                   <th>Status</th>
                   <th>Date Created</th>
+                  <th>Barcode</th>
                   <th>Action</th>
                   <th>Transaction State ID</th>
                 </tr>
               </thead>
               <tbody></tbody>
             </table>
+            </div>
               </div>
             </div>
         </div>
@@ -127,7 +130,7 @@ function initialize_table(start_date,end_date,status_ids){
         "serverSide": true,
         "ajax": "<?php echo base_url();?>Food_Inventory/dt_all_inventory_list/"+status_ids+"/"+start_date+"/"+end_date,
     		"columnDefs": [
-    			{ "visible": false, "targets": 10 }
+    			{ "visible": false, "targets": 11 }
     		]
     });
      return tbl;

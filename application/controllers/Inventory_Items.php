@@ -177,13 +177,13 @@ class Inventory_Items extends MY_Controller {
                 'dt' => 'actions',
                 'formatter' => function($d,$row){
                     $btn_data = "";
-                    if($row['status'] == 'New'){
+                    if($row['status'] == 'New' || $row['status'] == 'Finalized'){
                         $btn_data = '<div class="btn-group">
                                         <button type="button" class="btn btn-primary btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         Action <span class="caret"></span>
                                         </button>
                                         <ul class="dropdown-menu dropdown-menu-right">';
-                                        if($row['status'] == 'New'){
+                                        if($row['status'] == 'New' || $row['status'] == 'Finalized'){
                                             $btn_data .= '<li><a href="../edit_item_stock/'.encode_string($d).'">Edit</a></li>
                                                           <li><a href="#" class="btn_update_status" data-stock_id='.$d.' data-status_id="6">Finalize</a></li>
                                                           <li><a href="#" class="btn_update_status" data-stock_id='.$d.' data-status_id="7">Cancel</a></li> ';

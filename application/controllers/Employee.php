@@ -260,6 +260,7 @@ class Employee extends MY_Controller {
             $update_user,
             $this->input->post('department'),
             $this->input->post('state'),
+            $this->input->post('barcode_no'),
             $this->input->post('employee_id')
         );
         $this->person_model->update_person_details($params);
@@ -275,6 +276,20 @@ class Employee extends MY_Controller {
         $departments_list = $this->system_model->get_departments();
         $content['main_content'] = 'employees/meal_allowance_view';
         $content['message_subject'] = null;
+        $content['allowanceResult'] = $this->session->flashdata('allowanceResult');
+        $content['person_id'] = null;
+        $content['message_body'] = '<p class="text-center text-muted">Click on the <strong>Upload file</strong> button to start reloading meal allowances.</p>';
+        $content['flag'] = null; 
+        $this->load->view('includes/template',$content);
+    }
+
+    public function meal_allowance_single(){
+        $this->load->model('System_model', 'system_model');
+        $person_id = $this->uri->segment(3);
+        $content['main_content'] = 'employees/meal_allowance_single_view';
+        $content['message_subject'] = null;
+        $content['person_id'] = $person_id;
+        $content['employees_list'] = $this->person_model->get_single_employee_by_department2($person_id);
         $content['message_body'] = '<p class="text-center text-muted">Click on the <strong>Upload file</strong> button to start reloading meal allowances.</p>';
         $content['flag'] = null; 
         $this->load->view('includes/template',$content);
@@ -1275,15 +1290,11 @@ class Employee extends MY_Controller {
         echo json_encode($departments_list);
     }
 
-    public function ajax_reload_meal_allowance(){              
-
+    public function ajax_reload_meal_allowance(){        
         $current_user = $this->session->userdata('user_id');
         $employeesList = $this->input->post('employees');
-
+        $messageData = '';
         // set to inactive the previous uploaded meal allowance by department
-        
-
-
         foreach($employeesList as $employee) {
             $start_date = $employee['start_date'];
             $end_date = $employee['end_date'];
@@ -1301,8 +1312,26 @@ class Employee extends MY_Controller {
                 $end_date,
                 $current_user
             );
-            $this->person_model->insert_employee_meal_allowance($meal_allowance_params);
+
+            if ($employee['is_allowance_valid'] == 'null' || $employee['is_allowance_valid'] == 0) {
+                $starttimestamp = strtotime($employee['last_allowance_loaded']);
+                $endtimestamp = strtotime(date('Y-m-d H:i:s'));
+                $difference = abs($endtimestamp - $starttimestamp)/3600;
+                
+                // last meal allowance load must be 20 hours ago
+                if ($difference > 20) {
+                    $meal_allowance_id = $this->person_model->insert_employee_meal_allowance($meal_allowance_params);
+                    $this->person_model->update_person_meal_allowance_id($employee['person_id'], $meal_allowance_id);
+                    $messageData = $messageData . '<li>' . $employee['meal_allowance_rate'] . ' has been loaded to ' . $employee['person_name'] .  '</li>';    
+                }
+            }
         }
+
+        if ($messageData == '') {
+            $messageData = 'No employee was loaded.';
+        }
+
+        $this->session->set_flashdata('allowanceResult', $messageData);
 
         //     //  Loop through each row of the worksheet in turn
         //     for ($row = $base_row; $row <= $highestRow; $row++){  // start from 2 to avoid header
@@ -1337,17 +1366,67 @@ class Employee extends MY_Controller {
         //                 $current_user
         //             );
         //             $this->person_model->insert_employee_meal_allowance($meal_allowance_params);
-                    
-                    
-                
-        
         //     }
 
         // }
     
-      
     
-        
-     
+    }
+
+    public function ajax_remove_allowance(){
+        $person_id = $this->input->post('person_id');
+        $meal_allowance_details = $this->person_model->get_person_allowance_details($person_id);
+        $meal_allowance_id = $meal_allowance_details[0]->meal_allowance_id;
+        $this->person_model->expire_meal_allowance($meal_allowance_id);
+        echo json_encode([
+            'message' => 'allowance removed',
+            'person_id' => $person_id,
+            'meal_allowance_details' => $meal_allowance_details
+        ]);
+    }
+
+    public function meal_allowance_history(){
+        $this->load->model('System_model', 'system_model');
+        $person_id = $this->uri->segment(3);
+        $content['main_content'] = 'employees/meal_allowance_history_view';
+        $content['message_subject'] = null;
+        $content['person_id'] = $person_id;
+        $content['person_details'] = $this->person_model->get_person_details($person_id);
+        $content['meal_allowance_history'] = $this->person_model->get_employee_meal_allowance_history_by_person_id($person_id);
+        $content['message_body'] = '';
+        $content['flag'] = null; 
+        $this->load->view('includes/template',$content);
+    }
+
+    public function update_meal_allowance_ids(){
+        $employees_with_meal_allowance_id = $this->person_model->get_all_employees_meal_allowance_id();
+       // print_r($employees_with_meal_allowance_id);
+        foreach($employees_with_meal_allowance_id as $employee) {
+            $this->person_model->update_person_meal_allowance_id($employee->person_id, $employee->meal_allowance_id);
+            echo $employee['person_id'] . ' updated <br/>';
+        }
+    }
+
+    public function map_employee_last_allowance(){              
+        $employeesList = $this->person_model->get_employee_last_allowance();
+        // set to inactive the previous uploaded meal allowance by department
+        foreach($employeesList as $employee) {
+            $this->person_model->update_person_meal_allowance_id($employee->person_id, $employee->meal_allowance_id);
+            echo 'Updated ' . $employee->person_id . '<br/>';
+        }
+    }
+
+    public function recent_orders(){
+        $this->load->model('System_model', 'system_model');
+        $person_id = $this->uri->segment(3);
+        $orders = $this->person_model->get_employee_recent_orders_by_person_id($person_id);
+        $content['main_content'] = 'employees/recent_orders_view';
+        $content['message_subject'] = null;
+        $content['person_id'] = $person_id;
+        $content['person_details'] = $this->person_model->get_person_details($person_id);
+        $content['recent_orders'] = $orders;
+        $content['message_body'] = '';
+        $content['flag'] = null; 
+        $this->load->view('includes/template',$content);
     }
 }

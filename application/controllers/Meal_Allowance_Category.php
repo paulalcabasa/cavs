@@ -37,6 +37,7 @@ class Meal_Allowance_Category extends MY_Controller {
             'meal_allowance_rate' => $category['meal_allowance_rate'],
             'meal_allowance_start_time' => $category['meal_allowance_start_time'],
             'shift_hours' => $category['shift_hours'],
+            'active_flag' => $category['active_flag'],
             'department_id' => $category['department_id'],
         ];
         $this->meal_allowance_category_model->update($data);

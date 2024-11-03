@@ -30,6 +30,7 @@ class Transaction extends MY_Controller {
         $content['customer_list'] = $customer_list;
         $content['payment_modes'] = $grouped_payment_modes;
         $content['meal_img_dir'] = $meal_img_dir;
+        $content['base_url'] = base_url();
    
         $content['default_customer'] = 1; // id of Employee type of person
     //    $content['temp_transaction_no'] = $temp_transaction_no; // id of Employee type of person
@@ -91,8 +92,7 @@ class Transaction extends MY_Controller {
 
     public function ajax_get_employee_details(){       
     
-        $person_details = $this->person_model->get_person_details_by_category(
-                            "barcode_value",
+        $person_details = $this->person_model->get_person_details_by_barcode(
                             $this->input->post('barcode_no'),
                             $this->input->post('customer_type')
                           );
@@ -119,7 +119,7 @@ class Transaction extends MY_Controller {
         $person_id = $this->input->post('person_id');
         $employee_no = $this->input->post('employee_no');
         $barcode_no = $this->input->post('barcode_no');
-        $meal_allowance_id = $this->input->post('meal_allowance_id');
+        //$meal_allowance_id = $this->input->post('meal_allowance_id');
 
         // guest, patient and employee
         $customer_name = $this->input->post('customer_name');
@@ -171,32 +171,32 @@ class Transaction extends MY_Controller {
                     $payment_mode_id = $payment[0];
                     $amount = $payment[1];
                     // if payment mode is meal allowance, deduct to employees meal allowance
-                    if($payment_mode_id == 1) {
+                  //  if($payment_mode_id == 1) {
 
-                        if($meal_allowance_id != ""){
-                            $current_meal_allowance_details = $this->person_model->get_employee_meal_allowance($person_id,$meal_allowance_id);
-                            $deducted_max_allowance_daily = 0;
+                       //if($meal_allowance_id != ""){
+                         //   $current_meal_allowance_details = $this->person_model->get_employee_meal_allowance($person_id,$meal_allowance_id);
+                          //  $deducted_max_allowance_daily = 0;
                             // employee or stockholder meal allowance
-                            $current_meal_allowance = $current_meal_allowance_details[0]->remaining_amount;
+                           // $current_meal_allowance = $current_meal_allowance_details[0]->remaining_amount;
                             // stockholder daily allowance
-                            $daily_allowance = $current_meal_allowance_details[0]->max_allowance_daily;
+                         //   $daily_allowance = $current_meal_allowance_details[0]->max_allowance_daily;
                           
-                            if($current_meal_allowance > 0 && $daily_allowance > 0){
-                                if($amount > $daily_allowance){
-                                    $message .=  "Insufficient Balance : PHP " . $daily_allowance . " remaining." ;
-                                    $is_error = true;
-                                }
-                            }
-                            else {
-                                $is_error = true;
-                                $message .=  "Insufficient Balance : PHP " . $daily_allowance . " remaining." ;
-                            }
-                        }
-                        else {
-                            $is_error = true;
-                            $message .=  "Insufficient Balance : PHP 0.00 remaining." ;
-                        }
-                    }
+                        //     if($current_meal_allowance > 0 && $daily_allowance > 0){
+                        //         if($amount > $daily_allowance){
+                        //             $message .=  "Insufficient Balance : PHP " . $daily_allowance . " remaining." ;
+                        //             $is_error = true;
+                        //         }
+                        //     }
+                        //     else {
+                        //         $is_error = true;
+                        //         $message .=  "Insufficient Balance : PHP " . $daily_allowance . " remaining." ;
+                        //     }
+                        // }
+                        // else {
+                        //     $is_error = true;
+                        //     $message .=  "Insufficient Balance : PHP 0.00 remaining." ;
+                        // }
+                   // }
                 }
             }
             else if($customer_type == 1){ // if employee, check if meal allowance is sufficient in the order amount
@@ -204,27 +204,27 @@ class Transaction extends MY_Controller {
                     $payment_mode_id = $payment[0];
                     $amount = $payment[1];
                     // if payment mode is meal allowance, deduct to employees meal allowance
-                    if($payment_mode_id == 1) {
-                        if($meal_allowance_id != ""){
-                            $current_meal_allowance_details = $this->person_model->get_employee_meal_allowance($person_id,$meal_allowance_id);
-                            $current_meal_allowance = $current_meal_allowance_details[0]->remaining_amount;
+                    // if($payment_mode_id == 1) {
+                    //     if($meal_allowance_id != ""){
+                    //         $current_meal_allowance_details = $this->person_model->get_employee_meal_allowance($person_id,$meal_allowance_id);
+                    //         $current_meal_allowance = $current_meal_allowance_details[0]->remaining_amount;
                           
-                            if($current_meal_allowance > 0){
-                                if($amount > $current_meal_allowance){
-                                    $message .=  "Insufficient Balance : PHP " . $current_meal_allowance . " remaining." ;
-                                    $is_error = true;
-                                }
-                            }
-                            else {
-                                $is_error = true;
-                                $message .=  "Insufficient Balance : PHP " . $current_meal_allowance . " remaining." ;
-                            }
-                        }
-                        else {
-                            $is_error = true;
-                            $message .=  "Insufficient Balance : PHP 0.00 remaining." ;
-                        }
-                    }
+                    //         if($current_meal_allowance > 0){
+                    //             if($amount > $current_meal_allowance){
+                    //                 $message .=  "Insufficient Balance : PHP " . $current_meal_allowance . " remaining." ;
+                    //                 $is_error = true;
+                    //             }
+                    //         }
+                    //         else {
+                    //             $is_error = true;
+                    //             $message .=  "Insufficient Balance : PHP " . $current_meal_allowance . " remaining." ;
+                    //         }
+                    //     }
+                    //     else {
+                    //         $is_error = true;
+                    //         $message .=  "Insufficient Balance : PHP 0.00 remaining." ;
+                    //     }
+                    // }
                 }
             }
         }
@@ -245,7 +245,7 @@ class Transaction extends MY_Controller {
                                         $discount_percent,
                                         $customer_id_no,
                                         $remarks,
-                                        $meal_allowance_id,
+                                        0, // meal_allowance_id no need tangina
                                         $create_user,
                                         $attribute1,
                                         $attribute2,
@@ -291,38 +291,38 @@ class Transaction extends MY_Controller {
                                     $transaction_header_id,
                                     $payment_mode_id,
                                     $amount,
-                                    $meal_allowance_id
+                                    0
                                   );
                 $payment_txn_id = $this->transaction_model->add_transaction_payments($payment_params);
                 // if payment mode is meal allowance, deduct to employees meal allowance
                 if($payment_mode_id == 1) {
-                    $current_meal_allowance_details = $this->person_model->get_employee_meal_allowance($person_id,$meal_allowance_id);
-                    $deducted_max_allowance_daily = 0;
-                    $ma_weekly_claims_count = 0;
-                    // employee or stockholder meal allowance
-                    $remaining_amount = $current_meal_allowance_details[0]->remaining_amount;
-                    $remaining_amount = $remaining_amount - $amount;
+                //     $current_meal_allowance_details = $this->person_model->get_employee_meal_allowance($person_id,$meal_allowance_id);
+                //     $deducted_max_allowance_daily = 0;
+                //     $ma_weekly_claims_count = 0;
+                //     // employee or stockholder meal allowance
+                //     $remaining_amount = $current_meal_allowance_details[0]->remaining_amount;
+                //     $remaining_amount = $remaining_amount - $amount;
 
-                    if($customer_type == 8){ // if stockholder only
-                        // max allowance daily
-                        $current_max_allowance_daily = $current_meal_allowance_details[0]->max_allowance_daily;
-                        $deducted_max_allowance_daily = $current_max_allowance_daily - $amount;
-                        $ma_weekly_claims_count = $current_meal_allowance_details[0]->ma_weekly_claims_count;
-                        // weekly claims count
-                        if($deducted_max_allowance_daily == 0){
-                            $ma_weekly_claims_count--;
-                        }
-                    }
+                //     if($customer_type == 8){ // if stockholder only
+                //         // max allowance daily
+                //         $current_max_allowance_daily = $current_meal_allowance_details[0]->max_allowance_daily;
+                //         $deducted_max_allowance_daily = $current_max_allowance_daily - $amount;
+                //         $ma_weekly_claims_count = $current_meal_allowance_details[0]->ma_weekly_claims_count;
+                //         // weekly claims count
+                //         if($deducted_max_allowance_daily == 0){
+                //             $ma_weekly_claims_count--;
+                //         }
+                //     }
                    
-                   $update_meal_allowance_params = array(
-                        $remaining_amount,
-                        $deducted_max_allowance_daily,
-                        $ma_weekly_claims_count,
-                        $create_user,
-                        $meal_allowance_id
-                    );
+                //    $update_meal_allowance_params = array(
+                //         $remaining_amount,
+                //         $deducted_max_allowance_daily,
+                //         $ma_weekly_claims_count,
+                //         $create_user,
+                //         $meal_allowance_id
+                //     );
 
-                    $this->person_model->update_employee_meal_allowance($update_meal_allowance_params);
+                //     $this->person_model->update_employee_meal_allowance($update_meal_allowance_params);
                 }
                 // if payment mode is salary deduction, add employees deduction
                 else if($payment_mode_id == 5){

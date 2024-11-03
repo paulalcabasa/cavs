@@ -1,7 +1,7 @@
 <div class="content-wrapper"> <!-- Content Wrapper. Contains page content -->
     <section class="content-header"> <!-- Content Header (Page header) -->
         <h1>All Stockholders
-            <small>Comprehensive list of New Sinai MDI Stockholders</small>
+            <small>Comprehensive list of CAVS Stockholders</small>
         </h1>
     </section>
     <section class="content"> <!-- Main content -->
