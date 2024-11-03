@@ -154,10 +154,10 @@
         <?php if($this->session->userdata['user_type_id'] == 3) { ?>
         <li class="header">SYSTEM USERS</li>
         <li><a href="<?php echo base_url();?>employee"><i class="ion-person-stalker"></i> <span>Employees</span></a></li>
-        <li><a href="<?php echo base_url();?>stockholder"><i class="ion-person-stalker"></i> <span>Stockholders</span></a></li>
+        <!-- <li><a href="<?php echo base_url();?>stockholder"><i class="ion-person-stalker"></i> <span>Stockholders</span></a></li> -->
         <li><a href="<?php echo base_url();?>user"><i class="ion-person-stalker"></i> <span>Users</span></a></li>
         <li class="header">MEAL ALLOWANCE</li>
-        <li><a href="<?php echo base_url();?>employee/meal_allowance"><i class="ion-person-stalker"></i> <span> Allowance</span></a></li>
+        <!-- <li><a href="<?php echo base_url();?>employee/meal_allowance"><i class="ion-person-stalker"></i> <span> Allowance</span></a></li> -->
         <li><a href="<?php echo base_url();?>employee/credit_management"><i class="ion-person-stalker"></i> <span> Credits</span></a></li>
         <li><a href="<?php echo base_url();?>meal_allowance_category/list"><i class="ion-person-stalker"></i> <span> Meal Allowance Category</span></a></li>
         <li><a href="<?php echo base_url();?>reports/meal_allowance_report_form"><i class="ion-person-stalker"></i> <span> Report</span></a></li>

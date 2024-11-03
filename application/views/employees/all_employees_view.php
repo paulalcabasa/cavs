@@ -35,9 +35,7 @@
                                 <th style="width:10%;">Employee No</th>
                                 <th style="width:15%;">Name</th>
                                 <th style="width:10%;">Department</th>
-                                <th style="width:10%;">Alloted Amount</th>
-                                <th style="width:10%;">Remaining Amount</th>
-                                <th style="width:10%;">Validity Date</th>
+                                <th style="width:10%;">Meal allowance</th>
                                 <th style="width:5%;">Edit</th>
                             </tr>
                         </thead>
@@ -49,27 +47,8 @@
                                 <td><?php echo $employee->employee_no;?></td>
                                 <td><?php echo $employee->person_name;?></td>
                                 <td><?php echo $employee->department_name;?></td>
-                                <td>
-                                <?php echo $employee->alloted_amount;?>
-                                    <?php if($employee->alloted_amount != "") { ?>
-                                        <a href="#" class="btn-remove-allowance" data-person_id="<?php echo $employee->person_id; ?>">Remove</a>
-                                    <?php } else { ?>
-                                        <a href="employee/meal_allowance_single/<?php echo $employee->person_id; ?>">Add</a>
-                                    <?php } ?>
-                                </td>
-                                <td>
-                                    <?php if($employee->remaining_amount) { ?>
-                                        <?php echo ($employee->remaining_amount);?>
-                                    <?php } else { ?>
-                                        0.00 
-                                    <?php } ?>
-                                    |
-                                    <a target="_blank" href="employee/meal_allowance_history/<?php echo $employee->person_id; ?>">View history</a>
-                                </td>
-                              
-                                <td><?php echo $employee->ma_validity_date;?></td>
+                                <td><?php echo $employee->meal_allowance_rate;?></td>
                                 <td><a href='employee/edit/<?php echo encode_string($employee->person_id);?>'><i class='fa fa-edit fa-1x'></i></a></td>
-                               
                             </tr>
                         <?php
                             }

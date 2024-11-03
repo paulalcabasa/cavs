@@ -37,6 +37,14 @@
                             <div class="col-md-4 label-details">Meal Allowance Category</div>
                             <div class="col-md-8 value-details"><?= $person_details[0]->department_name ?></div>
                         </div>
+                        <div class="row">
+                            <div class="col-md-4 label-details">Meal Allowance Rate</div>
+                            <div class="col-md-8 value-details"><?= $person_details[0]->meal_allowance_rate ?></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4 label-details">Remaining Allowance</div>
+                            <div class="col-md-8 value-details"><?= $person_details[0]->meal_allowance_rate - $person_details[0]->consumed_amount ?></div>
+                        </div>
                     </div>
                     <div class="box-body"></div>
                 </div>

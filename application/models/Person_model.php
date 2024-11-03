@@ -60,6 +60,50 @@ class Person_model extends CI_Model {
 		return $query->result();
 	}
 
+	public function get_person_details2($person_id) {
+		$today = date('Y-m-d');
+		$sql = "SELECT p.id person_id,
+			       p.employee_no,
+			       p.first_name,
+			       p.middle_name,
+			       p.last_name,
+			       p.address,
+			       p.contact_no,
+			       p.person_image,
+			       p.person_type_id,
+			       p.user_id,
+			       pt.person_type_name,
+			       ps.status,
+			       u.username,
+			       u.passcode,
+			       u.last_login,
+			       p.department_id,
+			       p.barcode_value,
+			       p.person_state_id,
+			       dpt.department_name,
+				   dpt.meal_allowance_rate,
+				   (SELECT COALESCE(SUM(amount),0)  consumed_amount
+						FROM `transaction_payments` tp INNER JOIN `transaction_headers` th
+							ON tp.transaction_header_id = th.id
+						WHERE payment_mode_id = 1
+						AND th.person_id = p.id
+						AND th.transaction_status = 1
+						AND DATE(th.date_created) BETWEEN ? AND ?) consumed_amount
+			FROM persons p LEFT JOIN person_types pt
+				ON p.person_type_id = pt.id
+			     LEFT JOIN person_state ps
+				ON ps.id = p.person_state_id
+			     LEFT JOIN users u
+				ON u.id = p.user_id
+				LEFT JOIN departments dpt
+				 ON dpt.id = p.department_id
+			WHERE p.id = ?";
+		$query = $this->db->query($sql, [$today, $today, $person_id]);
+		return $query->result();
+	}
+
+	
+
 	public function update_person_details($params){
 		$sql = "UPDATE persons 
 				SET first_name = ?,
@@ -804,12 +848,9 @@ class Person_model extends CI_Model {
 		$sql = "SELECT person.id person_id,
 						person.employee_no,
 						CONCAT(person.first_name, ' ', person.last_name) person_name,
-						NULL alloted_amount,
-						NULL remaining_amount,
-						NULL salary_deduction,
-						NULL ma_validity_date,
 						person.person_image,
-						dept.department_name
+						dept.department_name,
+						dept.meal_allowance_rate
 				FROM persons person
 					LEFT JOIN departments dept
 					ON person.department_id = dept.id

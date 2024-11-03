@@ -271,29 +271,29 @@ class Employee extends MY_Controller {
         redirect('employee/edit/' . encode_string($this->input->post('employee_id')));
     }
 
-    public function meal_allowance(){
-        $this->load->model('System_model', 'system_model');
-        $departments_list = $this->system_model->get_departments();
-        $content['main_content'] = 'employees/meal_allowance_view';
-        $content['message_subject'] = null;
-        $content['allowanceResult'] = $this->session->flashdata('allowanceResult');
-        $content['person_id'] = null;
-        $content['message_body'] = '<p class="text-center text-muted">Click on the <strong>Upload file</strong> button to start reloading meal allowances.</p>';
-        $content['flag'] = null; 
-        $this->load->view('includes/template',$content);
-    }
+    // public function meal_allowance(){
+    //     $this->load->model('System_model', 'system_model');
+    //     $departments_list = $this->system_model->get_departments();
+    //     $content['main_content'] = 'employees/meal_allowance_view';
+    //     $content['message_subject'] = null;
+    //     $content['allowanceResult'] = $this->session->flashdata('allowanceResult');
+    //     $content['person_id'] = null;
+    //     $content['message_body'] = '<p class="text-center text-muted">Click on the <strong>Upload file</strong> button to start reloading meal allowances.</p>';
+    //     $content['flag'] = null; 
+    //     $this->load->view('includes/template',$content);
+    // }
 
-    public function meal_allowance_single(){
-        $this->load->model('System_model', 'system_model');
-        $person_id = $this->uri->segment(3);
-        $content['main_content'] = 'employees/meal_allowance_single_view';
-        $content['message_subject'] = null;
-        $content['person_id'] = $person_id;
-        $content['employees_list'] = $this->person_model->get_single_employee_by_department2($person_id);
-        $content['message_body'] = '<p class="text-center text-muted">Click on the <strong>Upload file</strong> button to start reloading meal allowances.</p>';
-        $content['flag'] = null; 
-        $this->load->view('includes/template',$content);
-    }
+    // public function meal_allowance_single(){
+    //     $this->load->model('System_model', 'system_model');
+    //     $person_id = $this->uri->segment(3);
+    //     $content['main_content'] = 'employees/meal_allowance_single_view';
+    //     $content['message_subject'] = null;
+    //     $content['person_id'] = $person_id;
+    //     $content['employees_list'] = $this->person_model->get_single_employee_by_department2($person_id);
+    //     $content['message_body'] = '<p class="text-center text-muted">Click on the <strong>Upload file</strong> button to start reloading meal allowances.</p>';
+    //     $content['flag'] = null; 
+    //     $this->load->view('includes/template',$content);
+    // }
 
     public function read_meal_allowance_xls(){
 
@@ -1423,7 +1423,7 @@ class Employee extends MY_Controller {
         $content['main_content'] = 'employees/recent_orders_view';
         $content['message_subject'] = null;
         $content['person_id'] = $person_id;
-        $content['person_details'] = $this->person_model->get_person_details($person_id);
+        $content['person_details'] = $this->person_model->get_person_details2($person_id);
         $content['recent_orders'] = $orders;
         $content['message_body'] = '';
         $content['flag'] = null; 

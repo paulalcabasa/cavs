@@ -4,6 +4,7 @@
     </div>
     <strong>Copyright &copy; 2022 <a href="#">CAVS</a>.</strong> All rights
     reserved.
+    <span><?php echo date('m/d/Y g:i a');?></span>
   </footer>
 
 </div>
