@@ -158,22 +158,37 @@ class Transaction extends MY_Controller {
         $attribute3 = $this->input->post('attribute3');
 
         $create_user = $this->session->userdata('user_id');
+    
+        
+        // collect food ids to update new qty
+        $foodIds = [];
+        foreach($orders_list as $ordered_item){
+            $foodId = $ordered_item[0];
+            array_push($foodIds, $foodId);
+        }
+
+        $foodQuantities = $this->food_model->get_food_quantities($foodIds);
+        $formattedFoodQuantities = [];
+
+        foreach ($foodQuantities as $foodQty) {
+            $formattedFoodQuantities[$foodQty->food_id] = $foodQty->quantity;
+        }
 
         $message .= "<ul>";
         // check muna for errors in quantity
+ 
         $qty_error_ctr = 0;
         foreach($orders_list as $ordered_item){
             $food_id = $ordered_item[0];
             $quantity = $ordered_item[2]; // requested quantity
-            $current_food_quantity_details = $this->food_model->get_current_food_quantity($food_id);
-            $current_quantity = $current_food_quantity_details[0]->quantity;
-            $food_details = $this->food_model->get_food_details($food_id);
+            $current_quantity = $formattedFoodQuantities[$food_id];
             if($quantity > $current_quantity) { // check if quantity ordered is less than the current quantity
-                $message .= "<li>Error: Insufficient Quantity in " . $food_details[0]->food_name . ", Ordered quantity is " . $quantity . " while Remaining quantity is " . $current_quantity."</li>";
+                $message .= "<li>Error: Insufficient Quantity in Food #" . $food_id . ", Ordered quantity is " . $quantity . " while Remaining quantity is " . $current_quantity."</li>";
                 $qty_error_ctr++;
             }
         }
         $message .= "</ul>";
+   
         if($qty_error_ctr > 0){
             $is_error = true;
         }
@@ -273,10 +288,8 @@ class Transaction extends MY_Controller {
                 $selling_price = $ordered_item[1];
                 $original_price = $ordered_item[1];
                 $quantity = $ordered_item[2];
-                $current_food_quantity_details = $this->food_model->get_current_food_quantity($food_id);
-                $current_quantity = $current_food_quantity_details[0]->quantity;
+                $current_quantity = $formattedFoodQuantities[$food_id];
                 $new_food_quantity = $current_quantity - $quantity;
-               
                
                 $food_quantity_params = array(
                                             $new_food_quantity,
