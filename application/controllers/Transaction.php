@@ -90,19 +90,33 @@ class Transaction extends MY_Controller {
         echo json_encode($data);
     }    
 
+
     public function ajax_get_employee_details(){       
-    
         $person_details = $this->person_model->get_person_details_by_barcode(
                             $this->input->post('barcode_no'),
                             $this->input->post('customer_type')
                           );
+
         if(!empty($person_details)){
+            // query consumed amount
+            $person_id = $person_details[0]->person_id;
+            $consumed_amount_total = 0; 
+            $consumed_amount = $this->person_model->get_consumed_data($person_id);
+            if (!empty($consumed_amount)) {
+                $consumed_amount_data = $consumed_amount[0];
+                $today = date('Y-m-d');
+                if ($today == $consumed_amount_data->date_consumed) {
+                    $consumed_amount_total = $consumed_amount[0]->consumed_amount;                        
+                }
+            }
+
+            $person_details[0]->consumed_amount = $consumed_amount_total;
+
             echo json_encode($person_details);
         }
         else {
             echo "invalid";
         }
-        
     }
 
     public function ajax_add_new_transaction(){
@@ -296,6 +310,19 @@ class Transaction extends MY_Controller {
                 $payment_txn_id = $this->transaction_model->add_transaction_payments($payment_params);
                 // if payment mode is meal allowance, deduct to employees meal allowance
                 if($payment_mode_id == 1) {
+                    $consumed_amount = $this->person_model->get_consumed_data($person_id);
+                    if (!empty($consumed_amount)) {
+                        $consumed_amount_data = $consumed_amount[0];
+                        $today = date('Y-m-d');
+                        if ($today == $consumed_amount_data->date_consumed) {
+                            $consumed_amount_total = $consumed_amount[0]->consumed_amount + $amount;                          
+                        } else {
+                            $consumed_amount_total = $amount;
+                            $this->person_model->update_date_consumed($person_id, $today);
+                        }
+
+                        $this->person_model->update_consumed_amount($consumed_amount_total, $person_id);
+                    }
                 //     $current_meal_allowance_details = $this->person_model->get_employee_meal_allowance($person_id,$meal_allowance_id);
                 //     $deducted_max_allowance_daily = 0;
                 //     $ma_weekly_claims_count = 0;

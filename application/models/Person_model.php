@@ -368,13 +368,7 @@ class Person_model extends CI_Model {
 						dept.meal_allowance_rate ma_rate,
 						dept.meal_allowance_rate alloted_amount,
 						p.meal_allowance_id,
-						(SELECT COALESCE(SUM(amount),0)  consumed_amount
-						FROM `transaction_payments` tp INNER JOIN `transaction_headers` th
-							ON tp.transaction_header_id = th.id
-						WHERE payment_mode_id = 1
-						AND th.person_id = p.id
-						AND th.transaction_status = 1
-						AND DATE(th.date_created) BETWEEN ? AND ?) consumed_amount
+						0 consumed_amount
 				FROM persons p LEFT JOIN person_types pt
 						ON p.person_type_id = pt.id
 					LEFT JOIN person_state ps
@@ -386,10 +380,26 @@ class Person_model extends CI_Model {
 				WHERE p.barcode_value = ?
 					AND pt.id = ?";
 		$query = $this->db->query($sql,array(
-				$today,
-				$today,
 				$barcodeValue,
 				$person_type
+		));
+	
+		return $query->result();
+	}
+
+	public function get_consumed_amount($person_id){
+		$today = date('Y-m-d');
+		$sql = "SELECT COALESCE(SUM(amount),0)  consumed_amount
+				FROM `transaction_payments` tp LEFT JOIN `transaction_headers` th
+					ON tp.transaction_header_id = th.id
+				WHERE payment_mode_id = 1
+				AND th.person_id = ?
+				AND th.transaction_status = 1
+				AND DATE(th.date_created) BETWEEN ? AND ?";
+		$query = $this->db->query($sql,array(
+				$person_id,
+				$today,
+				$today
 		));
 	
 		return $query->result();
@@ -1049,6 +1059,30 @@ class Person_model extends CI_Model {
 				WHERE person_type_id = 1
 					AND person_state_id = 1";
 		$query = $this->db->query($sql);
+		return $query->result();
+	}
+
+	public function update_consumed_amount($consumed_amount, $person_id){
+		$sql = "UPDATE persons 
+				SET consumed_amount = ?
+				WHERE id = ?";
+		$query = $this->db->query($sql, [$consumed_amount, $person_id]);  
+		return $query;
+	}
+
+	public function update_date_consumed($person_id, $date){
+		$sql = "UPDATE persons 
+				SET date_consumed = ?
+				WHERE id = ?";
+		$query = $this->db->query($sql, [$date, $person_id]);  
+		return $query;
+	}
+
+	public function get_consumed_data($person_id){
+		$sql = "SELECT consumed_amount, date_consumed 
+				FROM persons
+				WHERE id = ?";
+		$query = $this->db->query($sql, [$person_id]);  
 		return $query->result();
 	}
 }
