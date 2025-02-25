@@ -200,7 +200,8 @@ class Reports extends MY_Controller {
                                 <th>Customer Type</th>
                                 <th>Barcode</th>
                                 <th>Customer</th>
-                                <th>Amount due</th>
+                                <th>Consumed allowance</th>
+                                <th>Added cash</th>
                                 <th>Discount</th>
                                 <th>Date</th>
                                 <th>Time</th>
@@ -225,7 +226,8 @@ class Reports extends MY_Controller {
                             <td>'.$row->person_type_name.'</td>
                             <td>'.$row->barcode_no.'</td>
                             <td>'.$row->customer_name.'</td>
-                            <td>'.$row->total_amount.'</td>
+                            <td>'.$row->consumed_allowance.'</td>
+                            <td>'.$row->added_cash.'</td>
                             <td>'.$row->discount_percent.'</td>
                             <td>'.$row->date_created.'</td>
                             <td>'.$row->time_created.'</td>

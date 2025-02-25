@@ -129,6 +129,8 @@ class Reports_model extends CI_Model {
 					pt.person_type_name,
 					th.barcode_no,
 					CONCAT(customer.first_name,' ', customer.last_name) customer_name,
+					SUM(CASE WHEN tp.payment_mode_id = 1 THEN tp.amount ELSE 0 END) consumed_allowance,
+		 			SUM(CASE WHEN tp.payment_mode_id = 2 THEN tp.amount ELSE 0 END) added_cash,
 					th.discount_percent,
 					DATE_FORMAT(th.date_created,'%M, %d %Y') date_created,
 					DATE_FORMAT(th.date_created,'%h:%i %p') time_created,
@@ -139,6 +141,8 @@ class Reports_model extends CI_Model {
 						ON pt.id = th.person_type_id
 					LEFT JOIN persons customer
 						ON customer.id = th.person_id
+					LEFT JOIN  transaction_payments tp
+						ON tp.transaction_header_id = th.id
 					WHERE DATE(th.date_created) BETWEEN '$start_date' AND '$end_date' 
 					". $where ."
 					GROUP BY th.person_id,th.id ";	
