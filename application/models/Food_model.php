@@ -489,7 +489,12 @@ class Food_model extends CI_Model {
 	}
 
     public function get_food_quantities($foodIds){
-		$formattedFoodIds = implode($foodIds, ',');
+		$formattedFoodIds = '';
+		foreach ($foodIds as $foodId) {
+			$formattedFoodIds .= $foodId . ',';
+		}
+		$formattedFoodIds =  rtrim($formattedFoodIds, ",");
+
     	$sql = "SELECT id food_id, quantity
     			FROM foods
     			WHERE id IN(".$formattedFoodIds.")";
