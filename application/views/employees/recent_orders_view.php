@@ -19,7 +19,7 @@
 <div class="content-wrapper" id="app"> <!-- Content Wrapper. Contains page content -->
     <section class="content-header"> <!-- Content Header (Page header) -->
         <h1>Meal Allowance History
-            <small>View history of employee's allowance</small>
+            <small>Today's transactions</small>
         </h1>    
     </section>
     
@@ -41,10 +41,10 @@
                             <div class="col-md-4 label-details">Meal Allowance Rate</div>
                             <div class="col-md-8 value-details"><?= $person_details[0]->meal_allowance_rate ?></div>
                         </div>
-                        <div class="row">
+                        <!-- <div class="row">
                             <div class="col-md-4 label-details">Remaining Allowance</div>
                             <div class="col-md-8 value-details"><?= $person_details[0]->meal_allowance_rate - $person_details[0]->consumed_amount ?></div>
-                        </div>
+                        </div> -->
                     </div>
                     <div class="box-body"></div>
                 </div>
@@ -59,23 +59,37 @@
                                     <th>Order ID</th>
                                     <th>Order Date</th>
                                     <th>Item</th>
-                                    <th>Amount</th>
+                                    <th style="text-align:right;">Amount</th>
                                     <th>Charge to</th>
                                     <th></th>
                                 </tr>
                             </thead>
                             <tbody>
+                                <?php 
+                                    $orderTotal = 0;
+                                ?>
                                 <?php foreach ($recent_orders as $order) { ?>
                                 <tr>
                                     <td><?= $order->order_id ?></td>
                                     <td><?= $order->date_created ?></td>
                                     <td><?= $order->food_name ?></td>
-                                    <td><?= $order->amount ?></td>
+                                    <td style="text-align:right;"><?= $order->amount ?></td>
                                     <td><?= $order->mode_of_payment ?></td>
                                     <td><a href="<?php echo base_url() . 'transaction/view/'. encode_string($order->order_id);?>">View transaction</a></td>
                                 </tr>
+                                <?php $orderTotal += $order->amount; ?>
                                 <?php } ?>
                             </tbody>
+                            <tr>
+                                <td colspan="3"  style="text-align:right;">Total</td>
+                                <td style="text-align:right;"><?= number_format($orderTotal, 2) ?></td>
+                                <td colspan="2"></td>
+                            </tr>
+                            <tr>
+                                <td colspan="3"  style="text-align:right;">Remaining allowance</td>
+                                <td style="text-align:right;"><?= number_format($person_details[0]->meal_allowance_rate  - $orderTotal, 2) ?></td>
+                                <td colspan="2"></td>
+                            </tr>
                         </table>
                     </div>
                 </div>
