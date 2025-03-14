@@ -18,8 +18,8 @@ class Portal extends MY_Controller {
     }
 
     public function transaction_history(){
-        $this->load->helper('encryption');
-        $this->load->helper('date_formatter');
+        // $this->load->helper('encryption');
+        // $this->load->helper('date_formatter');
         $content['main_content'] = 'portal/transaction_history_view';
         $this->load->view('includes/template',$content);
     }
@@ -27,12 +27,12 @@ class Portal extends MY_Controller {
     public function meal_allowance_history(){
         $this->load->helper('date_formatter');
         $this->load->helper('string');
-        $person_detail = $this->person_model->get_person_details_by_category(
-            "id",
-            $this->person_id,
-            $this->session->userdata('user_type_id')
-        );
-        $content['person_detail'] = $person_detail;
+        // $person_detail = $this->person_model->get_person_details_by_category(
+        //     "id",
+        //     $this->person_id,
+        //     $this->session->userdata('user_type_idasd')
+        // );
+        // $content['person_detail'] = $person_detail;
         $content['main_content'] = 'portal/meal_allowance_history_view';
         $this->load->view('includes/template',$content);
     }
