@@ -133,6 +133,205 @@ class Transaction extends MY_Controller {
         $person_id = $this->input->post('person_id');
         $employee_no = $this->input->post('employee_no');
         $barcode_no = $this->input->post('barcode_no');
+
+        // guest, patient and employee
+        $customer_name = $this->input->post('customer_name');
+
+        // patient
+        $patient_ref_no = $this->input->post('patient_ref_no');
+        $room_no = $this->input->post('room_no');
+        $room_type = $this->input->post('room_type');
+       
+        // particulars
+        $amount_tendered = $this->input->post('amount_tendered');
+        $remarks = $this->input->post('remarks');
+        $grand_total = $this->input->post('grand_total');
+
+        $orders_list = $this->input->post('orders_list');
+        $payments_list = $this->input->post('payments_list');
+        $discount_percent = $this->input->post('discount_percent');
+        $customer_id_no = $this->input->post('customer_id_no');
+        $attribute1 = $this->input->post('attribute1');
+        $attribute2 = $this->input->post('attribute2');
+        $attribute3 = $this->input->post('attribute3');
+
+        $create_user = $this->session->userdata('user_id');
+
+        try {
+             // collect food ids to update new qty
+            $foodIds = [];
+            foreach($orders_list as $ordered_item){
+                $foodId = $ordered_item[0];
+                array_push($foodIds, $foodId);
+            }
+
+            $foodQuantities = $this->food_model->get_food_quantities($foodIds);
+            $formattedFoodQuantities = [];
+
+            foreach ($foodQuantities as $foodQty) {
+                $formattedFoodQuantities[$foodQty->food_id] = $foodQty->quantity;
+            }
+
+            $message .= "<ul>";
+            $qty_error_ctr = 0;
+            foreach($orders_list as $ordered_item){
+                $food_id = $ordered_item[0];
+                $quantity = $ordered_item[2]; // requested quantity
+                $current_quantity = $formattedFoodQuantities[$food_id];
+                if($quantity > $current_quantity) { // check if quantity ordered is less than the current quantity
+                    $message .= "<li>Error: Insufficient Quantity in Food #" . $food_id . ", Ordered quantity is " . $quantity . " while Remaining quantity is " . $current_quantity."</li>";
+                    $qty_error_ctr++;
+                }
+            }
+            $message .= "</ul>";
+
+            if($qty_error_ctr > 0){
+                $is_error = true;
+            }
+            else {
+                $msg = "";
+                // if stockholder, check first for the meal allowance if still sufficient
+                if($customer_type == 8){
+                    foreach($payments_list as $payment){
+                        $payment_mode_id = $payment[0];
+                        $amount = $payment[1];
+                    
+                    }
+                }
+                else if($customer_type == 1){ // if employee, check if meal allowance is sufficient in the order amount
+                    foreach($payments_list as $payment){
+                        $payment_mode_id = $payment[0];
+                        $amount = $payment[1];
+                    }
+                }
+            }
+        
+            if(!$is_error){ // if there is no errors
+                // insert new transaction header
+                $transaction_header_params = array(
+                                            $customer_type,
+                                            $person_id,
+                                            $employee_no,
+                                            $barcode_no,
+                                            $customer_name,
+                                            $room_no,
+                                            $room_type,
+                                            $patient_ref_no,
+                                            $amount_tendered,
+                                            $grand_total,
+                                            $discount_percent,
+                                            $customer_id_no,
+                                            $remarks,
+                                            0, // meal_allowance_id no need tangina
+                                            $create_user,
+                                            $attribute1,
+                                            $attribute2,
+                                            $attribute3
+                                        //   $mealAllowanceAmount,
+                                        //  $cashAmount
+                                        );
+                $transaction_header_id = $this->transaction_model->add_transaction_header($transaction_header_params);
+
+                // insert transaction lines
+                foreach($orders_list as $ordered_item){
+                    $food_id = $ordered_item[0];
+                    $selling_price = $ordered_item[1];
+                    $original_price = $ordered_item[1];
+                    $quantity = $ordered_item[2];
+                    $current_quantity = $formattedFoodQuantities[$food_id];
+                    $new_food_quantity = $current_quantity - $quantity;
+                
+                    $food_quantity_params = array(
+                                                $new_food_quantity,
+                                                $create_user,
+                                                $food_id
+                                            );
+                    $this->food_model->update_food_quantity($food_quantity_params);
+
+                    $transaction_line_params = array(
+                                                $transaction_header_id,
+                                                $food_id,
+                                                $selling_price,
+                                                $original_price,
+                                                $quantity,
+                                                $create_user
+                                            );
+                    $transaction_line_id = $this->transaction_model->add_transaction_lines($transaction_line_params);
+                }
+
+                // insert payment modes
+                foreach($payments_list as $payment){
+                    $payment_mode_id = $payment[0];
+                    $amount = $payment[1];
+                    $payment_params = array(
+                                        $transaction_header_id,
+                                        $payment_mode_id,
+                                        $amount,
+                                        0
+                                    );
+                    $payment_txn_id = $this->transaction_model->add_transaction_payments($payment_params);
+                    // if payment mode is meal allowance, deduct to employees meal allowance
+                    if($payment_mode_id == 1) {
+                        $consumed_amount = $this->person_model->get_consumed_data($person_id);
+                        if (!empty($consumed_amount)) {
+                            $consumed_amount_data = $consumed_amount[0];
+                            $today = date('Y-m-d');
+                            if ($today == $consumed_amount_data->date_consumed) {
+                                $consumed_amount_total = $consumed_amount[0]->consumed_amount + $amount;                          
+                            } else {
+                                $consumed_amount_total = $amount;
+                                $this->person_model->update_date_consumed($person_id, $today);
+                            }
+
+                            $this->person_model->update_consumed_amount($consumed_amount_total, $person_id);
+                        }
+                    }
+                    // if payment mode is salary deduction, add employees deduction
+                    else if($payment_mode_id == 5){
+                        $current_salary_deduction = $this->person_model->get_current_salary_deduction($person_id);
+                        $new_salary_deduction = $current_salary_deduction + $amount;
+                        $update_salary_deduction_params = array(
+                            $new_salary_deduction,
+                            $create_user,
+                            $person_id
+                        );
+                        $this->person_model->update_salary_deduction($update_salary_deduction_params);
+                    }
+                }
+
+                $message = "Transaction has been succesfully saved.";
+            }
+            
+            // message to user
+            echo json_encode(array(
+                                "message" => $message,
+                                "transaction_status" => $is_error
+                            )
+                );
+        } catch (Exception $e) {
+             // message to user
+             echo json_encode(array(
+                "message" => 'An error has occured, please try again.',
+                "transaction_status" => true
+                )
+            );
+        }
+    }
+
+    public function ajax_add_new_transaction_old(){
+        // error flag
+        $is_error = false;
+
+        // message
+        $message = "";
+
+        // customer type
+        $customer_type = $this->input->post('customer_type');
+
+        // employee or stockholder
+        $person_id = $this->input->post('person_id');
+        $employee_no = $this->input->post('employee_no');
+        $barcode_no = $this->input->post('barcode_no');
         //$meal_allowance_id = $this->input->post('meal_allowance_id');
 
         // guest, patient and employee
@@ -188,7 +387,23 @@ class Transaction extends MY_Controller {
             }
         }
         $message .= "</ul>";
-   
+
+        /*
+        Uncomment if we will implement saving of totals
+        $mealAllowanceAmount = 0;
+        $cashAmount = 0;
+
+        foreach($payments_list as $payment){
+            $payment_mode_id = $payment[0];
+            $amount = $payment[1];
+
+            if ($payment_mode_id == 1) {
+                $mealAllowanceAmount = $amount;
+            } else if ($payment_mode_id == 2) {
+                $cashAmount = $amount;
+            }
+        }
+        */
         if($qty_error_ctr > 0){
             $is_error = true;
         }
@@ -279,6 +494,8 @@ class Transaction extends MY_Controller {
                                         $attribute1,
                                         $attribute2,
                                         $attribute3
+                                     //   $mealAllowanceAmount,
+                                      //  $cashAmount
                                     );
             $transaction_header_id = $this->transaction_model->add_transaction_header($transaction_header_params);
             //$this->transaction_model->delete_temp_transaction_header($temp_transaction_id);
