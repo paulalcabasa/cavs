@@ -1,8 +1,9 @@
 <div class="content-wrapper"> <!-- Content Wrapper. Contains page content -->
     <section class="content-header"> <!-- Content Header (Page header) -->
-        <h1>Meal Allowance</h1>
+        <h1>Under maintenance</h1>
+        <!-- <h1>Meal Allowance</h1> -->
     </section>
-    <section class="content"> <!-- Main content -->
+    <section class="content" style="display: none;"> <!-- Main content -->
         <div class="row">
             <div class="col-md-3">
                 <div class="box"> <!-- Default box -->
@@ -93,33 +94,33 @@ function initialize_table(start_date,end_date,status_id){
      return tbl;
 }
 $(document).ready(function(){
-    var start_date;
-    var end_date;
-    var txt_display_date = $("#txt_display_date").val().split("-");
-    start_date = moment(txt_display_date[0],"MM/DD/YYYY").format('YYYY-MM-DD');
-    end_date = moment(txt_display_date[1],"MM/DD/YYYY").format('YYYY-MM-DD');
-    var status_id = 1;
-    var tbl = initialize_table(start_date,end_date,status_id);
+    // var start_date;
+    // var end_date;
+    // var txt_display_date = $("#txt_display_date").val().split("-");
+    // start_date = moment(txt_display_date[0],"MM/DD/YYYY").format('YYYY-MM-DD');
+    // end_date = moment(txt_display_date[1],"MM/DD/YYYY").format('YYYY-MM-DD');
+    // var status_id = 1;
+    // var tbl = initialize_table(start_date,end_date,status_id);
 
-    $('#txt_display_date').daterangepicker({
-        "showDropdowns": true,
-        "showWeekNumbers": true,
-          ranges: {
-           'Today': [moment(), moment()],
-           'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-           'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-           'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-           'This Month': [moment().startOf('month'), moment().endOf('month')],
-           'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-        }
-    });
+    // $('#txt_display_date').daterangepicker({
+    //     "showDropdowns": true,
+    //     "showWeekNumbers": true,
+    //       ranges: {
+    //        'Today': [moment(), moment()],
+    //        'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+    //        'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+    //        'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+    //        'This Month': [moment().startOf('month'), moment().endOf('month')],
+    //        'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+    //     }
+    // });
 
-    $('#txt_display_date').on('apply.daterangepicker', function(ev, picker) {
-        start_date = picker.startDate.format('YYYY-MM-DD');
-        end_date = picker.endDate.format('YYYY-MM-DD');
-        tbl.destroy();
-        tbl = initialize_table(start_date,end_date,status_id);
-    });
+    // $('#txt_display_date').on('apply.daterangepicker', function(ev, picker) {
+    //     start_date = picker.startDate.format('YYYY-MM-DD');
+    //     end_date = picker.endDate.format('YYYY-MM-DD');
+    //     tbl.destroy();
+    //     tbl = initialize_table(start_date,end_date,status_id);
+    // });
    
 });
 </script>

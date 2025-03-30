@@ -198,12 +198,11 @@ class Reports extends MY_Controller {
                             <tr>
                                 <th>Transaction No.</th>
                                 <th>Customer Type</th>
-                                <th>Cashier</th>
                                 <th>Barcode</th>
                                 <th>Customer</th>
+                                <th>Consumed allowance</th>
+                                <th>Added cash</th>
                                 <th>Discount</th>
-                                <th>Amount Due</th>
-                                <th>Added Cash</th>
                                 <th>Date</th>
                                 <th>Time</th>
                             </tr>
@@ -225,12 +224,11 @@ class Reports extends MY_Controller {
             $data .= '<tr>
                             <td>'.$row->transaction_header_id.'</td>
                             <td>'.$row->person_type_name.'</td>
-                            <td>'.$row->cashier_name.'</td>
                             <td>'.$row->barcode_no.'</td>
                             <td>'.$row->customer_name.'</td>
-                            <td>'.$row->discount_percent.'</td>
                             <td>'.$row->consumed_allowance.'</td>
                             <td>'.$row->added_cash.'</td>
+                            <td>'.$row->discount_percent.'</td>
                             <td>'.$row->date_created.'</td>
                             <td>'.$row->time_created.'</td>
                       </tr>';

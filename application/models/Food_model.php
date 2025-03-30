@@ -487,4 +487,18 @@ class Food_model extends CI_Model {
 		$result = $this->db->query($sql);
 		return $result->result()[0]->total_foods;
 	}
+
+    public function get_food_quantities($foodIds){
+		$formattedFoodIds = '';
+		foreach ($foodIds as $foodId) {
+			$formattedFoodIds .= $foodId . ',';
+		}
+		$formattedFoodIds =  rtrim($formattedFoodIds, ",");
+
+    	$sql = "SELECT id food_id, quantity
+    			FROM foods
+    			WHERE id IN(".$formattedFoodIds.")";
+    	$query = $this->db->query($sql);
+    	return $query->result();
+    }
 }

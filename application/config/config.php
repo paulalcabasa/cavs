@@ -1,6 +1,6 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
-
+date_default_timezone_set('Asia/Manila');
 /*
 |--------------------------------------------------------------------------
 | Base Site URL
@@ -28,7 +28,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 //$config['base_url'] = 'http://localhost/nsmdih_cms/';
 //$config['base_url'] = 'http://192.168.0.2/nsmdih_cms/';
-$config['base_url'] = 'http://'.$_SERVER['HTTP_HOST'].'/CAVS/';
+$config['base_url'] = 'http://192.168.1.2/CAVS/';
 /*/
 |--------------------------------------------------------------------------
 | Index File

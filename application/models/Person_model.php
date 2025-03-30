@@ -60,6 +60,54 @@ class Person_model extends CI_Model {
 		return $query->result();
 	}
 
+	public function get_person_details2($person_id) {
+		/*
+		remove consumed amount query
+		 (SELECT COALESCE(SUM(amount),0)  consumed_amount
+						FROM `transaction_payments` tp INNER JOIN `transaction_headers` th
+							ON tp.transaction_header_id = th.id
+						WHERE payment_mode_id = 1
+						AND th.person_id = p.id
+						AND th.transaction_status = 1
+						AND DATE(th.date_created) BETWEEN ? AND ?) consumed_amount
+		*/
+		$today = date('Y-m-d');
+		$sql = "SELECT p.id person_id,
+			       p.employee_no,
+			       p.first_name,
+			       p.middle_name,
+			       p.last_name,
+			       p.address,
+			       p.contact_no,
+			       p.person_image,
+			       p.person_type_id,
+			       p.user_id,
+			       pt.person_type_name,
+			       ps.status,
+			       u.username,
+			       u.passcode,
+			       u.last_login,
+			       p.department_id,
+			       p.barcode_value,
+			       p.person_state_id,
+			       dpt.department_name,
+				   dpt.meal_allowance_rate,
+				   0 consumed_amount
+			FROM persons p LEFT JOIN person_types pt
+				ON p.person_type_id = pt.id
+			     LEFT JOIN person_state ps
+				ON ps.id = p.person_state_id
+			     LEFT JOIN users u
+				ON u.id = p.user_id
+				LEFT JOIN departments dpt
+				 ON dpt.id = p.department_id
+			WHERE p.id = ?";
+		$query = $this->db->query($sql, [$person_id]);
+		return $query->result();
+	}
+
+	
+
 	public function update_person_details($params){
 		$sql = "UPDATE persons 
 				SET first_name = ?,
@@ -219,85 +267,119 @@ class Person_model extends CI_Model {
 	}
 
 	public function get_person_details_by_category($search_category,$search_value,$person_type){
+		// $sql = "SELECT p.id person_id,	
+		// 		   p.barcode_value,
+		// 	       p.employee_no,
+		// 	       p.first_name,
+		// 	       p.middle_name,
+		// 	       p.last_name,
+		// 	       p.address,
+		// 	       p.contact_no,
+		// 	       p.person_image,
+		// 	       pt.person_type_name,
+		// 	       ps.status,
+		// 	       u.username,
+		// 	       u.passcode,
+		// 	       u.last_login,
+		// 	       CONCAT(p.last_name,', ',p.first_name,' ',LEFT(p.middle_name,1),'.') full_name1,
+		// 	       p.salary_deduction,
+		// 		   dept.meal_allowance_rate, 
+		// 	       (SELECT id
+		// 			FROM meal_allowance
+		// 			WHERE NOW() BETWEEN valid_from AND valid_until
+		// 			AND person_id = p.id
+		// 			ORDER BY date_created DESC
+		// 			LIMIT 1
+		// 			) meal_allowance_id,
+		// 	       (SELECT remaining_amount
+		// 			FROM meal_allowance
+		// 			WHERE NOW() BETWEEN valid_from AND valid_until
+		// 			AND person_id = p.id
+		// 			ORDER BY date_created DESC
+		// 			LIMIT 1
+		// 			) remaining_amount,
+		// 			(SELECT CASE 
+		// 			 			WHEN valid_from IS NOT NULL AND valid_until IS NOT NULL
+		// 			 			THEN CONCAT(
+		// 								DATE_FORMAT(valid_from,'%m/%d/%Y %h:%i %p'),
+		// 								' to ',
+		// 								DATE_FORMAT(valid_until,'%m/%d/%Y %h:%i %p')
+		// 							  )
+		// 						ELSE NULL
+		// 					END ma_validity_date
+		// 			FROM meal_allowance
+		// 			WHERE NOW() BETWEEN valid_from AND valid_until
+		// 			AND person_id = p.id
+		// 			ORDER BY date_created DESC
+		// 			LIMIT 1
+		// 			) ma_validity_date,
+		// 			(SELECT max_allowance_daily
+		// 			FROM meal_allowance
+		// 			WHERE CURDATE() BETWEEN valid_from AND valid_until
+		// 			AND person_id = p.id
+		// 			ORDER BY date_created DESC
+		// 			LIMIT 1
+		// 			) max_allowance_daily,
+		// 			(SELECT ma_weekly_claims_count
+		// 			FROM meal_allowance
+		// 			WHERE CURDATE() BETWEEN valid_from AND valid_until
+		// 			AND person_id = p.id
+		// 			ORDER BY date_created DESC
+		// 			LIMIT 1
+		// 			) ma_weekly_claims_count,
+		// 			(SELECT SUM(tp.amount) consumed
+		// 			FROM transaction_headers th
+		// 			LEFT JOIN transaction_payments tp
+		// 			ON th.id = tp.transaction_header_id 
+		// 			WHERE th.transaction_status = 1
+		// 			AND  tp.payment_mode_id = 1 
+		// 			AND person_id = p.id
+		// 			AND DATE(th.date_created) BETWEEN DATE(NOW()) AND DATE(NOW())
+		// 			) consumed_amount
+		// 	FROM persons p LEFT JOIN person_types pt
+		// 			ON p.person_type_id = pt.id
+		// 		LEFT JOIN person_state ps
+		// 			ON ps.id = p.person_state_id
+		// 		LEFT JOIN users u
+		// 			ON u.id = p.user_id
+		// 		LEFT JOIN departments dept
+		// 			ON dept.id = p.department_id
+		// 	WHERE p.".$search_category." = ?
+		// 	      AND pt.id = ?";
+				  
+			
 		$sql = "SELECT p.id person_id,	
-				   p.barcode_value,
-			       p.employee_no,
-			       p.first_name,
-			       p.middle_name,
-			       p.last_name,
-			       p.address,
-			       p.contact_no,
-			       p.person_image,
-			       pt.person_type_name,
-			       ps.status,
-			       u.username,
-			       u.passcode,
-			       u.last_login,
-			       CONCAT(p.last_name,', ',p.first_name,' ',LEFT(p.middle_name,1),'.') full_name1,
-			       p.salary_deduction,
-				   dept.meal_allowance_rate, 
-			       (SELECT id
-					FROM meal_allowance
-					WHERE NOW() BETWEEN valid_from AND valid_until
-					AND person_id = p.id
-					ORDER BY date_created DESC
-					LIMIT 1
-					) meal_allowance_id,
-			       (SELECT remaining_amount
-					FROM meal_allowance
-					WHERE NOW() BETWEEN valid_from AND valid_until
-					AND person_id = p.id
-					ORDER BY date_created DESC
-					LIMIT 1
-					) remaining_amount,
-					(SELECT CASE 
-					 			WHEN valid_from IS NOT NULL AND valid_until IS NOT NULL
-					 			THEN CONCAT(
-										DATE_FORMAT(valid_from,'%m/%d/%Y %h:%i %p'),
-										' to ',
-										DATE_FORMAT(valid_until,'%m/%d/%Y %h:%i %p')
-									  )
-								ELSE NULL
-							END ma_validity_date
-					FROM meal_allowance
-					WHERE NOW() BETWEEN valid_from AND valid_until
-					AND person_id = p.id
-					ORDER BY date_created DESC
-					LIMIT 1
-					) ma_validity_date,
-					(SELECT max_allowance_daily
-					FROM meal_allowance
-					WHERE CURDATE() BETWEEN valid_from AND valid_until
-					AND person_id = p.id
-					ORDER BY date_created DESC
-					LIMIT 1
-					) max_allowance_daily,
-					(SELECT ma_weekly_claims_count
-					FROM meal_allowance
-					WHERE CURDATE() BETWEEN valid_from AND valid_until
-					AND person_id = p.id
-					ORDER BY date_created DESC
-					LIMIT 1
-					) ma_weekly_claims_count,
-					(SELECT SUM(tp.amount) consumed
-					FROM transaction_headers th
-					LEFT JOIN transaction_payments tp
-					ON th.id = tp.transaction_header_id 
-					WHERE th.transaction_status = 1
-					AND  tp.payment_mode_id = 1 
-					AND person_id = p.id
-					AND DATE(th.date_created) BETWEEN DATE(NOW()) AND DATE(NOW())
-					) consumed_amount
-			FROM persons p LEFT JOIN person_types pt
-					ON p.person_type_id = pt.id
-				LEFT JOIN person_state ps
-					ON ps.id = p.person_state_id
-				LEFT JOIN users u
-					ON u.id = p.user_id
-				LEFT JOIN departments dept
-					ON dept.id = p.department_id
-			WHERE p.".$search_category." = ?
-			      AND pt.id = ?";
+				  p.barcode_value,
+				  p.employee_no,
+				  p.first_name,
+				  p.middle_name,
+				  p.last_name,
+				  p.address,
+				  p.contact_no,
+				  p.person_image,
+				  pt.person_type_name,
+				  ps.status,
+				  u.username,
+				  u.passcode,
+				  u.last_login,
+				  CONCAT(p.last_name,', ',p.first_name,' ',LEFT(p.middle_name,1),'.') full_name1,
+				  p.salary_deduction,
+				  dept.meal_allowance_rate, 
+				  0 meal_allowance_id,
+				  0 remaining_amount,
+				  null ma_validity_date,
+				  0 max_allowance_daily,
+				  0 consumed_amount
+		   FROM persons p LEFT JOIN person_types pt
+				   ON p.person_type_id = pt.id
+			   LEFT JOIN person_state ps
+				   ON ps.id = p.person_state_id
+			   LEFT JOIN users u
+				   ON u.id = p.user_id
+			   LEFT JOIN departments dept
+				   ON dept.id = p.department_id
+		   WHERE p.".$search_category." = ?
+				 AND pt.id = ?";
 		$query = $this->db->query($sql,array($search_value,$person_type));
 		return $query->result();
 	}
@@ -324,13 +406,7 @@ class Person_model extends CI_Model {
 						dept.meal_allowance_rate ma_rate,
 						dept.meal_allowance_rate alloted_amount,
 						p.meal_allowance_id,
-						(SELECT COALESCE(SUM(amount),0)  consumed_amount
-						FROM `transaction_payments` tp INNER JOIN `transaction_headers` th
-							ON tp.transaction_header_id = th.id
-						WHERE payment_mode_id = 1
-						AND th.person_id = p.id
-						AND th.transaction_status = 1
-						AND DATE(th.date_created) BETWEEN ? AND ?) consumed_amount
+						0 consumed_amount
 				FROM persons p LEFT JOIN person_types pt
 						ON p.person_type_id = pt.id
 					LEFT JOIN person_state ps
@@ -342,10 +418,26 @@ class Person_model extends CI_Model {
 				WHERE p.barcode_value = ?
 					AND pt.id = ?";
 		$query = $this->db->query($sql,array(
-				$today,
-				$today,
 				$barcodeValue,
 				$person_type
+		));
+	
+		return $query->result();
+	}
+
+	public function get_consumed_amount($person_id){
+		$today = date('Y-m-d');
+		$sql = "SELECT COALESCE(SUM(amount),0)  consumed_amount
+				FROM `transaction_payments` tp LEFT JOIN `transaction_headers` th
+					ON tp.transaction_header_id = th.id
+				WHERE payment_mode_id = 1
+				AND th.person_id = ?
+				AND th.transaction_status = 1
+				AND DATE(th.date_created) BETWEEN ? AND ?";
+		$query = $this->db->query($sql,array(
+				$person_id,
+				$today,
+				$today
 		));
 	
 		return $query->result();
@@ -804,12 +896,9 @@ class Person_model extends CI_Model {
 		$sql = "SELECT person.id person_id,
 						person.employee_no,
 						CONCAT(person.first_name, ' ', person.last_name) person_name,
-						NULL alloted_amount,
-						NULL remaining_amount,
-						NULL salary_deduction,
-						NULL ma_validity_date,
 						person.person_image,
-						dept.department_name
+						dept.department_name,
+						dept.meal_allowance_rate
 				FROM persons person
 					LEFT JOIN departments dept
 					ON person.department_id = dept.id
@@ -963,6 +1052,7 @@ class Person_model extends CI_Model {
 	}
 
 	public function get_employee_recent_orders_by_person_id($person_id){
+		// 	AND th.date_created >= DATE_ADD(CURDATE(), INTERVAL -7 DAY)
 		$sql = 'SELECT th.id order_id,
 				fd.food_name,
 				DATE_FORMAT(th.date_created, "%m/%d/%Y %h:%i:%s %p") date_created,
@@ -980,7 +1070,7 @@ class Person_model extends CI_Model {
 			AND th.person_id = ?
 			AND pm.id = 1
 			AND th.transaction_status = 1
-			AND th.date_created >= DATE_ADD(CURDATE(), INTERVAL -7 DAY)
+			AND date(th.date_created) >= DATE(NOW())
 			ORDER BY th.date_created DESC';
 		$query = $this->db->query($sql,array($person_id));
 		return $query->result();
@@ -1008,6 +1098,30 @@ class Person_model extends CI_Model {
 				WHERE person_type_id = 1
 					AND person_state_id = 1";
 		$query = $this->db->query($sql);
+		return $query->result();
+	}
+
+	public function update_consumed_amount($consumed_amount, $person_id){
+		$sql = "UPDATE persons 
+				SET consumed_amount = ?
+				WHERE id = ?";
+		$query = $this->db->query($sql, [$consumed_amount, $person_id]);  
+		return $query;
+	}
+
+	public function update_date_consumed($person_id, $date){
+		$sql = "UPDATE persons 
+				SET date_consumed = ?
+				WHERE id = ?";
+		$query = $this->db->query($sql, [$date, $person_id]);  
+		return $query;
+	}
+
+	public function get_consumed_data($person_id){
+		$sql = "SELECT consumed_amount, date_consumed 
+				FROM persons
+				WHERE id = ?";
+		$query = $this->db->query($sql, [$person_id]);  
 		return $query->result();
 	}
 }

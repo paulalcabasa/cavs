@@ -154,16 +154,16 @@
         <?php if($this->session->userdata['user_type_id'] == 3) { ?>
         <li class="header">SYSTEM USERS</li>
         <li><a href="<?php echo base_url();?>employee"><i class="ion-person-stalker"></i> <span>Employees</span></a></li>
-        <li><a href="<?php echo base_url();?>stockholder"><i class="ion-person-stalker"></i> <span>Stockholders</span></a></li>
+        <!-- <li><a href="<?php echo base_url();?>stockholder"><i class="ion-person-stalker"></i> <span>Stockholders</span></a></li> -->
         <li><a href="<?php echo base_url();?>user"><i class="ion-person-stalker"></i> <span>Users</span></a></li>
         <li class="header">MEAL ALLOWANCE</li>
-        <li><a href="<?php echo base_url();?>employee/meal_allowance"><i class="ion-person-stalker"></i> <span> Allowance</span></a></li>
+        <!-- <li><a href="<?php echo base_url();?>employee/meal_allowance"><i class="ion-person-stalker"></i> <span> Allowance</span></a></li> -->
         <li><a href="<?php echo base_url();?>employee/credit_management"><i class="ion-person-stalker"></i> <span> Credits</span></a></li>
         <li><a href="<?php echo base_url();?>meal_allowance_category/list"><i class="ion-person-stalker"></i> <span> Meal Allowance Category</span></a></li>
-        <li><a href="<?php echo base_url();?>reports/meal_allowance_report_form"><i class="ion-person-stalker"></i> <span> Report</span></a></li>
+        <!-- <li><a href="<?php echo base_url();?>reports/meal_allowance_report_form"><i class="ion-person-stalker"></i> <span> Report</span></a></li> -->
         <li class="header">TRANSACTION</li>
         <li><a href="<?php echo base_url();?>transaction/new_transaction"><i class="fa fa-plus-circle"></i> <span>New</span></a></li>
-        <li><a href="<?php echo base_url();?>transaction/new_transaction_v1"><i class="fa fa-plus-circle"></i> <span>New - version 1</span></a></li>
+        <!-- <li><a href="<?php echo base_url();?>transaction/new_transaction_v1"><i class="fa fa-plus-circle"></i> <span>New - version 1</span></a></li> -->
     
         <li><a href="<?php echo base_url();?>transaction/all_transactions"><i class="fa fa-book"></i> <span>All Transactions</span></a></li>
         
@@ -190,13 +190,13 @@
         <li><a href="<?php echo base_url();?>reports/sales_report"><i class="fa fa-bar-chart"></i> <span>Sales Report</span></a></li>
         <li><a href="<?php echo base_url();?>reports/sales_report_detailed"><i class="fa fa-bar-chart"></i> <span>Detailed Sales Report</span></a></li>
         <li><a href="<?php echo base_url();?>reports/sales_report_by_payment_type"><i class="fa fa-bar-chart"></i> <span>Sales Report by Payment Type</span></a></li>
-        <li><a href="<?php echo base_url();?>reports/cost_vs_sales_summary_report"><i class="fa fa-pie-chart"></i> <span>Cost Vs Sales Report</span></a></li>
+        <!-- <li><a href="<?php echo base_url();?>reports/cost_vs_sales_summary_report"><i class="fa fa-pie-chart"></i> <span>Cost Vs Sales Report</span></a></li>
         <li><a href="<?php echo base_url();?>reports/monthly_sales_report"><i class="fa fa-line-chart"></i> <span>Monthly Sales Report</span></a></li>
         <li><a href="<?php echo base_url();?>reports/annual_sales_report"><i class="fa fa-bar-chart"></i> <span>Annual Sales Report</span></a></li>
 
         <li><a href="<?php echo base_url();?>reports/billing_summary"><i class="fa fa-bar-chart"></i> <span>Billing Summary Report</span></a></li>
         <li><a href="<?php echo base_url();?>reports/supplier_item_price"><i class="fa fa-bar-chart"></i> <span>Supplier Item Price Report</span></a></li>
-        <li><a href="<?php echo base_url();?>reports/inventory_expense_report"><i class="fa fa-bar-chart"></i> <span>Inventory Expense Report</span></a></li>
+        <li><a href="<?php echo base_url();?>reports/inventory_expense_report"><i class="fa fa-bar-chart"></i> <span>Inventory Expense Report</span></a></li> -->
       
         <?php } ?>     
 
@@ -207,7 +207,7 @@
          <li><a href="<?php echo base_url();?>stockholder"><i class="ion-person-stalker"></i> <span>Stockholders</span></a></li>
         <li class="header">TRANSACTION</li>
         <li><a href="<?php echo base_url();?>transaction/new_transaction"><i class="fa fa-plus-circle"></i> <span>New</span></a></li>
-        <li><a href="<?php echo base_url();?>transaction/new_transaction_v1"><i class="fa fa-plus-circle"></i> <span>New - version 1</span></a></li>
+        <!-- <li><a href="<?php echo base_url();?>transaction/new_transaction_v1"><i class="fa fa-plus-circle"></i> <span>New - version 1</span></a></li> -->
     
         <li><a href="<?php echo base_url();?>transaction/all_transactions"><i class="fa fa-book"></i> <span>All Transactions</span></a></li>
         
@@ -229,21 +229,21 @@
         <li><a href="<?php echo base_url();?>reports/view_inventory_items_onhand" target="_blank"><i class="fa fa-book"></i> <span>Inventory Items Onhand</span></a></li>      
         
 
-        <li class="header">CREDITS</li>
+        <!-- <li class="header">CREDITS</li>
         <li><a href="<?php echo base_url();?>employee/credit_management"><i class="ion-person-stalker"></i> <span>MDI</span></a></li>
-        <li><a href="<?php echo base_url();?>employee/credit_management_sruho"><i class="ion-person-stalker"></i> <span>SRUHO</span></a></li>
+        <li><a href="<?php echo base_url();?>employee/credit_management_sruho"><i class="ion-person-stalker"></i> <span>SRUHO</span></a></li> -->
 
         <li class="header">REPORTS</li>
         <li><a href="<?php echo base_url();?>reports/sales_report"><i class="fa fa-bar-chart"></i> <span>Sales Report</span></a></li>
         <li><a href="<?php echo base_url();?>reports/sales_report_detailed"><i class="fa fa-bar-chart"></i> <span>Detailed Sales Report</span></a></li>
         <li><a href="<?php echo base_url();?>reports/sales_report_by_payment_type"><i class="fa fa-bar-chart"></i> <span>Sales Report by Payment Type</span></a></li>
-        <li><a href="<?php echo base_url();?>reports/cost_vs_sales_summary_report"><i class="fa fa-pie-chart"></i> <span>Cost Vs Sales Report</span></a></li>
+        <!-- <li><a href="<?php echo base_url();?>reports/cost_vs_sales_summary_report"><i class="fa fa-pie-chart"></i> <span>Cost Vs Sales Report</span></a></li>
         <li><a href="<?php echo base_url();?>reports/monthly_sales_report"><i class="fa fa-line-chart"></i> <span>Monthly Sales Report</span></a></li>
         <li><a href="<?php echo base_url();?>reports/annual_sales_report"><i class="fa fa-bar-chart"></i> <span>Annual Sales Report</span></a></li>
 
         <li><a href="<?php echo base_url();?>reports/billing_summary"><i class="fa fa-bar-chart"></i> <span>Billing Summary Report</span></a></li>
         <li><a href="<?php echo base_url();?>reports/supplier_item_price"><i class="fa fa-bar-chart"></i> <span>Supplier Item Price Report</span></a></li>
-        <li><a href="<?php echo base_url();?>reports/inventory_expense_report"><i class="fa fa-bar-chart"></i> <span>Inventory Expense Report</span></a></li>
+        <li><a href="<?php echo base_url();?>reports/inventory_expense_report"><i class="fa fa-bar-chart"></i> <span>Inventory Expense Report</span></a></li> -->
       
         <?php } ?>   
 
@@ -253,7 +253,7 @@
         <li><a href="<?php echo base_url();?>employee"><i class="ion-person-stalker"></i> <span>Employees</span></a></li>
         <li><a href="<?php echo base_url();?>meal_allowance_category/list"><i class="ion-person-stalker"></i> <span> Meal Allowance Category</span></a></li>
         <li><a href="<?php echo base_url();?>employee/meal_allowance"><i class="ion-person-stalker"></i> <span> Allowance</span></a></li>
-        <li><a href="<?php echo base_url();?>reports/meal_allowance_report_form"><i class="ion-person-stalker"></i> <span> Report</span></a></li>
+        <!-- <li><a href="<?php echo base_url();?>reports/meal_allowance_report_form"><i class="ion-person-stalker"></i> <span> Report</span></a></li> -->
         <?php } ?>       
   
         <!-- cashier -->
@@ -261,7 +261,7 @@
       
         <li class="header">TRANSACTION</li>
         <li><a href="<?php echo base_url();?>transaction/new_transaction"><i class="fa fa-plus-circle"></i> <span>New</span></a></li>
-        <li><a href="<?php echo base_url();?>transaction/new_transaction_v1"><i class="fa fa-plus-circle"></i> <span>New - version 1</span></a></li>
+        <!-- <li><a href="<?php echo base_url();?>transaction/new_transaction_v1"><i class="fa fa-plus-circle"></i> <span>New - version 1</span></a></li> -->
           
       
         <li><a href="<?php echo base_url();?>transaction/all_transactions"><i class="fa fa-book"></i> <span>All Transactions</span></a></li>
@@ -281,7 +281,7 @@
          <?php if($this->session->userdata['user_type_id'] == 1 || $this->session->userdata['user_type_id'] == 8) { ?>
          <li class="header">PORTAL</li>
          <li><a href="<?php echo base_url();?>portal/transaction_history"><i class="ion-person-stalker"></i> <span>Transaction History</span></a></li>
-         <li><a href="<?php echo base_url();?>portal/meal_allowance_history"><i class="ion-person-stalker"></i> <span>Meal Allowance</span></a></li>
+         <!-- <li><a href="<?php echo base_url();?>portal/meal_allowance_history"><i class="ion-person-stalker"></i> <span>Meal Allowance</span></a></li> -->
       
         <?php } ?>
       </ul>

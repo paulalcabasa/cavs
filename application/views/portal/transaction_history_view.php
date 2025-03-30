@@ -1,11 +1,12 @@
 <div class="content-wrapper"> <!-- Content Wrapper. Contains page content -->
     <section class="content-header"> <!-- Content Header (Page header) -->
-        <h1>Transactions
+        <h1>Under maintenance</h1>
+        <!-- <h1>Transactions
             <small>This is page displays all the inventorial items registered in the system</small>
         </h1>
-      
+       -->
     </section>
-    <section class="content"> <!-- Main content -->
+    <section class="content" style="display: none;"> <!-- Main content -->
         <div class="nav-tabs-custom" style="min-height:550px;">
             <ul class="nav nav-tabs">
                 <li class="active"><a href="#transaction_tab" class="btn_get_transactions" data-transaction_status="1" data-toggle="tab">Completed</a></li>
@@ -66,39 +67,39 @@ function initialize_table(start_date,end_date,status_id){
      return tbl;
 }
 $(document).ready(function(){
-    var start_date;
-    var end_date;
-    var txt_display_date = $("#txt_display_date").val().split("-");
-    start_date = moment(txt_display_date[0],"MM/DD/YYYY").format('YYYY-MM-DD');
-    end_date = moment(txt_display_date[1],"MM/DD/YYYY").format('YYYY-MM-DD');
-    var status_id = 1;
-    var tbl = initialize_table(start_date,end_date,status_id);
+    // var start_date;
+    // var end_date;
+    // var txt_display_date = $("#txt_display_date").val().split("-");
+    // start_date = moment(txt_display_date[0],"MM/DD/YYYY").format('YYYY-MM-DD');
+    // end_date = moment(txt_display_date[1],"MM/DD/YYYY").format('YYYY-MM-DD');
+    // var status_id = 1;
+    // var tbl = initialize_table(start_date,end_date,status_id);
     
-    $('#txt_display_date').daterangepicker({
-        "showDropdowns": true,
-        "showWeekNumbers": true,
-          ranges: {
-           'Today': [moment(), moment()],
-           'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-           'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-           'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-           'This Month': [moment().startOf('month'), moment().endOf('month')],
-           'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-        }
-    });
+    // $('#txt_display_date').daterangepicker({
+    //     "showDropdowns": true,
+    //     "showWeekNumbers": true,
+    //       ranges: {
+    //        'Today': [moment(), moment()],
+    //        'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+    //        'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+    //        'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+    //        'This Month': [moment().startOf('month'), moment().endOf('month')],
+    //        'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+    //     }
+    // });
 
-    $('#txt_display_date').on('apply.daterangepicker', function(ev, picker) {
-        start_date = picker.startDate.format('YYYY-MM-DD');
-        end_date = picker.endDate.format('YYYY-MM-DD');
-        tbl.destroy();
-        tbl = initialize_table(start_date,end_date,status_id);
-    });
+    // $('#txt_display_date').on('apply.daterangepicker', function(ev, picker) {
+    //     start_date = picker.startDate.format('YYYY-MM-DD');
+    //     end_date = picker.endDate.format('YYYY-MM-DD');
+    //     tbl.destroy();
+    //     tbl = initialize_table(start_date,end_date,status_id);
+    // });
 
-    $("body").on('click',".btn_get_transactions",function(){
-        tbl.destroy();
-        status_id = $(this).data('transaction_status');
-        tbl = initialize_table(start_date,end_date,status_id);
-    });
+    // $("body").on('click',".btn_get_transactions",function(){
+    //     tbl.destroy();
+    //     status_id = $(this).data('transaction_status');
+    //     tbl = initialize_table(start_date,end_date,status_id);
+    // });
 
    
 

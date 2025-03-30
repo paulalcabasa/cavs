@@ -95,14 +95,43 @@ class Reports_model extends CI_Model {
 		// 	}
 		// }
 
-		$sql = "SELECT th.id transaction_header_id,
+		// $sql = "SELECT th.id transaction_header_id,
+		// 			pt.person_type_name,
+		// 			CONCAT(cashier_person.first_name,' ', cashier_person.last_name) cashier_name,
+		// 			th.barcode_no,
+		// 			CONCAT(customer.first_name,' ', customer.last_name) customer_name,
+		// 			th.discount_percent,
+		// 			SUM(CASE WHEN tp.payment_mode_id = 1 THEN tp.amount ELSE 0 END) consumed_allowance,
+		// 			SUM(CASE WHEN tp.payment_mode_id = 2 THEN tp.amount ELSE 0 END) added_cash,
+		// 			DATE_FORMAT(th.date_created,'%M, %d %Y') date_created,
+		// 			DATE_FORMAT(th.date_created,'%h:%i %p') time_created,
+		// 			th.person_id,
+		// 			th.total_amount
+		// 		FROM transaction_headers th 
+		// 			LEFT JOIN person_types pt
+		// 				ON pt.id = th.person_type_id
+		// 			LEFT JOIN users cashier_user
+		// 				ON cashier_user.id = th.create_user
+		// 			LEFT JOIN persons cashier_person
+		// 				ON cashier_person.user_id = cashier_user.id
+		// 			LEFT JOIN persons customer
+		// 				ON customer.id = th.person_id
+		// 			LEFT JOIN  transaction_payments tp
+		// 				ON tp.transaction_header_id = th.id
+		// 			LEFT JOIN payment_modes pm	
+		// 				ON pm.id = tp.payment_mode_id
+		// 		WHERE DATE(th.date_created) BETWEEN '$start_date' AND '$end_date' 
+		// 		". $where ."
+		// 		GROUP BY th.person_id,th.id
+		// 		ORDER BY customer.last_name, customer.first_name";
+
+			$sql = "SELECT th.id transaction_header_id,
 					pt.person_type_name,
-					CONCAT(cashier_person.first_name,' ', cashier_person.last_name) cashier_name,
 					th.barcode_no,
 					CONCAT(customer.first_name,' ', customer.last_name) customer_name,
-					th.discount_percent,
 					SUM(CASE WHEN tp.payment_mode_id = 1 THEN tp.amount ELSE 0 END) consumed_allowance,
-					SUM(CASE WHEN tp.payment_mode_id = 2 THEN tp.amount ELSE 0 END) added_cash,
+		 			SUM(CASE WHEN tp.payment_mode_id = 2 THEN tp.amount ELSE 0 END) added_cash,
+					th.discount_percent,
 					DATE_FORMAT(th.date_created,'%M, %d %Y') date_created,
 					DATE_FORMAT(th.date_created,'%h:%i %p') time_created,
 					th.person_id,
@@ -110,20 +139,13 @@ class Reports_model extends CI_Model {
 				FROM transaction_headers th 
 					LEFT JOIN person_types pt
 						ON pt.id = th.person_type_id
-					LEFT JOIN users cashier_user
-						ON cashier_user.id = th.create_user
-					LEFT JOIN persons cashier_person
-						ON cashier_person.user_id = cashier_user.id
 					LEFT JOIN persons customer
 						ON customer.id = th.person_id
 					LEFT JOIN  transaction_payments tp
 						ON tp.transaction_header_id = th.id
-					LEFT JOIN payment_modes pm	
-						ON pm.id = tp.payment_mode_id
-				WHERE DATE(th.date_created) BETWEEN '$start_date' AND '$end_date' 
-				". $where ."
-				GROUP BY th.person_id,th.id
-				ORDER BY customer.last_name, customer.first_name";
+					WHERE DATE(th.date_created) BETWEEN '$start_date' AND '$end_date' 
+					". $where ."
+					GROUP BY th.person_id,th.id ";	
 			$query = $this->db->query($sql);
 		
 			return $query->result();
