@@ -137,15 +137,20 @@ class Reports_model extends CI_Model {
 					th.person_id,
 					th.total_amount
 				FROM transaction_headers th 
-					LEFT JOIN person_types pt
+					INNER JOIN person_types pt
 						ON pt.id = th.person_type_id
 					LEFT JOIN persons customer
 						ON customer.id = th.person_id
-					LEFT JOIN  transaction_payments tp
+					INNER JOIN  transaction_payments tp
 						ON tp.transaction_header_id = th.id
 					WHERE DATE(th.date_created) BETWEEN '$start_date' AND '$end_date' 
 					". $where ."
 					GROUP BY th.person_id,th.id ";	
+
+			// echo '<pre>';
+			// echo $sql;
+			// echo '</pre>';
+			// exit;
 			$query = $this->db->query($sql);
 		
 			return $query->result();

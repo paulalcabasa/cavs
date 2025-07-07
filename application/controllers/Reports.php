@@ -17,6 +17,79 @@ class Reports extends MY_Controller {
         
     }
 
+    public function sales_report2(){
+        $customer_list = $this->transaction_model->get_customers_category();
+        $cashiers_list = $this->person_model->get_cashiers();
+        $content['cashiers_list'] = $cashiers_list;
+        $content['customer_list'] = $customer_list;
+        $content['main_content'] = 'reports/sales_report2';
+        $this->load->view('includes/template',$content);
+    } 
+ 
+    public function sales_report_excel(){
+        $start_date = $this->input->post('start_date');
+        $end_date = $this->input->post('end_date');
+        $customer_type = $this->input->post('customer_type');
+        $customer_detail = $this->input->post('customer_detail',true);
+        $transacted_by = $this->input->post('transacted_by',true);
+   
+        $report_title = "Sales Report 2";
+
+        $params = array(
+            $start_date,
+            $end_date,
+            $customer_type,
+            $customer_detail,
+            $transacted_by
+        );
+    
+        $report_data = $this->reports_model->generate_sales_report($params);
+        $total_sales = 0;
+
+        $data = [
+            ['Transaction No.', 'Customer Type', 'Customer Name', 'Food Name', 'Unit Price', 'Quantity', 'Amount', 'Transaction Date'],
+        ];
+
+        foreach($report_data as $row){
+            $rowData = [
+                $row->transaction_header_id,
+                $row->person_type_name,
+                $row->barcode_no,
+                $row->customer_name,
+                $row->consumed_allowance,
+                $row->added_cash,
+                $row->discount_percent,
+                $row->date_created,
+                $row->time_created
+            ];
+            array_push($data, $rowData);
+            $total_sales += $row->total_amount;
+        }
+
+        array_push(
+            $data, 
+            ['', '', '', '', '', 'Total', $total_sales, '']
+        );
+
+
+        // Set headers to prompt file download
+        header('Content-Type: text/csv');
+        header('Content-Disposition: attachment;filename="sales-report.csv"');
+
+        // Open output stream
+        $output = fopen('php://output', 'w');
+
+        // Write each row to the CSV
+        foreach ($data as $row) {
+            fputcsv($output, $row);
+        }
+
+        // Close the output stream
+        fclose($output);
+        exit;
+
+    }
+
     /* SALES REPORT DETAILED */
     public function sales_report_detailed(){
         $customer_list = $this->transaction_model->get_customers_category();

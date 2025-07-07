@@ -188,6 +188,7 @@
        
         <li class="header">REPORTS</li>
         <li><a href="<?php echo base_url();?>reports/sales_report"><i class="fa fa-bar-chart"></i> <span>Sales Report</span></a></li>
+        <li><a href="<?php echo base_url();?>reports/sales_report2"><i class="fa fa-bar-chart"></i> <span>Sales Report 2</span></a></li>
         <li><a href="<?php echo base_url();?>reports/sales_report_detailed"><i class="fa fa-bar-chart"></i> <span>Detailed Sales Report</span></a></li>
         <li><a href="<?php echo base_url();?>reports/sales_report_by_payment_type"><i class="fa fa-bar-chart"></i> <span>Sales Report by Payment Type</span></a></li>
         <!-- <li><a href="<?php echo base_url();?>reports/cost_vs_sales_summary_report"><i class="fa fa-pie-chart"></i> <span>Cost Vs Sales Report</span></a></li>
@@ -235,6 +236,7 @@
 
         <li class="header">REPORTS</li>
         <li><a href="<?php echo base_url();?>reports/sales_report"><i class="fa fa-bar-chart"></i> <span>Sales Report</span></a></li>
+        <li><a href="<?php echo base_url();?>reports/sales_report2"><i class="fa fa-bar-chart"></i> <span>Sales Report 2</span></a></li>
         <li><a href="<?php echo base_url();?>reports/sales_report_detailed"><i class="fa fa-bar-chart"></i> <span>Detailed Sales Report</span></a></li>
         <li><a href="<?php echo base_url();?>reports/sales_report_by_payment_type"><i class="fa fa-bar-chart"></i> <span>Sales Report by Payment Type</span></a></li>
         <!-- <li><a href="<?php echo base_url();?>reports/cost_vs_sales_summary_report"><i class="fa fa-pie-chart"></i> <span>Cost Vs Sales Report</span></a></li>
