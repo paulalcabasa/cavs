@@ -457,60 +457,66 @@ class Reports_model extends CI_Model {
 	}
 
 	public function get_sales_report_per_payment_type($start_date,$end_date,$payment_modes){
-		// $this->db->select("tps.id payment_id,
-		// 			       CONCAT('OR',LPAD(tps.transaction_header_id,5,'0')) transaction_no,
-		// 			       pt.person_type_name customer_type,
-		// 			       CASE WHEN th.customer_name is null THEN p.first_name else th.customer_name e customer_name,
-		// 			       pm.mode_of_payment,
-		// 			       tps.amount,
-		// 			       DATE_FORMAT(th.date_created,'%m/%d/%Y') transaction_date");
-		// $this->db->from('transaction_payments tps');
-		// $this->db->join('payment_modes pm','tps.payment_mode_id = pm.id','left');
-		// $this->db->join('transaction_headers th','th.id = tps.transaction_header_id','left');
-		// $this->db->join('person_types pt','pt.id = th.person_type_id','left');
-		// $this->db->join('persons p','p.id = th.person_id','left');
-		// $this->db->where('th.transaction_status', 1);
-		// $this->db->where('DATE(th.date_created) >=', $start_date);
-		// $this->db->where('DATE(th.date_created) <=', $end_date);
-		// $this->db->where_in('tps.payment_mode_id',$payment_modes);
-		// $query = $this->db->get();
-		$where_pmode = "";
+		$payment_mode_values = is_array($payment_modes) ? $payment_modes : array($payment_modes);
+		$payment_mode_ids = array();
+		foreach($payment_mode_values as $payment_mode) {
+			if(is_scalar($payment_mode) && ctype_digit((string)$payment_mode)) {
+				$payment_mode_ids[] = (int)$payment_mode;
+			}
+		}
+		$payment_mode_ids = array_values(array_unique($payment_mode_ids));
 
-		foreach($payment_modes as $p) {
-			$where_pmode .= $p . ",";
+		if(empty($payment_mode_ids)) {
+			return array();
 		}
 
-		$where_pmode = substr($where_pmode, 0, strlen($where_pmode) -1);
+		$sql = "SELECT tps.id payment_id,
+					   CONCAT('OR', LPAD(tps.transaction_header_id, 5, '0')) transaction_no,
+					   pt.person_type_name customer_type,
+					   CASE
+						   WHEN th.customer_name = '' THEN CONCAT(p.first_name,' ', p.last_name)
+						   ELSE th.customer_name
+					   END customer_name,
+					   pm.mode_of_payment,
+					   tps.amount,
+					   DATE_FORMAT(th.date_created, '%m/%d/%Y') transaction_date
+				FROM transaction_payments tps
+				INNER JOIN transaction_headers th ON th.id = tps.transaction_header_id
+				LEFT JOIN payment_modes pm ON tps.payment_mode_id = pm.id
+				LEFT JOIN person_types pt ON pt.id = th.person_type_id
+				LEFT JOIN persons p ON p.id = th.person_id
+				WHERE th.transaction_status = ?";
 
-		$sql = "SELECT
-					tps.id
-					payment_id,
-					CONCAT('OR', LPAD(tps.transaction_header_id, 5, '0'))
-					transaction_no,
-					pt.person_type_name
-					customer_type,
-					CASE 
-						WHEN th.customer_name = '' THEN CONCAT(p.first_name,' ', p.last_name) 
-						ELSE th.customer_name 
-					END customer_name,
-					pm.mode_of_payment,
-					tps.amount,
-					DATE_FORMAT(th.date_created, '%m/%d/%Y')
-						transaction_date
-					FROM   transaction_payments tps
-						LEFT JOIN payment_modes pm
-								ON tps.payment_mode_id = pm.id
-						LEFT JOIN transaction_headers th
-								ON th.id = tps.transaction_header_id
-						LEFT JOIN person_types pt
-								ON pt.id = th.person_type_id
-						LEFT JOIN persons p
-								ON p.id = th.person_id
-					WHERE  th.transaction_status = 1
-						AND DATE(th.date_created) >= '$start_date'
-						AND DATE(th.date_created) <= '$end_date'
-						AND tps.payment_mode_id IN($where_pmode) ";
-		$query = $this->db->query($sql);
+		$query_params = array(1);
+
+		if($start_date !== '') {
+			$start = DateTime::createFromFormat('!Y-m-d', $start_date);
+			if(!$start || $start->format('Y-m-d') !== $start_date) {
+				return array();
+			}
+			$sql .= " AND th.date_created >= ?";
+			$query_params[] = $start->format('Y-m-d 00:00:00');
+		}
+
+		if($end_date !== '') {
+			$end = DateTime::createFromFormat('!Y-m-d', $end_date);
+			if(!$end || $end->format('Y-m-d') !== $end_date) {
+				return array();
+			}
+			$end->modify('+1 day');
+			$sql .= " AND th.date_created < ?";
+			$query_params[] = $end->format('Y-m-d 00:00:00');
+		}
+
+		$payment_placeholders = implode(',', array_fill(0, count($payment_mode_ids), '?'));
+		$sql .= " AND tps.payment_mode_id IN(" . $payment_placeholders . ")
+				ORDER BY th.date_created DESC, tps.id DESC";
+		$query_params = array_merge($query_params, $payment_mode_ids);
+
+		$query = $this->db->query($sql, $query_params);
+		if($query && $query->num_rows() === 0) {
+			log_message('error', 'Sales report by payment type returned 0 rows. SQL: ' . $sql . ' | params: ' . json_encode($query_params) . ' | payment_mode_ids: ' . json_encode($payment_mode_ids));
+		}
 		return $query->result();
 	}
 

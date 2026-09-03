@@ -21,14 +21,13 @@
            
             <div class="row">
                 <div class="col-md-6">
-                    <form class="form-horizontal" target="_blank" id="frm_report" method="post" action="<?php echo base_url();?>reports/sales_report_by_payment_type_pdf">
+                    <form class="form-horizontal" target="_blank" id="frm_report" method="get" action="<?php echo base_url();?>reports/sales_report_by_payment_type_pdf">
                         <div class="form-group">  
                             <label class="col-md-3 control-label">Date</label>
                             <div class="col-md-9">
                                 <input type="text" class="form-control" id="txt_report_date" autocomplete="off"/>
                                 <input type="hidden" class="form-control" id="start_date" name="start_date"/>
                                 <input type="hidden" class="form-control" id="end_date" name="end_date"/>
-                                <input type="hidden" class="form-control" id="payment_modes" name="payment_modes"/>
                             </div>
                         </div>
                         <div class="form-group">
@@ -38,7 +37,7 @@
                                 foreach($modes_of_payment as $row){
                             ?>
                                 <div class="checkbox">
-                                    <label><input value="<?php echo $row->id;?>" class="cb_payment_mode" type="checkbox"><?php echo $row->mode_of_payment;?></label>
+                                    <label><input value="<?php echo $row->id;?>" name="payment_modes[]" class="cb_payment_mode" type="checkbox"><?php echo $row->mode_of_payment;?></label>
                                 </div>
                             <?php 
                                 }
@@ -87,25 +86,22 @@ $(document).ready(function(){
     });
 
     $("#btn_generate").click(function(){
-        var payment_modes = [];
-        var index = 0;
+        var picker = $('#txt_report_date').data('daterangepicker');
+        if(picker) {
+            $("#start_date").val(picker.startDate.format('YYYY-MM-DD'));
+            $("#end_date").val(picker.endDate.format('YYYY-MM-DD'));
+        }
 
-        $(".cb_payment_mode").each(function(){
-            if($(this).is(":checked")){
-                payment_modes[index] = $(this).val();
-                index++;
-            }
-        });
+        var selected_count = $(".cb_payment_mode:checked").length;
 
 
         if($("#start_date").val()  == "" && $("#end_date").val() == ""){
             alert('Select start date and end date');
         }
-        else if(index == 0){
+        else if(selected_count == 0){
             alert('Please select atleast one mode of payment');
         }
         else {
-            $("#payment_modes").val(payment_modes);
             $("#frm_report").submit();
         }
     });

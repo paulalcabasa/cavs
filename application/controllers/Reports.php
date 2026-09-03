@@ -1441,9 +1441,34 @@ class Reports extends MY_Controller {
 
     public function sales_report_by_payment_type_pdf(){
         $this->load->library('pdf');
-        $start_date = $this->input->post('start_date');
-        $end_date = $this->input->post('end_date');
-        $payment_modes = $this->input->post('payment_modes');
+        $start_date = $this->input->get('start_date');
+        $end_date = $this->input->get('end_date');
+        $payment_modes = $this->input->get('payment_modes');
+
+        // Backward compatibility if endpoint is still submitted via POST.
+        if($start_date === null) {
+            $start_date = $this->input->post('start_date');
+        }
+        if($end_date === null) {
+            $end_date = $this->input->post('end_date');
+        }
+        if($payment_modes === null) {
+            $payment_modes = $this->input->post('payment_modes');
+        }
+
+        $payment_modes_missing = ($payment_modes === '' || $payment_modes === null);
+        if(is_array($payment_modes) && empty($payment_modes)) {
+            $payment_modes_missing = true;
+        }
+
+        // Block empty submissions (e.g., direct hit/refresh without POST payload).
+        if($start_date === '' || $start_date === null || $end_date === '' || $end_date === null || $payment_modes_missing) {
+            show_error('Please select a date range and at least one mode of payment before generating this report.', 400, 'Invalid Report Parameters');
+            return;
+        }
+
+        
+
         $report_title = "Sales Report by Payment Type";
         $report_content = $this->generate_sales_report_by_payment_type($start_date,$end_date,$payment_modes);
         $pdf = new Pdf(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
@@ -1493,8 +1518,16 @@ class Reports extends MY_Controller {
     }
 
     public function generate_sales_report_by_payment_type($start_date,$end_date,$payment_modes){
-       
-        $payment_modes = explode(",",$payment_modes);
+        $raw_payment_modes = is_array($payment_modes) ? json_encode($payment_modes) : (string)$payment_modes;
+        $payment_modes = array();
+        if(preg_match_all('/\d+/', $raw_payment_modes, $matches)) {
+            foreach($matches[0] as $mode) {
+                $payment_modes[] = $mode;
+            }
+        }
+        $payment_modes = array_values(array_unique($payment_modes));
+
+        log_message('error', 'sales_report_by_payment_type input | start_date=' . (string)$start_date . ' | end_date=' . (string)$end_date . ' | raw_payment_modes=' . $raw_payment_modes . ' | normalized_payment_modes=' . json_encode($payment_modes));
        
         $data = '<table border="1" cellpadding="3" style="font-size:9px;">
                         <thead>
@@ -1508,8 +1541,11 @@ class Reports extends MY_Controller {
                             </tr>
                         </thead>
                         <tbody>';
-     
+        // echo $start_date . ' - ' . $end_date;
+        // echo implode(", ", $payment_modes);
+        // exit;
         $report_data = $this->reports_model->get_sales_report_per_payment_type($start_date,$end_date,$payment_modes);
+        log_message('error', 'sales_report_by_payment_type result count=' . count($report_data));
         $total_sales = 0;
         foreach($report_data as $row){
             $data .= '<tr>

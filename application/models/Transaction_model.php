@@ -17,6 +17,112 @@ class Transaction_model extends CI_Model {
 		return $query->result();
 	}
 
+	public function get_transaction_customer_types(){
+		$sql = "SELECT id, person_type_name
+				FROM person_types
+				WHERE active_flag = 'y'
+				ORDER BY person_type_name ASC";
+		return $this->db->query($sql)->result();
+	}
+
+	private function _transaction_list_query($filters, $include_display_joins = true){
+		$sql = "FROM transaction_headers th
+				LEFT JOIN person_types pt ON pt.id = th.person_type_id
+				LEFT JOIN transaction_states ts ON ts.id = th.transaction_status";
+		$params = array();
+
+		$where = array();
+		if (!empty($filters['date_start']) && !empty($filters['date_end'])) {
+			$where[] = 'th.date_created >= ?';
+			$params[] = $filters['date_start'];
+			$where[] = 'th.date_created < ?';
+			$params[] = $filters['date_end'];
+		}
+
+		if (!empty($filters['customer_name'])) {
+			$where[] = 'th.employee_no LIKE ?';
+			$customer_like = '%' . $filters['customer_name'] . '%';
+			$params[] = $customer_like;
+		}
+
+		if (!empty($filters['customer_type'])) {
+			$where[] = "pt.id = ? AND pt.active_flag = 'y'";
+			$params[] = (int) $filters['customer_type'];
+		}
+
+		if (!empty($filters['status'])) {
+			$where[] = 'ts.status = ?';
+			$params[] = $filters['status'];
+		}
+
+		if (!empty($where)) {
+			$sql .= ' WHERE ' . implode(' AND ', $where);
+		}
+
+		return array(
+			'sql' => $sql,
+			'params' => $params
+		);
+	}
+
+	public function count_transaction_headers($filters = array()){
+		$query_data = $this->_transaction_list_query($filters);
+		$query = $this->db->query('SELECT COUNT(th.id) AS total ' . $query_data['sql'], $query_data['params']);
+		return (int) $query->row()->total;
+	}
+
+	public function get_transaction_headers($filters = array(), $limit = 10, $offset = 0){
+		$sql = "SELECT th.id,
+					th.id AS transaction_no,
+					th.employee_no,
+					th.customer_name,
+					th.total_amount,
+					th.amount_tendered,
+					th.transaction_status,
+					th.date_created,
+					th.create_user,
+					pt.person_type_name,
+					ts.status
+				FROM transaction_headers th
+					LEFT JOIN person_types pt
+						ON pt.id = th.person_type_id
+					LEFT JOIN transaction_states ts
+						ON ts.id = th.transaction_status";
+		$where = array();
+		$params = array();
+
+		if (!empty($filters['date_start']) && !empty($filters['date_end'])) {
+			$where[] = 'th.date_created >= ?';
+			$params[] = $filters['date_start'];
+			$where[] = 'th.date_created < ?';
+			$params[] = $filters['date_end'];
+		}
+
+		if (!empty($filters['customer_name'])) {
+			$where[] = 'th.employee_no LIKE ?';
+			$params[] = '%' . $filters['customer_name'] . '%';
+		}
+
+		if (!empty($filters['customer_type'])) {
+			$where[] = "pt.id = ? AND pt.active_flag = 'y'";
+			$params[] = (int) $filters['customer_type'];
+		}
+
+		if (!empty($filters['status'])) {
+			$where[] = 'ts.status = ?';
+			$params[] = $filters['status'];
+		}
+
+		if (!empty($where)) {
+			$sql .= ' WHERE ' . implode(' AND ', $where);
+		}
+
+		$sql .= ' ORDER BY th.id DESC LIMIT %d OFFSET %d';
+		$sql = sprintf($sql, max(1, (int) $limit), max(0, (int) $offset));
+
+		return $this->db->query($sql, $params)->result();
+	}
+
 	public function get_applicable_payment_modes($person_type_id){
 		$sql = "SELECT a.id,
 					   a.payment_mode_id,
@@ -65,6 +171,31 @@ class Transaction_model extends CI_Model {
 					attribute3
 				) 
 				VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,NOW(),?,?,?)";
+			// uncomment if we will implement saving of totals
+			// $sql = "INSERT INTO transaction_headers (
+			// 	person_type_id,
+			// 	person_id,
+			// 	employee_no,
+			// 	barcode_no,
+			// 	customer_name,
+			// 	patient_room_no,
+			// 	patient_room_type,
+			// 	patient_reference_no,
+			// 	amount_tendered,
+			// 	total_amount,
+			// 	discount_percent,
+			// 	customer_id_no,
+			// 	remarks,
+			// 	meal_allowance_id,
+			// 	create_user,
+			// 	date_created,
+			// 	attribute1,
+			// 	attribute2,
+			// 	attribute3,
+			// 	meal_allowance_amount,
+			// 	cash_amount
+			// ) 
+			// VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,NOW(),?,?,?,?,?)";
 		$result = $this->db->query($sql,$params);
 		return $this->db->insert_id();
 	}

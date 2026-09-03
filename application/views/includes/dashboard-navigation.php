@@ -165,7 +165,7 @@
         <li><a href="<?php echo base_url();?>transaction/new_transaction"><i class="fa fa-plus-circle"></i> <span>New</span></a></li>
         <!-- <li><a href="<?php echo base_url();?>transaction/new_transaction_v1"><i class="fa fa-plus-circle"></i> <span>New - version 1</span></a></li> -->
     
-        <li><a href="<?php echo base_url();?>transaction/all_transactions"><i class="fa fa-book"></i> <span>All Transactions</span></a></li>
+        <li><a href="<?php echo base_url();?>transactions"><i class="fa fa-book"></i> <span>All Transactions</span></a></li>
         
         <li class="header">SALES</li>
         <li><a href="<?php echo base_url();?>Food_Inventory/new_food"><i class="fa fa-plus"></i> <span>New</span></a></li>
@@ -210,7 +210,7 @@
         <li><a href="<?php echo base_url();?>transaction/new_transaction"><i class="fa fa-plus-circle"></i> <span>New</span></a></li>
         <!-- <li><a href="<?php echo base_url();?>transaction/new_transaction_v1"><i class="fa fa-plus-circle"></i> <span>New - version 1</span></a></li> -->
     
-        <li><a href="<?php echo base_url();?>transaction/all_transactions"><i class="fa fa-book"></i> <span>All Transactions</span></a></li>
+        <li><a href="<?php echo base_url();?>transactions"><i class="fa fa-book"></i> <span>All Transactions v2</span></a></li>
         
         <li class="header">SALES</li>
         <li><a href="<?php echo base_url();?>Food_Inventory/new_food"><i class="fa fa-plus"></i> <span>New</span></a></li>
@@ -265,8 +265,8 @@
         <li><a href="<?php echo base_url();?>transaction/new_transaction"><i class="fa fa-plus-circle"></i> <span>New</span></a></li>
         <!-- <li><a href="<?php echo base_url();?>transaction/new_transaction_v1"><i class="fa fa-plus-circle"></i> <span>New - version 1</span></a></li> -->
           
-      
-        <li><a href="<?php echo base_url();?>transaction/all_transactions"><i class="fa fa-book"></i> <span>All Transactions</span></a></li>
+        <li><a href="<?php echo base_url();?>transaction/transaction_list"><i class="fa fa-book"></i> <span>All Transactions v2</span></a></li>
+          
         <li class="header">SALES</li>
         <li><a href="<?php echo base_url();?>Food_Inventory/all_food_sales"><i class="fa fa-book"></i> <span>Food Sales - Active</span></a></li>
         <li><a href="<?php echo base_url();?>Food_Inventory/all_food_sales_v2"><i class="fa fa-book"></i> <span>Food Sales History</span></a></li>
