@@ -69,7 +69,7 @@
 				<div class="box">
 					<div class="box-header with-border transaction-controls">
 						<div>
-							<a href="<?php echo base_url();?>transaction/all_transactions" class="btn btn-primary">BACK TO HOME</a>	
+							<a href="<?php echo base_url();?>transactions" class="btn btn-primary">BACK TO HOME</a>	
 						</div>
 						<h3 class="transaction-header">ORDERS</h3>
 						<div>

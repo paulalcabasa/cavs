@@ -1219,6 +1219,29 @@ class Reports extends MY_Controller {
         $pdf->Output('annual_sales_report-'.date('YmdHis').'.pdf', 'I');
     }
 
+    public function food_items_onhand(){
+        $pageNo = max(1, (int) $this->uri->segment(3));
+        $query = trim((string) $this->input->get('search', TRUE));
+        $recordsPerPage = 10;
+        $foodTotal = $this->reports_model->get_food_sales_items_onhand_total($query);
+        $totalPages = max(1, (int) ceil($foodTotal / $recordsPerPage));
+        $pageNo = min($pageNo, $totalPages);
+        $params = array(
+            'query' => $query,
+            'records_per_page' => $recordsPerPage,
+            'offset' => ($pageNo - 1) * $recordsPerPage
+        );
+
+        $content['foods'] = $this->reports_model->get_food_sales_items_onhand_paginated($params);
+        $content['pageNo'] = $pageNo;
+        $content['totalPages'] = $totalPages;
+        $content['foodTotal'] = $foodTotal;
+        $content['query'] = $query;
+        $content['onhandBaseUrl'] = base_url() . 'reports/food_items_onhand/';
+        $content['main_content'] = 'reports/food_items_onhand';
+        $this->load->view('includes/template', $content);
+    }
+
     public function supplier_item_price(){
         $this->load->model('Unit_of_Measure_model', 'unit_of_measure_model');
         $this->load->model('Inventory_Item_Model', 'inventory_item_model');

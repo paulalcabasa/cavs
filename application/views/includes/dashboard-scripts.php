@@ -20,5 +20,12 @@
 <script src="<?php echo base_url();?>plugins/bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js"></script>
 <script src="<?php echo base_url();?>plugins/jquery-scanner-detection/jquery.scannerdetection.js"></script>
 <script src="<?php echo base_url();?>plugins/select2-4.0.3/dist/js/select2.full.min.js"></script>
+<script>
+$(document).ajaxError(function(event, jqxhr) {
+    if (jqxhr.status === 401) {
+        window.location.replace('<?php echo base_url('login');?>');
+    }
+});
+</script>
 </body>
 </html>

@@ -215,6 +215,12 @@ class Transaction_model extends CI_Model {
 		return $result;
 	}
 
+	public function add_transaction_lines_batch($rows){
+		if (!empty($rows)) {
+			$this->db->insert_batch('transaction_lines', $rows);
+		}
+	}
+
 	public function add_transaction_payments($params){
 		$sql = "INSERT INTO transaction_payments(
 					transaction_header_id,
@@ -225,6 +231,12 @@ class Transaction_model extends CI_Model {
 				VALUES(?,?,?,?)";
 		$result = $this->db->query($sql,$params);
 		return $result;
+	}
+
+	public function add_transaction_payments_batch($rows){
+		if (!empty($rows)) {
+			$this->db->insert_batch('transaction_payments', $rows);
+		}
 	}
 
 	public function get_transaction_header($transaction_id){

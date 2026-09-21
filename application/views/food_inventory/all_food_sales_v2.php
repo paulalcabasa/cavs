@@ -1,13 +1,21 @@
 <div class="content-wrapper"> <!-- Content Wrapper. Contains page content -->
     <section class="content-header"> <!-- Content Header (Page header) -->
         <h1>Food Sales Inventory</h1>
-        <small>Total Items: <span class="badge btn-success"><?= count($foods); ?></span></small><br/><br/>
+        <small>Total Items: <span class="badge btn-success"><?= $foodTotal; ?></span></small><br/><br/>
         <button id="btn_print_barcode" class="btn btn-primary">Print Barcode</button>
         <form class="form-horizontal" id="frm_data" target="_blank" method="POST" action="<?php echo base_url();?>Food_Inventory/print_food_barcode">
             <input id="txt_food_ids" type="hidden" name="food_ids">
         </form>
     </section>
     <section class="content"> <!-- Main content -->
+        <form action="<?php echo $inventoryBaseUrl; ?>" method="get" class="sidebar-form">
+            <div class="input-group">
+                <input type="text" name="search" value="<?= html_escape($query); ?>" class="form-control" placeholder="Search by food name...">
+                <span class="input-group-btn">
+                    <button type="submit" class="btn btn-flat"><i class="fa fa-search"></i></button>
+                </span>
+            </div>
+        </form>
         <div class="box"> <!-- Default box -->
             <div class="box-body">
                 <table class="table food-sales-table">
@@ -105,6 +113,20 @@
                     <?php endforeach; ?>
                     </tbody>
                 </table>
+                <ul class="pagination">
+                    <li class="<?php if ($pageNo <= 1) { echo 'disabled'; } ?>">
+                        <a href="<?php echo $pageNo <= 1 ? '#' : $inventoryBaseUrl . '1' . ($query === '' ? '' : '?search=' . urlencode($query)); ?>">First</a>
+                    </li>
+                    <li class="<?php if ($pageNo <= 1) { echo 'disabled'; } ?>">
+                        <a href="<?php echo $pageNo <= 1 ? '#' : $inventoryBaseUrl . ($pageNo - 1) . ($query === '' ? '' : '?search=' . urlencode($query)); ?>">Prev</a>
+                    </li>
+                    <li class="<?php if ($pageNo >= $totalPages) { echo 'disabled'; } ?>">
+                        <a href="<?php echo $pageNo >= $totalPages ? '#' : $inventoryBaseUrl . ($pageNo + 1) . ($query === '' ? '' : '?search=' . urlencode($query)); ?>">Next</a>
+                    </li>
+                    <li class="<?php if ($pageNo >= $totalPages) { echo 'disabled'; } ?>">
+                        <a href="<?php echo $pageNo >= $totalPages ? '#' : $inventoryBaseUrl . $totalPages . ($query === '' ? '' : '?search=' . urlencode($query)); ?>">Last</a>
+                    </li>
+                </ul>
           
             </div>  
         </div>
@@ -209,4 +231,3 @@ $("#btn_print_barcode").click(function(){
     }
 });
 </script>
-

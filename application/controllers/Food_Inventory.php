@@ -205,10 +205,26 @@ class Food_Inventory extends MY_Controller {
     }
 
     public function all_food_sales(){
-        $foods = $this->food_model->get_food_sales_list();
+        $pageNo = max(1, (int) $this->uri->segment(3));
+        $query = trim((string) $this->input->get('search', TRUE));
+        $recordsPerPage = 10;
+        $foodTotal = $this->food_model->get_food_sales_list_total($query);
+        $totalPages = max(1, (int) ceil($foodTotal / $recordsPerPage));
+        $pageNo = min($pageNo, $totalPages);
+        $params = array(
+            'query' => $query,
+            'records_per_page' => $recordsPerPage,
+            'offset' => ($pageNo - 1) * $recordsPerPage
+        );
+        $foods = $this->food_model->get_food_sales_list_paginated($params);
         $user_type_id = $this->session->userdata('user_type_id');
         $content['foods'] = $foods;
         $content['user_type_id'] = $user_type_id;
+        $content['pageNo'] = $pageNo;
+        $content['totalPages'] = $totalPages;
+        $content['inventoryBaseUrl'] = base_url() . 'Food_Inventory/all_food_sales/';
+        $content['foodTotal'] = $foodTotal;
+        $content['query'] = $query;
         $content['main_content'] = 'food_inventory/all_food_sales_v2';
         $this->load->view('includes/template',$content);
     }

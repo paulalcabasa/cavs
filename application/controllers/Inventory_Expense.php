@@ -12,101 +12,41 @@ class Inventory_Expense extends MY_Controller {
     }
 
     public function index(){
-        $content['main_content'] = 'inventory_expenses/all_inventory_expenses';
-        $this->load->view('includes/template',$content);
+        $this->all_inventory_expenses();
     }
 
     public function all_inventory_expenses(){
+        $pageNo = max(1, (int) $this->uri->segment(3));
+        $statusId = (int) $this->input->get('status');
+        if (!in_array($statusId, array(0, 5, 6, 2), true)) {
+            $statusId = 0;
+        }
+        $search = trim((string) $this->input->get('search', TRUE));
+        $recordsPerPage = 10;
+        $params = array(
+            'status_ids' => $statusId === 0 ? array() : array($statusId),
+            'start_date' => null,
+            'end_date' => null,
+            'search' => $search,
+            'limit' => $recordsPerPage,
+            'offset' => ($pageNo - 1) * $recordsPerPage
+        );
+        $totalItems = $this->food_model->count_inventory_expenses($params);
+        $totalPages = max(1, (int) ceil($totalItems / $recordsPerPage));
+        $pageNo = min($pageNo, $totalPages);
+        $params['offset'] = ($pageNo - 1) * $recordsPerPage;
+
+        $content['expenses'] = $this->food_model->get_inventory_expenses_page($params);
+        $content['pageNo'] = $pageNo;
+        $content['totalPages'] = $totalPages;
+        $content['totalItems'] = $totalItems;
+        $content['statusId'] = $statusId;
+        $content['search'] = $search;
+        $content['baseUrl'] = base_url() . 'Inventory_Expense/all_inventory_expenses/';
         $content['main_content'] = 'inventory_expenses/all_inventory_expenses';
-        $this->load->view('includes/template',$content);
+        $this->load->view('includes/template', $content);
     }
 
-     public function dt_all_inventory_expenses(){
-        $this->load->library('dt_ssp');
-        $transaction_state_list = $this->uri->segment(3);
-        $start_date = $this->uri->segment(4);
-        $end_date = $this->uri->segment(5);
-        
-        // DB table to use
-        $table = 'inventory_expenses_v';
-       
-        // Table's primary key
-        $primaryKey = 'food_id';
-        $columns = array(
-            array( 
-                'db' => 'expense_no',
-                'dt' => 0
-                 
-            ),
-            array( 'db' => 'category','dt' => 1 ),
-            array( 'db' => 'description', 'dt' => 2 ),
-            array( 'db' => 'total_expense','dt' => 3 ),
-            array( 'db' => 'status', 'dt' => 4 ),
-       
-            array( 'db' => 'date_created', 'dt' => 5),
-            array( 
-                'db' => 'food_id', 
-                'dt' => 6,
-                'formatter' => function($d,$row){
-                   
-                    $btn_data = "";
-                    if($row['status'] == 'New'){ // if status is new
-                        $btn_data = '<div class="btn-group">
-                                      <button type="button" class="btn btn-primary btn-xs dropdown-toggle " data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        Action <span class="caret"></span>
-                                      </button>
-                                      <ul class="dropdown-menu dropdown-menu-right">
-                                        <li><a href="view_details/'.encode_string($d).'">View Details</a></li>   
-                                        <li><a href="#" class="btn_update_status" data-id="'.$d.'" data-state_id="6">Finalize</a></li>
-                                        <li><a href="cancel_expense_item/'.encode_string($d).'">Cancel</a></li>      
-                                      </ul>
-                                    </div>';
-              
-                    }
-                    else if($row['status'] == 'Finalized' || $row['status'] == 'Cancelled'){ // if status is new
-                        $btn_data = '<div class="btn-group">
-                                      <button type="button" class="btn btn-primary btn-xs dropdown-toggle " data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        Action <span class="caret"></span>
-                                      </button>
-                                      <ul class="dropdown-menu dropdown-menu-right">
-                                        <li><a href="view_details/'.encode_string($d).'">View Details</a></li>   
-                                           
-                                      </ul>
-                                    </div>';
-              
-                    }
-                    return $btn_data;
-                }
-            )
-        );
-
-        // SQL server connection information
-        $sql_details = array(
-            'user' => $this->db->username,
-            'pass' => $this->db->password,
-            'db'   => $this->db->database,
-            'host' => $this->db->hostname
-        );
-
-        $transaction_state_list = explode('%20',$transaction_state_list);
-        $transaction_state_ids = "";
-        foreach($transaction_state_list as $id){
-            $transaction_state_ids .= $id . ",";
-        }
-
-        $transaction_state_ids = rtrim($transaction_state_ids,',');
-        
-        $where = "transaction_state_id IN(".$transaction_state_ids.") ";
-      
-        if($start_date != 'null' && $end_date != 'null'){
-           $where .= " AND original_date_created BETWEEN '".$start_date."' AND '".$end_date."'";
-        }
-
-        echo json_encode(
-            DT_ssp::complex( $_GET, $sql_details, $table, $primaryKey, $columns,$where)
-        );
-    }
-    
     public function view_details(){
         $this->load->helper('encryption');
         $this->load->helper('string');

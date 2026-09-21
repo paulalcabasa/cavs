@@ -178,6 +178,33 @@ class Food_model extends CI_Model {
     	$this->db->query($sql,$params);
     }
 
+    public function update_food_quantities($quantities, $create_user){
+        if (empty($quantities)) {
+            return;
+        }
+
+        $cases = array();
+        $food_ids = array();
+        $params = array();
+        foreach ($quantities as $food_id => $quantity) {
+            $cases[] = "WHEN ? THEN ?";
+            $params[] = $food_id;
+            $params[] = $quantity;
+            $food_ids[] = $food_id;
+        }
+
+        $placeholders = implode(',', array_fill(0, count($food_ids), '?'));
+        $params[] = $create_user;
+        $params = array_merge($params, $food_ids);
+
+        $sql = "UPDATE foods
+                SET quantity = CASE id " . implode(' ', $cases) . " END,
+                    update_user = ?,
+                    date_updated = NOW()
+                WHERE id IN(" . $placeholders . ")";
+        $this->db->query($sql, $params);
+    }
+
     public function create_food_qty_adjustments($food_id,$added_qty,$remarks,$create_user){
     	$food_details = $this->get_food_details($food_id);
     	$total_food_cost = $food_details[0]->total_food_cost;
@@ -438,6 +465,56 @@ class Food_model extends CI_Model {
 		return $query->result();
 	}
 
+	public function get_food_sales_list_paginated($params){
+		$search = trim($params['query']);
+		$search_condition = '';
+		$query_params = array();
+		if ($search !== '') {
+			$search_condition = ' AND LOWER(fd.food_name) LIKE ?';
+			$query_params[] = '%' . strtolower($search) . '%';
+		}
+
+		$records_per_page = (int) $params['records_per_page'];
+		$offset = (int) $params['offset'];
+		$sql = "SELECT fd.id AS food_id,
+						fd.barcode_value AS barcode_value,
+						fc.category AS category,
+						fd.food_name AS food_name,
+						fd.unit_price AS unit_price,
+						fd.quantity AS quantity,
+						ts.status AS status,
+						fd.initial_quantity + COALESCE(SUM(fqa.added_quantity), 0) - fd.quantity AS no_of_sales,
+						DATE_FORMAT(fd.date_created,'%m/%d/%Y') AS date_created,
+						fd.transaction_state_id AS transaction_state_id
+				FROM foods fd
+				LEFT JOIN food_categories fc ON fd.food_category_id = fc.id
+				LEFT JOIN transaction_states ts ON ts.id = fd.transaction_state_id
+				LEFT JOIN food_quantity_adjustments fqa ON fqa.food_id = fd.id
+				WHERE fd.food_type_id = 1
+					AND ts.id IN (4, 5)" . $search_condition . "
+				GROUP BY fd.id
+				ORDER BY fd.date_created DESC
+				LIMIT " . $offset . ", " . $records_per_page;
+		$query = $this->db->query($sql, $query_params);
+		return $query->result();
+	}
+
+	public function get_food_sales_list_total($query = ''){
+		$search = trim($query);
+		$sql = "SELECT COUNT(fd.id) AS total_foods
+				FROM foods fd
+				INNER JOIN transaction_states ts ON ts.id = fd.transaction_state_id
+				WHERE fd.food_type_id = 1
+					AND ts.id IN (4, 5)";
+		$params = array();
+		if ($search !== '') {
+			$sql .= ' AND LOWER(fd.food_name) LIKE ?';
+			$params[] = '%' . strtolower($search) . '%';
+		}
+		$result = $this->db->query($sql, $params)->row();
+		return (int) $result->total_foods;
+	}
+
 	public function get_food_sales_list_history($params){
 		$sql = "SELECT  fd.id            AS food_id,
 						fd.barcode_value AS barcode_value,
@@ -489,16 +566,77 @@ class Food_model extends CI_Model {
 	}
 
     public function get_food_quantities($foodIds){
-		$formattedFoodIds = '';
-		foreach ($foodIds as $foodId) {
-			$formattedFoodIds .= $foodId . ',';
+		$foodIds = array_values(array_unique($foodIds));
+		if (empty($foodIds)) {
+			return array();
 		}
-		$formattedFoodIds =  rtrim($formattedFoodIds, ",");
+		$placeholders = implode(',', array_fill(0, count($foodIds), '?'));
 
-    	$sql = "SELECT id food_id, quantity
-    			FROM foods
-    			WHERE id IN(".$formattedFoodIds.")";
-    	$query = $this->db->query($sql);
-    	return $query->result();
+		$sql = "SELECT id food_id, quantity
+				FROM foods
+				WHERE id IN(" . $placeholders . ")";
+		$query = $this->db->query($sql, $foodIds);
+		return $query->result();
+    }
+
+    public function get_inventory_expenses_page($params){
+        $where = array('fd.food_type_id = 2');
+        $query_params = array();
+
+        if (!empty($params['status_ids'])) {
+            $where[] = 'fd.transaction_state_id IN(' . implode(',', array_map('intval', $params['status_ids'])) . ')';
+        }
+        if ($params['start_date'] !== null && $params['end_date'] !== null) {
+            $where[] = 'DATE(fd.date_created) BETWEEN ? AND ?';
+            $query_params[] = $params['start_date'];
+            $query_params[] = $params['end_date'];
+        }
+
+        if ($params['search'] !== '') {
+            $where[] = 'LOWER(fd.food_name) LIKE ?';
+            $query_params[] = '%' . strtolower($params['search']) . '%';
+        }
+
+        $limit = (int) $params['limit'];
+        $offset = (int) $params['offset'];
+        $sql = "SELECT fd.id AS food_id,
+                       CONCAT('EXP', LPAD(fd.id, 6, '0')) AS expense_no,
+                       fd.food_name AS description,
+                       fc.category AS category,
+                       fd.total_food_cost AS total_expense,
+                       ts.status AS status,
+                       DATE_FORMAT(fd.date_created, '%m/%d/%Y') AS date_created,
+                       fd.transaction_state_id AS transaction_state_id
+                FROM foods fd
+                LEFT JOIN food_categories fc ON fc.id = fd.food_category_id
+                LEFT JOIN transaction_states ts ON ts.id = fd.transaction_state_id
+                WHERE " . implode(' AND ', $where) . "
+                ORDER BY fd.date_created DESC
+                LIMIT " . $offset . ", " . $limit;
+        return $this->db->query($sql, $query_params)->result();
+    }
+
+    public function count_inventory_expenses($params){
+        $where = array('fd.food_type_id = 2');
+        $query_params = array();
+
+        if (!empty($params['status_ids'])) {
+            $where[] = 'fd.transaction_state_id IN(' . implode(',', array_map('intval', $params['status_ids'])) . ')';
+        }
+        if ($params['start_date'] !== null && $params['end_date'] !== null) {
+            $where[] = 'DATE(fd.date_created) BETWEEN ? AND ?';
+            $query_params[] = $params['start_date'];
+            $query_params[] = $params['end_date'];
+        }
+
+        if ($params['search'] !== '') {
+            $where[] = 'LOWER(fd.food_name) LIKE ?';
+            $query_params[] = '%' . strtolower($params['search']) . '%';
+        }
+
+        $sql = "SELECT COUNT(fd.id) AS total
+                FROM foods fd
+                WHERE " . implode(' AND ', $where);
+        return (int) $this->db->query($sql, $query_params)->row()->total;
     }
 }

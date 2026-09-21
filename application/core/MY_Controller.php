@@ -12,6 +12,16 @@ class MY_Controller extends CI_Controller {
 		$user_data = $this->session->userdata('user_id');
 
 		if (!isset($user_data)){ 
+			if ($this->input->is_ajax_request()) {
+				$this->output
+					->set_status_header(401)
+					->set_content_type('application/json')
+					->set_output(json_encode(array(
+						'authenticated' => false,
+						'message' => 'Your session has expired. Please log in again.'
+					)));
+				exit;
+			}
 			redirect('login');
 		}
 	}

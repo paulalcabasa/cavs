@@ -72,8 +72,6 @@ class Login extends CI_Controller {
 		
 			if($is_user){
 				$user_type = $this->session->userdata('user_type_id');
-				
-				var_dump($user_type);
 
 				if($user_type == 6){ // dietitian
 					redirect('Food_Inventory/all_food_sales');

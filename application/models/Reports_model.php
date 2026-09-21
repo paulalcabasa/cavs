@@ -407,6 +407,50 @@ class Reports_model extends CI_Model {
 		return $query->result();
 	}
 
+	public function get_food_sales_items_onhand_paginated($params){
+		$search = trim($params['query']);
+		$search_condition = '';
+		$query_params = array();
+		if ($search !== '') {
+			$search_condition = ' AND LOWER(fd.food_name) LIKE ?';
+			$query_params[] = '%' . strtolower($search) . '%';
+		}
+
+		$limit = (int) $params['records_per_page'];
+		$offset = (int) $params['offset'];
+		$sql = "SELECT CONCAT('FD',LPAD(fd.id,5,'0')) food_no,
+				       fc.category,
+				       fd.food_name,
+				       fd.initial_quantity,
+				       fd.quantity remaining_quantity,
+				       (fd.initial_quantity - fd.quantity) sold_quantity
+				FROM foods fd
+				LEFT JOIN food_categories fc ON fd.food_category_id = fc.id
+				WHERE fd.quantity > 0
+					AND fd.transaction_state_id IN(1,3,4)
+					AND fd.food_type_id = 1" . $search_condition . "
+				ORDER BY fd.food_name ASC
+				LIMIT " . $offset . ", " . $limit;
+		$query = $this->db->query($sql, $query_params);
+		return $query->result();
+	}
+
+	public function get_food_sales_items_onhand_total($query = ''){
+		$search = trim($query);
+		$sql = "SELECT COUNT(fd.id) AS total_foods
+				FROM foods fd
+				WHERE fd.quantity > 0
+					AND fd.transaction_state_id IN(1,3,4)
+					AND fd.food_type_id = 1";
+		$params = array();
+		if ($search !== '') {
+			$sql .= ' AND LOWER(fd.food_name) LIKE ?';
+			$params[] = '%' . strtolower($search) . '%';
+		}
+		$result = $this->db->query($sql, $params)->row();
+		return (int) $result->total_foods;
+	}
+
 	public function get_supplier_item_price($params){
 		$sql = "SELECT inv_stock.id,
 				       inv_stock.inventory_item_id,
