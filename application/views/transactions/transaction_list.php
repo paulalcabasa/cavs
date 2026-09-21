@@ -95,7 +95,10 @@
                                         <td class="text-right"><?php echo number_format((float) $transaction->amount_tendered, 2); ?></td>
                                         <td><?php echo html_escape(date('m/d/Y h:i A', strtotime($transaction->date_created))); ?></td>
                                         <td><?php echo html_escape($transaction->status); ?></td>
-                                        <td><a class="btn btn-xs btn-default" href="<?php echo site_url('transaction/view/' . encode_string($transaction->id)); ?>"><i class="fa fa-eye"></i> View</a></td>
+                                        <td>
+                                            <a style="margin-right: 12px;" class="btn btn-xs btn-default" href="<?php echo site_url('transaction/view/' . encode_string($transaction->id)); ?>"><i class="fa fa-eye"></i> View</a>
+                                            <a class="btn btn-xs btn-danger" href="<?php echo site_url('transaction/cancel/' . encode_string($transaction->id)); ?>"><i class="fa fa-trash"></i> Cancel</a>
+                                        </td>
                                     </tr>
                                 <?php endforeach; ?>
                             <?php endif; ?>
