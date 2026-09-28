@@ -8,11 +8,11 @@
         </form>
     </section>
     <section class="content"> <!-- Main content -->
-        <form action="<?php echo $inventoryBaseUrl; ?>" method="get" class="sidebar-form">
+        <form action="<?php echo $inventoryBaseUrl; ?>" method="get" >
             <div class="input-group">
-                <input type="text" name="search" value="<?= html_escape($query); ?>" class="form-control" placeholder="Search by food name...">
+                <input type="text" name="search" value="<?= html_escape($query); ?>" class="form-control table-searchbar food-inventory-search-control" placeholder="Search by food name...">
                 <span class="input-group-btn">
-                    <button type="submit" class="btn btn-flat"><i class="fa fa-search"></i></button>
+                    <button type="submit" class="btn btn-flat food-inventory-search-control"><i class="fa fa-search"></i></button>
                 </span>
             </div>
         </form>

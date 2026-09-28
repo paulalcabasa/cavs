@@ -16,8 +16,6 @@
   <link rel="stylesheet" href="<?php echo base_url();?>plugins/ionicons-2.0.1/css/ionicons.min.css">
   <!-- Theme style -->
   <link rel="stylesheet" href="<?php echo base_url();?>plugins/adminlte-2.3.4/dist/css/AdminLTE.css">
-  <!-- Custom Style for CMS -->
-  <link rel="stylesheet" href="<?php echo base_url();?>assets/css/cms_custom_style.css">
   <!-- AdminLTE Skins. Choose a skin from the css/skins
        folder instead of downloading all of them to reduce the load. -->
   <link rel="stylesheet" href="<?php echo base_url();?>plugins/adminlte-2.3.4/dist/css/skins/skin-blue.min.css">

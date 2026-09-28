@@ -5,7 +5,7 @@
     </section>
     <section class="content"> <!-- Main content -->
         <!-- search form -->
-        <form action="<?php echo $inventoryBaseUrl; ?>" method="get" class="sidebar-form">
+        <form action="<?php echo $inventoryBaseUrl; ?>" method="get">
             <div class="input-group">
             <input type="text" name="search" class="form-control" placeholder="Search by food name...">
                 <span class="input-group-btn">

@@ -9,10 +9,8 @@ class Reports_model extends CI_Model {
 	public function generate_sales_report_detailed($params){
 		$customer_type = $params[2];
 		$customer_detail = $params[3];
-		$query_params[0] = $params[0];
-		$query_params[1] = $params[1];
-		$start_date = $query_params[0];
-		$end_date = $query_params[1];
+		$start_date = $params[0];
+		$end_date = $params[1];
 		$this->db->select("CONCAT('OR',LPAD(th.id,5,0)) transaction_no,
 					       pt.person_type_name customer_type,
 					       th.customer_name,
@@ -22,13 +20,12 @@ class Reports_model extends CI_Model {
 					       (tl.selling_price * tl.quantity) amount,
 					       DATE_FORMAT(th.date_created, '%m/%d/%Y %l:%i %p') transaction_date");
 		$this->db->from('transaction_lines tl');
-		$this->db->join('transaction_headers th','tl.transaction_header_id = th.id','left');
+		$this->db->join('transaction_headers th','tl.transaction_header_id = th.id');
 		$this->db->join('foods fd','fd.id = tl.food_id','left');
 		$this->db->join('person_types pt','pt.id = th.person_type_id','left');
-		$this->db->join('persons pr','pr.id = th.person_id','left');
 		$this->db->where('th.transaction_status', 1);
-		$this->db->where('DATE(th.date_created) >=', $start_date);
-		$this->db->where('DATE(th.date_created) <=', $end_date);
+		$this->db->where('th.date_created >=', $start_date . ' 00:00:00');
+		$this->db->where('th.date_created <=', $end_date . ' 23:59:59');
 		if($customer_type != "all"){
 			$this->db->where('th.person_type_id', $customer_type);
 			if($customer_detail != ""){

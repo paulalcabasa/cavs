@@ -212,3 +212,16 @@ tr.details td.details-control {
 .select2-container .select2-selection--single .select2-selection__rendered {
 	padding-left:0;
 }
+
+.table-searchbar {
+	background-color: white !important;
+}
+
+.skin-blue .sidebar-form input[type="text"].food-inventory-search-control,
+.skin-blue .sidebar-form .btn.food-inventory-search-control,
+.food-inventory-search-control,
+.table-searchbar {
+	background-color: #fff !important;
+	border-color: #d2d6de !important;
+	color: #666 !important;
+}

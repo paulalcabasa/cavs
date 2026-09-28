@@ -70,26 +70,18 @@
 
 <script>
 $(document).ready(function(){
-    var start_date,end_date;
+    var selected_date;
 
     $('#txt_report_date').daterangepicker({
         "showDropdowns": true,
         "showWeekNumbers": true,
-          ranges: {
-           'Today': [moment(), moment()],
-           'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-           'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-           'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-           'This Month': [moment().startOf('month'), moment().endOf('month')],
-           'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-        }
+        "singleDatePicker": true
     });
 
     $('#txt_report_date').on('apply.daterangepicker', function(ev, picker) {
-        start_date = picker.startDate.format('YYYY-MM-DD');
-        end_date = picker.endDate.format('YYYY-MM-DD');
-        $("#start_date").val(start_date);
-        $("#end_date").val(end_date);
+        selected_date = picker.startDate.format('YYYY-MM-DD');
+        $("#start_date").val(selected_date);
+        $("#end_date").val(selected_date);
     });
 
     $("#btn_generate").click(function(){
@@ -108,8 +100,8 @@ $(document).ready(function(){
                 $("#tbl_data tbody").html(response);
             }
         });*/
-        if($("#start_date").val()  == "" && $("#end_date").val() == ""){
-            alert('Select start date and end date');
+        if($("#start_date").val() == ""){
+            alert('Select a date');
         }
         else {
             $("#frm_report").submit();
